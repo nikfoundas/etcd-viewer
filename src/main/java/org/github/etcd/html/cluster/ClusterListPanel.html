@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<wicket:head>
+<style>
+.my-icon.fa {
+  float: right;
+  display: none;
+}
+
+.cluster-size.badge {
+  float: right;
+}
+
+.list-group-item-info .my-icon.fa {
+  display: block;
+}
+
+.list-group-item.selected {
+  font-weight: bold;
+}
+
+</style>
+</wicket:head>
+</head>
+
+<body>
+<wicket:panel>
+
+<!--   <div class="panel panel-default">
+
+  <div class="panel-heading clearfix">
+
+    <form class="form-inline">
+      <input class="form-control" type="text" placeholder="name">
+    </form>
+    Panel heading
+
+    <div class="pull-right">
+      <a href="#" class="btn btn-default">Refresh</a>
+      <a href="#" class="btn btn-default">Delete</a>
+    </div>
+
+  </div>
+
+  <div class="panel-body">
+    <p>Select a cluster to see the details</p>
+
+    <a href="#" class="btn btn-default">Refresh</a>
+    <a href="#" class="btn btn-default">Delete</a>
+  </div> -->
+
+  <div class="list-group">
+    <wicket:container wicket:id="clusters">
+      <a href="#" class="list-group-item" wicket:id="select">
+        <span class="list-group-item-text_"><span wicket:id="name">[cluster name]</span><span class="fa fa-at fa-fw"></span><span wicket:id="address"></span><span wicket:id="size" class="cluster-size badge"></span></span> <!-- h4 -->
+        <p wicket_id="address" class="hidden list-group-item-text">[leader address]</p> <!-- p -->
+
+<!--        <div class="pull-right">
+        <button class="btn btn-sm btn-link "><span class="fa fa-refresh"></span></button>
+        <button class="btn btn-sm btn-link "><span class="fa fa-trash"></span></button>
+       </div> -->
+        <span class="my-icon fa fa-check-no"></span>
+
+
+
+      </a>
+    </wicket:container>
+  </div>
+
+</wicket:panel>
+</body>
+</html>

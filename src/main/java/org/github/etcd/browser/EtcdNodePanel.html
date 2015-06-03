@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<wicket:head>
+<style>
+.etcd-nodes .icon {
+  /* width: 34px; */
+
+  width: 3%;
+}
+
+.etcd-nodes .actions {
+  width: 48px;
+}
+
+.etcd-nodes .key {
+  width: 25%;
+}
+
+.etcd-nodes .value {
+  width: 25%;
+}
+
+.etcd-nodes .created, .etcd-nodes .modified, .etcd-nodes .ttl {
+  width: 10%;
+}
+
+.etcd-nodes a.action {
+  text-decoration: none;
+  color: #333;
+}
+
+.etcd-nodes .expiration {
+  width: 200px;
+  /* background-color: red; */
+}
+
+</style>
+</wicket:head>
+
+</head>
+<body>
+
+<wicket:panel>
+
+<div class="row">
+
+<div class="col-sm-6 col-md-8">
+<h4><span wicket:id="icon"></span> <span wicket:id="key"></span></h4>
+</div>
+
+<div class="col-sm-6 col-md-4">
+
+<div class="well well-sm">
+  <dl class="dl-horizontal">
+    <dt>Created</dt>    <dd><span wicket:id="createdIndex"></span></dd>
+    <dt>Modified</dt>   <dd><span wicket:id="modifiedIndex"></span></dd>
+    <dt>TTL</dt>        <dd><span wicket:id="ttl"></span></dd>
+    <dt>Expiration</dt> <dd><span wicket:id="expiration"></span></dd>
+  </dl>
+</div>
+
+</div>
+
+</div>
+
+<div class="row">
+<div class="col-sm-10">
+<ol class="breadcrumb">
+  <li wicket:id="breadcrumb"><a href="#" wicket:id="key"><span wicket:id="label"></span></a></li>
+
+  <li><a href="#"><span class="fa fa-plus"></span></a></li>
+
+</ol>
+</div>
+<div class="col-sm-2">
+  <a href="#" class="btn btn-primary">Add new</a>
+</div>
+</div>
+
+
+<div class="panel panel-default">
+
+  <wicket:enclosure child="value">
+    <div class="panel-body">
+      <span wicket:id="value"></span>
+    </div>
+  </wicket:enclosure>
+
+  <wicket:enclosure child="nodes">
+    <table class="table etcd-nodes table-hover">
+      <thead>
+        <tr>
+          <th class="icon"></th>
+          <th class="key">Key</th>
+          <th class="value">Value</th>
+          <th class="created hidden-sm hidden-xs">Created</th>
+          <th class="modified hidden-sm hidden-xs">Modifed</th>
+          <th class="ttl hidden-sm hidden-xs">TTL</th>
+          <th class="expiration hidden-sm hidden-xs">Expiration</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr wicket:id="nodes">
+          <td><span wicket:id="icon"></span></td>
+          <td><a href="#" wicket:id="key"><span wicket:id="label"></span></a><div class="pull-right"><a wicket:id="edit" class="action"><span class="fa fa-fw fa-edit"></span></a> <a wicket:id="delete" class="action"><span class="fa fa-fw fa-remove"></span></a></div></td>
+          <td><span wicket:id="value"></span></td>
+          <td class="hidden-sm hidden-xs"><span wicket:id="createdIndex"></span></td>
+          <td class="hidden-sm hidden-xs"><span wicket:id="modifiedIndex"></span></td>
+          <td class="hidden-sm hidden-xs"><span wicket:id="ttl"></span></td>
+          <td class="hidden-sm hidden-xs"><span wicket:id="expiration"></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </wicket:enclosure>
+
+</div><!-- end of panel -->
+
+
+</wicket:panel>
+
+</body>
+</html>

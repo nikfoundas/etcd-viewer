@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<wicket:head>
+<style>
+
+.chevron span.fa.collapse-chevron:before {
+    content: "\f077"; /* fa-chevron-up */
+}
+
+.chevron.collapsed span.fa.collapse-chevron:before {
+    content: "\f078"; /* fa-chevron-down */
+}
+
+</style>
+</wicket:head>
+</head>
+
+<body>
+<wicket:panel>
+
+  <div class="well well-lg" wicket:id="empty">
+    <!-- <blockquote></blockquote> maybe ?? -->
+    <p class="lead">Select one of the available clusters to view its details</p>
+  </div>
+
+  <div wicket:id="container" class="panel panel-default">
+    <div class="panel-heading clearfix">
+      <div class="panel-title">
+        <span class="hidden"><span wicket:id="name"></span> @ <span wicket:id="address"></span></span>
+
+<div class="pull-left">
+<!-- <form class="form-inline"> -->
+<div class="form-group-no" style="display: inline-block;">
+<!-- <label>Cluster</label> -->
+        <select class="form-control" wicket_id="ddc">
+          <option value="local">local @ http://localhost:4001/</option>
+          <option value="local-kvm">local-kvm @ http://192.168.122.101:4001</option>
+          <option value="ena">ena @ http://10.0.0.1:4001/</option>
+          <option value="dyo">dyo @ http://10.0.0.2:4001/</option>
+          <option selected="selected" value="tria">tria @ http://10.0.0.3:4001/</option>
+          <option value="tessera">tessera @ http://10.0.0.4:4001/</option>
+        </select>
+</div>
+<!-- </form> -->
+<div class="btn-group">
+<a class="btn btn-default collapsed" data-toggle="collapse" href="#addCluster" aria-expanded="false"><span class="fa fa-plus"></span></a>
+<a class="btn btn-default" href="#"><span class="fa fa-remove"></span></a>
+</div>
+
+<div class="btn-group">
+  <a wicket_id="disconnect" class="btn btn-default"><span class="fa fa-chain-broken"></span><!--  Disconnect --></a>
+  <a wicket:id="refresh" class="btn btn-default"><span class="fa fa-refresh"></span><!--  Refresh --></a>
+</div>
+</div>
+        <span class="pull-right">
+        <span class="hidden">
+          <a wicket_id="disconnect" class="btn btn-sm btn-default"><span class="fa fa-chain-broken"></span><!--  Disconnect --></a>
+          <a wicket_id="refresh" class="btn btn-sm btn-default"><span class="fa fa-refresh"></span><!--  Refresh --></a>
+          <a class="btn btn-default btn-sm collapsed" data-toggle="collapse" href="#panelBody" aria-expanded="false"><span class="fa fa-star"></span></a>
+          <a wicket:id="delete" class="btn btn-sm btn-danger" data-toggle="modal"><span class="fa fa-remove"></span><!--  Remove --></a>
+        </span>
+        <a class="chevron collapsed btn btn-default" data-toggle="collapse" href="#panelBody" aria-expanded="false"><span class="fa collapse-chevron"></span></a>
+        </span>
+      </div>
+    </div>
+
+<div id="panelBody">
+
+    <div class="panel-body">
+
+       <div id="addCluster" class="collapse">
+        <form class="form-inline">
+          <div class="form-group form-group-sm">
+            <input type="text" class="form-control" placeholder="name">
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="peer address">
+          </div>
+          <button class="btn btn-default btn-sm">Add cluster</button>
+        </form>
+        <hr>
+        </div>
+
+
+      <p class="hidden">Leader address: <strong wicket_id="address"></strong></p>
+      <p>Last refresh time: <span wicket:id="lastRefreshTime"></span> <span class="pull-right"><button class="btn btn-default"><span class="fa fa-refresh"></span> Refresh</button></span></p>
+    </div>
+
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Peer address</th>
+            <th>Status</th>
+            <th>Machine Id</th>
+            <th class="hidden">RAFT url</th>
+            <th class="hidden">Version</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr wicket:id="peers">
+            <td><span wicket:id="etcd"></span></td>
+            <td><span wicket:id="status"></span></td>
+            <td><span wicket:id="id"></span></td>
+            <td class="hidden"><span wicket:id="raft"></span></td>
+            <td class="hidden"><span wicket:id="version"></span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="panel-footer hidden">
+       <div>
+        <form class="form-inline">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="name">
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="peer address">
+          </div>
+          <button class="btn btn-default">Add cluster</button>
+        </form>
+        </div>
+      </div>
+</div>
+    </div>
+
+  </div>
+
+</wicket:panel>
+</body>
+</html>

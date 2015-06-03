@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<wicket:head>
+<style>
+.help-block .feedbackPanel {
+  padding-left: 0;
+  list-style: none;
+}
+</style>
+</wicket:head>
+
+</head>
+<body>
+
+<wicket:border>
+  <label class="col-sm-2 control-label" wicket:id="label">[label]</label>
+  <div class="col-sm-10">
+    <wicket:body/>
+    <span wicket:id="feedbackIcon" class="glyphicon form-control-feedback" aria-hidden="true"></span>
+    <!-- <span wicket_id="feedbackText" class="help-block">[Demo help message ... let's see how it goes]</span> -->
+
+    <div wicket:id="feedback" class="help-block animated shake"></div>
+  </div>
+</wicket:border>
+
+</body>
+</html>

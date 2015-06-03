@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+</head>
+<body>
+
+<wicket:extend>
+
+<h1>Manage clusters</h1>
+
+<hr>
+
+<div class="row">
+<div class="col-md-4 col-md-push-8">
+<div wicket_id="addCluster"></div>
+</div>
+</div>
+
+
+  <div class="row">
+
+    <div class="col-md-4 col-md-push-8-no">
+
+      <div wicket:id="clusterList"></div>
+
+      <div wicket:id="addCluster"></div>
+
+<!--     <div class="list-group" wicket:id="container">
+      <wicket:container wicket:id="clusters">
+        <a href="#" class="list-group-item" wicket:id="select">
+          <h4 wicket:id="name" class="list-group-item-heading">[cluster name]</h4>
+          <p wicket:id="address" class="list-group-item-text">[leader address]</p>
+      </a>
+      </wicket:container>
+      <div class="list-group-item"><button wicket:id="delete" class="btn btn-danger" data-toggle="modal">Delete</button></div>
+    </div> -->
+
+    </div>
+
+    <div class="col-md-8 col-md-pull-4-no">
+
+      <div wicket:id="clusterDetails"></div>
+
+    </div>
+
+
+  </div>
+
+
+
+<!-- Button trigger modal -->
+<!-- <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button> -->
+
+<!-- Delete Cluster Modal -->
+<div class="modal fade" wicket:id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Delete confirmation</h4>
+      </div>
+      <div class="modal-body">
+        <p>
+          You are about to delete cluster: <strong wicket:id="modalClusterName"></strong><br>
+          Are you sure you want to proceed?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button wicket:id="delete" type="button" class="btn btn-danger">Delete</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</wicket:extend>
+
+</body>
+</html>
