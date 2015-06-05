@@ -43,7 +43,7 @@
 
 <wicket:panel>
 
-<div class="row">
+<div class="row hidden">
 
 <div class="col-sm-6 col-md-8">
 <h4><span wicket:id="icon"></span> <span wicket:id="key"></span></h4>
@@ -64,20 +64,14 @@
 
 </div>
 
-<div class="row">
-<div class="col-sm-10">
 <ol class="breadcrumb">
-  <li wicket:id="breadcrumb"><a href="#" wicket:id="key"><span wicket:id="label"></span></a></li>
+  <li wicket:id="breadcrumb">
+    <a href="#" wicket:id="key"><span wicket:id="label"></span></a>
+  </li>
 
   <li><a href="#"><span class="fa fa-plus"></span></a></li>
 
 </ol>
-</div>
-<div class="col-sm-2">
-  <a href="#" class="btn btn-primary">Add new</a>
-</div>
-</div>
-
 
 <div class="panel panel-default">
 
@@ -103,7 +97,13 @@
       <tbody>
         <tr wicket:id="nodes">
           <td><span wicket:id="icon"></span></td>
-          <td><a href="#" wicket:id="key"><span wicket:id="label"></span></a><div class="pull-right"><a wicket:id="edit" class="action"><span class="fa fa-fw fa-edit"></span></a> <a wicket:id="delete" class="action"><span class="fa fa-fw fa-remove"></span></a></div></td>
+          <td>
+            <a href="#" wicket:id="key"><span wicket:id="label"></span></a>
+            <div class="pull-right">
+              <a wicket:id="edit" class="action"><span class="fa fa-fw fa-edit"></span></a>
+              <a wicket:id="delete" class="action"><span class="fa fa-fw fa-remove"></span></a>
+            </div>
+          </td>
           <td><span wicket:id="value"></span></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="createdIndex"></span></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="modifiedIndex"></span></td>

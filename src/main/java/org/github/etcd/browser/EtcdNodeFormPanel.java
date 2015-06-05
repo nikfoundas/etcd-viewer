@@ -27,10 +27,6 @@ public class EtcdNodeFormPanel extends GenericPanel<EtcdNode> {
         add(new EtcdNodeForm("form", new CompoundPropertyModel<>(model)));
     }
 
-//    public EtcdNodeFormPanel(String id, IModel<EtcdNode> model) {
-//        this(id, model, Model.of(true));
-//    }
-
     public class EtcdNodeForm extends Form<EtcdNode> {
 
         private static final long serialVersionUID = 1L;

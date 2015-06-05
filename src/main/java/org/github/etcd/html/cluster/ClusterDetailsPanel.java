@@ -1,5 +1,6 @@
 package org.github.etcd.html.cluster;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -10,6 +11,7 @@ import org.apache.wicket.ajax.attributes.AjaxRequestAttributes.EventPropagation;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.datetime.markup.html.basic.DateLabel;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -32,38 +34,23 @@ public class ClusterDetailsPanel extends GenericPanel<EtcdCluster> {
 
     private final WebMarkupContainer deleteModal;
 
+    @Inject
+    private IModel<String> selectedCluster;
+
     public ClusterDetailsPanel(String id, IModel<EtcdCluster> model, WebMarkupContainer parentDeleteModal) {
         super(id, model);
 
         this.deleteModal = parentDeleteModal;
 
-        setOutputMarkupId(true);
+        add(new Label("name", new PropertyModel<>(getModel(), "name")));
 
-        WebMarkupContainer container;
-        add(container = new WebMarkupContainer("container") {
-            private static final long serialVersionUID = 1L;
-            @Override
-            protected void onConfigure() {
-                super.onConfigure();
-                setVisible(getModelObject() != null);
-            }
-        });
-        add(new WebMarkupContainer("empty") {
-            private static final long serialVersionUID = 1L;
-            @Override
-            protected void onConfigure() {
-                super.onConfigure();
-                setVisible(getModelObject() == null);
-            }
-        });
 
-        container.add(new Label("name", new PropertyModel<>(getModel(), "name")));
+        add(DateLabel.forDatePattern("lastRefreshTime", new PropertyModel<Date>(getModel(), "lastRefreshTime"), "yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
+//        add(new Label("lastRefreshTime", new PropertyModel<Date>(getModel(), "lastRefreshTime")));
 
-        container.add(new Label("lastRefreshTime", new PropertyModel<>(getModel(), "lastRefreshTime")));
+        add(new Label("address", new PropertyModel<>(getModel(), "address")));
 
-        container.add(new Label("address", new PropertyModel<>(getModel(), "address")));
-
-        container.add(new AjaxFallbackLink<String>("refresh", new PropertyModel<String>(getModel(), "name")) {
+        add(new AjaxFallbackLink<String>("refresh", new PropertyModel<String>(getModel(), "name")) {
             private static final long serialVersionUID = 1L;
             @Override
             public void onClick(AjaxRequestTarget target) {
@@ -75,7 +62,7 @@ public class ClusterDetailsPanel extends GenericPanel<EtcdCluster> {
             }
         });
 
-        container.add(new AjaxLink<String>("delete", new PropertyModel<String>(getModel(), "name")) {
+        add(new AjaxLink<String>("delete", new PropertyModel<String>(getModel(), "name")) {
             private static final long serialVersionUID = 1L;
             @Override
             public void onClick(AjaxRequestTarget target) {
@@ -99,7 +86,7 @@ public class ClusterDetailsPanel extends GenericPanel<EtcdCluster> {
             }
         });
 
-        container.add(new ListView<EtcdPeer>("peers", new PropertyModel<List<EtcdPeer>>(getModel(), "peers")) {
+        add(new ListView<EtcdPeer>("peers", new PropertyModel<List<EtcdPeer>>(getModel(), "peers")) {
             private static final long serialVersionUID = 1L;
             @Override
             protected void populateItem(ListItem<EtcdPeer> item) {
@@ -128,6 +115,7 @@ public class ClusterDetailsPanel extends GenericPanel<EtcdCluster> {
         });
 
     }
+
 
     protected void onClusterRefresh(AjaxRequestTarget target, String clusterName) {
         System.out.println("Refreshing ... " + clusterName);

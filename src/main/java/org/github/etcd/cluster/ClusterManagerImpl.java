@@ -91,6 +91,9 @@ public class ClusterManagerImpl implements ClusterManager {
 
     @Override
     public void refreshCluster(String name) {
+        if (name == null) {
+            return;
+        }
         EtcdCluster cluster = clusters.get(name);
 
         String leaderId = null;

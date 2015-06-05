@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<wicket:head>
+<style>
+
+.chevron span.fa.collapse-chevron:before {
+    content: "\f077"; /* fa-chevron-up */
+}
+
+.chevron.collapsed span.fa.collapse-chevron:before {
+    content: "\f078"; /* fa-chevron-down */
+}
+
+</style>
+</wicket:head>
+</head>
+<body>
+<wicket:panel>
+
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <div class="row">
+      <div class="col-xs-8 col-sm-10">
+        <div class="input-group" wicket:id="selectInputGroup">
+          <input type="text" wicket:id="selectedCluster" class="form-control" placeholder="select cluster" readonly>
+          <div class="input-group-btn">
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><span class="fa fa-caret-down"></span></button>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+              <li wicket:id="clusters"><a wicket:id="select"><span wicket:id="name"></span> @ <span wicket:id="address"></span></a></li>
+              <li class="divider"></li>
+              <li><a wicket:id="addCluster" data-toggle="modal"><span class="fa fa-plus"></span> Add another cluster</a></li>
+            </ul>
+          </div>
+        </div>
+      </div><!-- ./col-xs-8 -->
+      <div class="col-xs-4 col-sm-2">
+        <div class="pull-left">
+          <a wicket:id="deleteCluster" class="btn btn-default" data-toggle="modal"><span class="fa fa-remove"></span></a>
+        </div>
+        <div class="pull-right">
+          <a class="btn btn-default chevron collapsed" data-toggle="collapse" href="#collapsingBody" aria-expanded="false"><span class="fa collapse-chevron"></span></a>
+        </div>
+      </div><!-- ./col-xs-4 -->
+    </div><!-- ./row -->
+  </div> <!-- ./panel-heading -->
+
+  <div id="collapsingBody" class="collapse" aria-expanded="false">
+
+    <div class="panel-body" wicket:id="body">
+
+<!--       <a wicket:id="refresh" class="btn btn-default"><span class="fa fa-refresh"></span> Refresh</a>
+      <a href="#" class="btn btn-default">Delete</a> -->
+
+      <h3>Name: <span wicket:id="name"></span></h3>
+
+      <h4>Leader address: <strong wicket:id="address"></strong></h4>
+
+      <p>Last refresh time: <span wicket:id="lastRefreshTime"></span> <span class="pull-right"><button wicket:id="refresh" class="btn btn-default"><span class="fa fa-refresh"></span> Refresh</button></span></p>
+
+    </div><!-- ./panel-body -->
+
+    <div class="table-responsive" wicket:id="clusterPeers"></div>
+
+  </div><!-- ./collapsingBody -->
+
+</div><!-- ./panel -->
+
+<div wicket:id="addClusterModal"></div>
+<div wicket:id="deleteClusterModal"></div>
+
+</wicket:panel>
+</body>
+</html>
