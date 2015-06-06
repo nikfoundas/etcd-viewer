@@ -18,7 +18,7 @@ import org.apache.wicket.model.Model;
 import org.github.etcd.browser.TemplatePage;
 import org.github.etcd.cluster.ClusterManager;
 import org.github.etcd.cluster.EtcdCluster;
-import org.github.etcd.rest.EtcdResourceRouter;
+import org.github.etcd.rest.EtcdManagerRouter;
 
 public class ClustersPage extends TemplatePage {
 
@@ -28,7 +28,7 @@ public class ClustersPage extends TemplatePage {
     private ClusterManager clusterManager;
 
     @Inject
-    private EtcdResourceRouter router;
+    private EtcdManagerRouter router;
 
 
     private WebMarkupContainer container;

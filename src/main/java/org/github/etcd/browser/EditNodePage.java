@@ -79,11 +79,11 @@ public class EditNodePage extends TemplatePage {
 
                 System.out.println("EDITOR MODEL: " + editorModel.getObject());
 
-                if (editorModel.getObject().isDir()) {
-                    etcdManager.createDirectory(editorModel.getObject().getKey(), editorModel.getObject().getTtl(), updating.getObject());
-                } else {
-                    etcdManager.createValue(editorModel.getObject().getKey(), editorModel.getObject().getValue(), editorModel.getObject().getTtl(), updating.getObject());
-                }
+//                if (editorModel.getObject().isDir()) {
+//                    etcdManager.createDirectory(editorModel.getObject().getKey(), editorModel.getObject().getTtl(), updating.getObject());
+//                } else {
+//                    etcdManager.createKey(editorModel.getObject().getKey(), editorModel.getObject().getValue(), editorModel.getObject().getTtl(), updating.getObject());
+//                }
 
                 if (returnTo != null) {
                     setResponsePage(returnTo.getPage());

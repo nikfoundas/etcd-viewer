@@ -12,11 +12,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
 import org.github.etcd.cluster.EtcdPeer;
 
-class EtcdResourceProxy implements EtcdManager {
+class EtcdManagerImpl implements EtcdManager {
 
     private static final Pattern MEMBER_PATTERN = Pattern.compile("^etcd=([^&]+)&raft=(.+)$");
 
@@ -24,11 +23,11 @@ class EtcdResourceProxy implements EtcdManager {
     private EtcdResource delegate;
 
     @Inject
-    public EtcdResourceProxy(EtcdResource delegate) {
+    public EtcdManagerImpl(EtcdResource delegate) {
         this.delegate = delegate;
     }
 
-    public EtcdResourceProxy() {
+    public EtcdManagerImpl() {
     }
 
     @Override
@@ -77,45 +76,27 @@ class EtcdResourceProxy implements EtcdManager {
     }
 
     @Override
+    public EtcdSelfStats getSelfStats() {
+        return delegate.getSelfStats();
+    }
+
+    @Override
     public EtcdResponse getNode(String key) {
         return delegate.getNode(key);
     }
 
-    public Response createDir(String key) {
-        return delegate.setNodeRaw(key, true, null, null, null);
-    }
-//    public EtcdResponse createDirectory(String key) {
-//        return createDirectory(key, null);
-//    }
-
-    @Override
-    public EtcdResponse createDirectory(String key, Long ttl, Boolean update) {
-        return delegate.setNode(key, true, null, ttl, update);
-    }
-
-//    public EtcdResponse createValue(String key, String value) {
-//        return createValue(key, value, null, false);
-//    }
-    @Override
-    public EtcdResponse createValue(String key, String value, Long ttl, Boolean update) {
-        return delegate.setNode(key, null, value, ttl, update);
-    }
-
-    @Override
-    public EtcdResponse deleteDirectory(String key) {
-        return delegate.deleteNode(key, true);
-    }
-
-    @Override
-    public EtcdResponse deleteValue(String key) {
-        return delegate.deleteNode(key, false);
-    }
     @Override
     public EtcdResponse saveOrUpdate(EtcdNode node, Boolean update) {
         if (node.isDir()) {
-            return createDirectory(node.getKey(), node.getTtl(), update);
+            return delegate.setNode(node.getKey(), true, null, node.getTtl(), update ? update : null);
         } else {
-            return createValue(node.getKey(), node.getValue(), node.getTtl(), update);
+            return delegate.setNode(node.getKey(), null, node.getValue(), node.getTtl(), update ? update : null);
         }
     }
+
+    @Override
+    public EtcdResponse delete(String key, Boolean directory) {
+        return directory ? delegate.deleteDirectory(key, true) : delegate.deleteKey(key);
+    }
+
 }

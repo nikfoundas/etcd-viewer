@@ -56,7 +56,6 @@ public class CachingResourceProxyFactory implements ResourceProxyFactory {
         }
     }
 
-
     private static class CacheKey {
         private String address;
         private Class<?> serviceType;

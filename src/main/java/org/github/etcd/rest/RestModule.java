@@ -4,7 +4,6 @@
 package org.github.etcd.rest;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
@@ -35,15 +34,14 @@ public class RestModule extends AbstractModule {
 
         bind(EtcdResource.class).toProvider(EtcdResourceProvider.class);//.asEagerSingleton();
 
-//        bind(EtcdResourceProxy.class);
+        bind(ResourceProxyFactory.class).to(CachingResourceProxyFactory.class).in(Singleton.class);
 
-        bind(EtcdManager.class).to(EtcdResourceProxy.class).in(Singleton.class);
+
+        bind(EtcdManager.class).toProvider(EtcdManagerProvider.class);//.in(Singleton.class);
 
         bind(ClusterManager.class).to(ClusterManagerImpl.class).in(Singleton.class);
 
-        bind(ResourceProxyFactory.class).to(CachingResourceProxyFactory.class).in(Singleton.class);
-
-        bind(EtcdResourceRouter.class).to(EtcdResourceRouterImpl.class).in(Singleton.class);
+        bind(EtcdManagerRouter.class).to(EtcdManagerRouterImpl.class).in(Singleton.class);
 
         bind(new TypeLiteral<IModel<String>>() {}).to(SessionStoredClusterNameModel.class).in(Singleton.class);
     }
@@ -63,22 +61,34 @@ public class RestModule extends AbstractModule {
         }
     }
 
-    private static class EtcdResourceRouterImpl implements EtcdResourceRouter {
+    private static class EtcdManagerProvider implements Provider<EtcdManager> {
+
+        @Inject
+        private Provider<EtcdResource> resource;
+
+        @Override
+        public EtcdManager get() {
+            return new EtcdManagerImpl(resource.get());
+        }
+    }
+
+    private static class EtcdManagerRouterImpl implements EtcdManagerRouter {
 
         @Inject
         private ResourceProxyFactory proxyFactory;
 
         @Override
-        public EtcdResource getResource(String address) {
-            return proxyFactory.createProxy(address, EtcdResource.class);
+        public EtcdManager getEtcdManager(String address) {
+            EtcdResource resource = proxyFactory.createProxy(address, EtcdResource.class);
+            return new EtcdManagerImpl(resource);
         }
     }
 
     public static class EtcdResourceProvider implements Provider<EtcdResource> {
 
-        @Inject
-        @Named(ETCD_NODE)
-        private String etcdNodeAddress;
+//        @Inject
+//        @Named(ETCD_NODE)
+//        private String etcdNodeAddress;
 
         @Inject
         private IModel<String> selectedCluster;
@@ -96,7 +106,8 @@ public class RestModule extends AbstractModule {
             if (selectedCluster.getObject() != null) {
                 return factory.createProxy(clusterManager.getCluster(selectedCluster.getObject()).getAddress(), EtcdResource.class);
             } else {
-                return factory.createProxy(etcdNodeAddress, EtcdResource.class);
+//                return factory.createProxy(etcdNodeAddress, EtcdResource.class);
+                return null;
             }
 
         }

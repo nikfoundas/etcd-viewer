@@ -4,9 +4,9 @@
 package org.github.etcd.browser;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
@@ -15,25 +15,17 @@ import org.github.etcd.cluster.ClusterManager;
 import org.github.etcd.html.cluster.ClusterSelectionPanel;
 import org.github.etcd.rest.EtcdManager;
 import org.github.etcd.rest.EtcdNode;
-import org.github.etcd.rest.EtcdResource;
-import org.github.etcd.rest.EtcdResourceRouter;
 import org.github.etcd.rest.EtcdResponse;
 
 public class EtcdBrowserPage extends TemplatePage {
 
-    private static final long serialVersionUID = 4514087203542463203L;
-
-    @Inject
-    private EtcdResource etcdResource;
-
-    @Inject
-    private EtcdManager proxy;
+    private static final long serialVersionUID = 1L;
 
     @Inject
     private ClusterManager clusterManager;
 
     @Inject
-    private EtcdResourceRouter router;
+    private Provider<EtcdManager> manager;
 
     @Inject
     private IModel<String> selectedCluster;
@@ -58,11 +50,15 @@ public class EtcdBrowserPage extends TemplatePage {
             @Override
             protected EtcdResponse load() {
 
-                String key = ConvertUtils.getEtcdKey(getPageParameters());
+//                String key = ConvertUtils.getEtcdKey(getPageParameters());
+
+                String key = getPageParameters().get("key").toString("/");
+
                 System.out.println("################### LOADING: " + key);
 
                 try {
-                    return router.getResource(clusterManager.getCluster(selectedCluster.getObject()).getAddress()).getNode(key);
+                    return manager.get().getNode(key);
+//                    return router.getResource(clusterManager.getCluster(selectedCluster.getObject()).getAddress()).getNode(key);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -70,25 +66,9 @@ public class EtcdBrowserPage extends TemplatePage {
             }
         };
 
-        add(node = new EtcdNodePanel("node", new PropertyModel<EtcdNode>(response, "node")) {
-            private static final long serialVersionUID = 1L;
+//        add(node = new EtcdNodePanel("node", new PropertyModel<EtcdNode>(response, "node")));
 
-            @Override
-            protected void onDeleteNode(AjaxRequestTarget target, EtcdNode nodeToDelete) {
-                super.onDeleteNode(target, nodeToDelete);
-
-                System.out.println("$$$$$$$$$$$$$$$$$$$ DELETING: " + nodeToDelete.getKey());
-
-                if (nodeToDelete.isDir()) {
-                    proxy.deleteDirectory(nodeToDelete.getKey());
-                } else {
-                    proxy.deleteValue(nodeToDelete.getKey());
-                }
-
-            }
-        });
-
-        add(new BookmarkablePageLink<>("addNode", EditNodePage.class));
+        add(node = new EtcdNodePanel("node"));
 
     }
 

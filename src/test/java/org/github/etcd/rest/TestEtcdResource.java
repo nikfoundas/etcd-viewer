@@ -21,7 +21,7 @@ public class TestEtcdResource extends Assert {
 
     private EtcdResource delegate;
 
-    private EtcdResourceProxy etcdResource;
+    private EtcdManagerImpl etcdResource;
 
     private static final String TEST_ROOT = "/junit";
 
@@ -42,7 +42,7 @@ public class TestEtcdResource extends Assert {
 
         delegate = JAXRSClientFactory.create("http://192.168.122.101:4001/", EtcdResource.class, providers);
 
-        etcdResource = new EtcdResourceProxy(delegate);
+        etcdResource = new EtcdManagerImpl(delegate);
 
 //        etcdResource.createDirectory(TEST_ROOT);
     }
@@ -155,7 +155,7 @@ public class TestEtcdResource extends Assert {
         assertEquals(value, create.getNode().getValue());
 
 
-        EtcdResponse delete = etcdResource.deleteValue(key);
+        EtcdResponse delete = etcdResource.deleteKey(key);
 
         assertNotNull(delete);
 

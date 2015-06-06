@@ -1,13 +1,13 @@
 package org.github.etcd.html.node;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -15,6 +15,7 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.github.etcd.browser.FormGroupBorder;
 import org.github.etcd.rest.EtcdManager;
 import org.github.etcd.rest.EtcdNode;
@@ -25,17 +26,21 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
 
     private final IModel<Boolean> updating;
 
+    private Label title;
     private EtcdNodeForm form;
 
     @Inject
-    private EtcdManager etcdManager;
+    private Provider<EtcdManager> etcdManager;
 
-    public EditNodeModalPanel(String id, IModel<EtcdNode> model, IModel<Boolean> updating) {
+    public EditNodeModalPanel(String id, IModel<EtcdNode> model, IModel<Boolean> updatingModel) {
         super(id, model);
-        this.updating = updating;
+        this.updating = updatingModel;
 
         setOutputMarkupId(true);
         add(AttributeAppender.append("class", "modal fade"));
+
+        add(title = new Label("title", new StringResourceModel("editModal.title.updating.${}", updating, "Edit Node")));
+        title.setOutputMarkupId(true);
 
         add(form = new EtcdNodeForm("form", new CompoundPropertyModel<>(model)));
 
@@ -45,7 +50,9 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
 
-                onNodeSave(target);
+                etcdManager.get().saveOrUpdate(getModelObject(), updating.getObject());
+
+                onNodeSaved(target);
 
                 target.appendJavaScript("$('#" + EditNodeModalPanel.this.getMarkupId() + "').modal('hide');");
             }
@@ -72,15 +79,7 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
         public EtcdNodeForm(String id, IModel<EtcdNode> model) {
             super(id, model);
 
-//            add(new FeedbackPanel("feedback") {
-//                private static final long serialVersionUID = 1L;
-//                @Override
-//                protected void onConfigure() {
-//                    setVisible(anyMessage());
-//                }
-//            });
-
-            add(new FormGroupBorder("keyGroup", new ResourceModel("key.label", "Key")).add(new TextField<String>("key") {
+            add(new FormGroupBorder("keyGroup", new ResourceModel("editModal.form.key.label", "Key")).add(new TextField<String>("key") {
                 private static final long serialVersionUID = 1L;
                 @Override
                 protected void onConfigure() {
@@ -89,7 +88,13 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
                 }
             }.setRequired(true)));
 
-            add(new FormGroupBorder("valueGroup", new ResourceModel("value.label", "Value")).add(new TextArea<String>("value") {
+            add(new FormGroupBorder("valueGroup", new ResourceModel("editModal.form.value.label", "Value")) {
+                private static final long serialVersionUID = 1L;
+                @Override
+                protected void onConfigure() {
+                    setVisible(!EtcdNodeForm.this.getModelObject().isDir());
+                }
+            }.add(new TextArea<String>("value") {
                 private static final long serialVersionUID = 1L;
                 @Override
                 protected void onConfigure() {
@@ -109,44 +114,20 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
                     setEnabled(!updating.getObject());
                 }
             });
-//            add(new CheckBox("dir") {
-//                private static final long serialVersionUID = 1L;
-//                @Override
-//                protected boolean wantOnSelectionChangedNotifications() {
-//                    return true;
-//                }
-//                @Override
-//                protected void onConfigure() {
-//                    super.onConfigure();
-//                    setEnabled(!updating.getObject());
-//                }
-//            });
-            add(new Label("dirLabel", new ResourceModel("dir.label", "Directory Node")));
 
-            add(new FormGroupBorder("ttlGroup", new ResourceModel("ttl.label", "Time To Live")).add(new TextField<>("ttl")));
+            add(new Label("dirLabel", new ResourceModel("editModal.form.dir.label", "Directory")));
 
-//            add(new AjaxSubmitLink("cancel") {
-//                private static final long serialVersionUID = 1L;
-//                @SuppressWarnings("unchecked")
-//                @Override
-//                protected void onAfterSubmit(AjaxRequestTarget target, Form<?> form) {
-//                    super.onAfterSubmit(target, form);
-//
-//                    onFormCancel(target, (Form<EtcdNode>) form);
-//                }
-//            }.setDefaultFormProcessing(false));
+            add(new FormGroupBorder("ttlGroup", new ResourceModel("editModal.form.ttl.label", "Time to live")).add(new TextField<>("ttl")));
+
         }
 
     }
 
     public void onShowModal(AjaxRequestTarget target) {
-        target.add(form);
+        target.add(title, form);
 
         form.clearInput();
     }
-    protected void onNodeSave(AjaxRequestTarget target) {
-        System.out.println("Please save: " + getModelObject());
-
-        etcdManager.saveOrUpdate(getModelObject(), updating.getObject());
+    protected void onNodeSaved(AjaxRequestTarget target) {
     }
 }

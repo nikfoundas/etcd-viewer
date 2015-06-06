@@ -14,9 +14,10 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import org.github.etcd.rest.EtcdManager;
+import org.github.etcd.rest.EtcdManagerRouter;
 import org.github.etcd.rest.EtcdNode;
 import org.github.etcd.rest.EtcdResource;
-import org.github.etcd.rest.EtcdResourceRouter;
 import org.github.etcd.rest.EtcdResponse;
 import org.github.etcd.rest.ResourceProxyFactory;
 
@@ -28,11 +29,7 @@ public class ClusterManagerImpl implements ClusterManager {
     private ResourceProxyFactory proxyFactory;
 
     @Inject
-    private EtcdResourceRouter etcdRouter;
-
-
-//    Collections.synchronizedMap(new LinkedHashMap(...));
-//    private ConcurrentMap<String, EtcdCluster> clusters = new ConcurrentHashMap<>();
+    private EtcdManagerRouter etcdRouter;
 
     private Map<String, EtcdCluster> clusters = Collections.synchronizedMap(new LinkedHashMap<String, EtcdCluster>());
 
@@ -97,14 +94,14 @@ public class ClusterManagerImpl implements ClusterManager {
         EtcdCluster cluster = clusters.get(name);
 
         String leaderId = null;
-        EtcdResponse machines = null;
+        List<EtcdNode> machines = null;
 
         if (cluster.getPeers() != null && cluster.getPeers().size() > 0) {
             // first try to retrieve cluster info from one of the past discovered peers
             for (int i=0; i<cluster.getPeers().size(); i++) {
                 EtcdPeer peer = cluster.getPeers().get(i);
                 try {
-                    EtcdResource etcdResource = etcdRouter.getResource(peer.getEtcd());
+                    EtcdManager etcdResource = etcdRouter.getEtcdManager(peer.getEtcd());
 
                     leaderId = etcdResource.getSelfStats().getLeaderInfo().getLeader();
                     machines = etcdResource.getMachines();
@@ -124,18 +121,18 @@ public class ClusterManagerImpl implements ClusterManager {
 
         } else {
             // try to retrieve the cluster info from the initially provided peer
-            EtcdResource providedPeer = etcdRouter.getResource(cluster.getAddress());
+            EtcdManager providedPeer = etcdRouter.getEtcdManager(cluster.getAddress());
 
             leaderId = providedPeer.getSelfStats().getLeaderInfo().getLeader();
             machines = providedPeer.getMachines();
         }
 
-        if (machines == null || machines.getNode() == null || machines.getNode().getNodes() == null) {
-            throw new RuntimeException("Failed to retrieve peer nodes for cluster: " + name + " using: " + cluster.getAddress());
-        }
+//        if (machines == null || machines.getNode() == null || machines.getNode().getNodes() == null) {
+//            throw new RuntimeException("Failed to retrieve peer nodes for cluster: " + name + " using: " + cluster.getAddress());
+//        }
 
-        List<EtcdPeer> peers = new ArrayList<>(machines.getNode().getNodes().size());
-        for (EtcdNode node : machines.getNode().getNodes()) {
+        List<EtcdPeer> peers = new ArrayList<>(machines.size());
+        for (EtcdNode node : machines) {
             String decodedValue;
             try {
                 decodedValue = URLDecoder.decode(node.getValue(), "UTF-8");
@@ -157,7 +154,7 @@ public class ClusterManagerImpl implements ClusterManager {
                 }
 
                 try {
-                    EtcdResource peerEtcd = etcdRouter.getResource(host.getEtcd());
+                    EtcdManager peerEtcd = etcdRouter.getEtcdManager(host.getEtcd());
                     host.setVersion(peerEtcd.getVersion());
                     host.setStatus(peerEtcd.getSelfStats().getState());
                 } catch (Exception e) {

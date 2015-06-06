@@ -7,16 +7,16 @@
   <div class="modal-content">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title">Confirmation</h4>
+      <h4 class="modal-title">Confirm delete</h4>
     </div>
-    <div class="modal-body">
-      <p>
-        You are about to delete cluster: <strong wicket:id="name"></strong><br>
-        Are you sure you want to proceed?
+    <div class="modal-body" wicket:id="body">
+      <p wicket:id="dirNode">
+        You are about to delete directory: <strong wicket:id="key"></strong> and all of its contents.
       </p>
-      <p>
-        <em>The contents of the cluster registry will not be affected!</em>
+      <p wicket:id="valueNode">
+        You are about to delete node: <strong wicket:id="key"></strong>
       </p>
+      <p>Are you sure you want to proceed?</p>
     </div>
     <div class="modal-footer">
       <button wicket:id="delete" type="button" class="btn btn-danger">Delete</button>

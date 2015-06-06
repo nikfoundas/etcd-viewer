@@ -5,15 +5,13 @@ import java.util.List;
 public interface EtcdManager {
     String getVersion();
 
+    EtcdSelfStats getSelfStats();
+
     List<EtcdNode> getMachines();
 
     EtcdResponse getNode(String key);
 
     EtcdResponse saveOrUpdate(EtcdNode node, Boolean update);
 
-    EtcdResponse createDirectory(String key, Long ttl, Boolean update);
-    EtcdResponse deleteDirectory(String key);
-
-    EtcdResponse createValue(String key, String value, Long ttl, Boolean update);
-    EtcdResponse deleteValue(String key);
+    EtcdResponse delete(String key, Boolean directory);
 }

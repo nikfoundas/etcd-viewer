@@ -7,11 +7,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.ajax.attributes.AjaxRequestAttributes.EventPropagation;
-import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.ComponentTag;
@@ -30,7 +32,9 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.github.etcd.html.node.DeleteNodeModalPanel;
 import org.github.etcd.html.node.EditNodeModalPanel;
+import org.github.etcd.rest.EtcdManager;
 import org.github.etcd.rest.EtcdNode;
 
 public class EtcdNodePanel extends GenericPanel<EtcdNode> {
@@ -53,19 +57,59 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
         }
     };
 
-    private IModel<List<EtcdNode>> nodes;
+//    private IModel<List<EtcdNode>> nodes;
 
-    private IModel<EtcdNode> editingNode = Model.of(new EtcdNode());
+    private IModel<EtcdNode> actionModel = Model.of(new EtcdNode());
     private IModel<Boolean> updating = Model.of(false);
 
     private EditNodeModalPanel editNodeModal;
+    private DeleteNodeModalPanel deleteNodeModal;
 
-    public EtcdNodePanel(String id, IModel<EtcdNode> model) {
-        super(id, model);
+    private WebMarkupContainer panelContainer;
+
+    @Inject
+    private Provider<EtcdManager> etcdManager;
+
+    private IModel<String> keyModel = Model.of("/");
+
+    public EtcdNodePanel(String id) {
+        super(id);
+
+        setModel(new LoadableDetachableModel<EtcdNode>() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            protected EtcdNode load() {
+                try {
+
+                    System.out.println("-------- LOADING: " + keyModel.getObject());
+
+                    return etcdManager.get().getNode(keyModel.getObject()).getNode();
+                } catch (Exception e) {
+//					e.printStackTrace();
+                    return null;
+                }
+            }
+        });
 
         setOutputMarkupId(true);
 
-        add(editNodeModal = new EditNodeModalPanel("editNodeModal", editingNode, updating));
+        add(editNodeModal = new EditNodeModalPanel("editNodeModal", actionModel, updating) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onNodeSaved(AjaxRequestTarget target) {
+                super.onNodeSaved(target);
+                target.add(panelContainer);
+            }
+        });
+        add(deleteNodeModal = new DeleteNodeModalPanel("deleteNodeModal", actionModel) {
+            private static final long serialVersionUID = 1L;
+            @Override
+            protected void onNodeDeleted(AjaxRequestTarget target) {
+                super.onNodeDeleted(target);
+                target.add(panelContainer);
+            }
+        });
 
         add(new AjaxLink<String>("addNode", new PropertyModel<String>(getModel(), "key")) {
             private static final long serialVersionUID = 1L;
@@ -82,15 +126,15 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 updating.setObject(false);
-                editingNode.setObject(new EtcdNode());
+                actionModel.setObject(new EtcdNode());
 
                 StringBuffer newKey = new StringBuffer(getModelObject());
                 if (!getModelObject().endsWith("/")) {
                     newKey.append('/');
                 }
-                newKey.append("NEW_NODE");
+                newKey.append("new_node");
 
-                editingNode.getObject().setKey(newKey.toString());
+                actionModel.getObject().setKey(newKey.toString());
 
                 editNodeModal.onShowModal(target);
             }
@@ -113,13 +157,6 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
         add(new Label("ttl", new PropertyModel<>(getModel(), "ttl")));
         add(new Label("expiration", new PropertyModel<>(getModel(), "expiration")));
 
-//        IModel<List<PageParameters>> breadcrumb = new LoadableDetachableModel<List<PageParameters>>() {
-//            private static final long serialVersionUID = 1L;
-//            @Override
-//            protected List<PageParameters> load() {
-//                return ConvertUtils.getBreadcrumb(getModelObject().getKey());
-//            }
-//        };
         IModel<List<PageParameters>> breadcrumb = new ChainingModel<List<PageParameters>>(getModel()) {
             private static final long serialVersionUID = 1L;
             @Override
@@ -135,9 +172,29 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
 
             @Override
             protected void populateItem(ListItem<PageParameters> item) {
-                BookmarkablePageLink<EtcdBrowserPage> link;
-                item.add(link = new BookmarkablePageLink<EtcdBrowserPage>("key", EtcdBrowserPage.class, item.getModelObject()) {
-                    private static final long serialVersionUID = 1L;
+//                BookmarkablePageLink<EtcdBrowserPage> link;
+//                item.add(link = new BookmarkablePageLink<EtcdBrowserPage>("key", EtcdBrowserPage.class, item.getModelObject()) {
+//                    private static final long serialVersionUID = 1L;
+//                    @Override
+//                    public String getBeforeDisabledLink() {
+//                        return "";
+//                    }
+//                    @Override
+//                    public String getAfterDisabledLink() {
+//                        return "";
+//                    }
+//                });
+
+                AjaxLink<String> link;
+                item.add(link = new AjaxLink<String>("key", Model.of(ConvertUtils.getEtcdKey(item.getModelObject()))) {
+                    @Override
+                    public void onClick(AjaxRequestTarget target) {
+                        keyModel.setObject(getModelObject());
+
+                        System.out.println("UPDATED KEY: " + keyModel.getObject());
+
+                        target.add(EtcdNodePanel.this);
+                    }
                     @Override
                     public String getBeforeDisabledLink() {
                         return "";
@@ -164,7 +221,10 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             }
         });
 
-        add(new MultiLineLabel("value", new PropertyModel<>(getModel(), "value")) {
+        add(panelContainer = new WebMarkupContainer("panelContainer"));
+        panelContainer.setOutputMarkupId(true);
+
+        panelContainer.add(new MultiLineLabel("value", new PropertyModel<>(getModel(), "value")) {
             private static final long serialVersionUID = 1L;
             @Override
             protected void onConfigure() {
@@ -174,11 +234,13 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             }
         });
 
-        nodes = new LoadableDetachableModel<List<EtcdNode>>() {
+        final IModel<List<EtcdNode>> nodes = new LoadableDetachableModel<List<EtcdNode>>() {
             private static final long serialVersionUID = 1L;
 
             @Override
             protected List<EtcdNode> load() {
+                System.out
+                        .println("EtcdNodePanel.EtcdNodePanel(...).new LoadableDetachableModel() {...}.load()");
                 List<EtcdNode> nodes = getModelObject().getNodes();
                 if (nodes == null) {
                     return Collections.emptyList();
@@ -188,20 +250,36 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             }
         };
 
-        add(new ListView<EtcdNode>("nodes", nodes) {
+        panelContainer.add(new ListView<EtcdNode>("nodes", nodes) {
             private static final long serialVersionUID = 1L;
             @Override
             protected void populateItem(ListItem<EtcdNode> item) {
 
                 item.add(new WebMarkupContainer("icon").add(new AttributeModifier("class", new StringResourceModel("icon.node.dir.${dir}", item.getModel(), ""))));
 
-                PageParameters parameters = ConvertUtils.getPageParameters(item.getModelObject().getKey());
+//                PageParameters parameters = ConvertUtils.getPageParameters(item.getModelObject().getKey());
 
-                BookmarkablePageLink<EtcdBrowserPage> link;
+//                BookmarkablePageLink<EtcdBrowserPage> link;
 
-                item.add(link = new BookmarkablePageLink<>("key", EtcdBrowserPage.class, parameters));
+//                item.add(link = new BookmarkablePageLink<>("key", EtcdBrowserPage.class, parameters));
 
-                link.add(new Label("label", ConvertUtils.getLabel(parameters)));
+//                link.add(new Label("label", ConvertUtils.getLabel(parameters)));
+
+                AjaxLink<String> link;
+                item.add(link = new AjaxLink<String>("key", new PropertyModel<String>(item.getModel(), "key")) { // Model.of(item.getModelObject().getKey())
+                    @Override
+                    public void onClick(AjaxRequestTarget target) {
+                        keyModel.setObject(getModelObject());
+                        System.out.println("UPDATED KEY: " + keyModel.getObject());
+
+                        EtcdNodePanel.this.getModel().detach();
+//                        ListView.this.getModel().detach();
+                        nodes.detach();
+
+                        target.add(EtcdNodePanel.this);
+                    }
+                });
+                link.add(new Label("label", ConvertUtils.getLabel(item.getModelObject().getKey())));
 
                 item.add(new AjaxLink<EtcdNode>("edit", item.getModel()) {
                     private static final long serialVersionUID = 1L;
@@ -219,25 +297,30 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
                         updating.setObject(true);
-                        editingNode.setObject(getModelObject());
+                        actionModel.setObject(getModelObject());
 
                         editNodeModal.onShowModal(target);
                     }
                 });
-//                item.add(new BookmarkablePageLink<>("edit", EditNodePage.class, parameters));
 
-                // copy the model value to avoid reloading the model before actual deletion
-                // if we use a detachable model on the link before the deletion it will be
-                // reloaded and the resulting view will not reflect the changes
-                item.add(new AjaxFallbackLink<EtcdNode>("delete", Model.of(item.getModelObject())) {
+                item.add(new AjaxLink<EtcdNode>("delete", item.getModel()) {
                     private static final long serialVersionUID = 1L;
                     @Override
+                    protected void onComponentTag(ComponentTag tag) {
+                        super.onComponentTag(tag);
+                        tag.put("data-toggle", "modal");
+                        tag.put("data-target", "#" + deleteNodeModal.getMarkupId());
+                    }
+                    @Override
+                    protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+                        super.updateAjaxAttributes(attributes);
+                        attributes.setEventPropagation(EventPropagation.BUBBLE);
+                    }
+                    @Override
                     public void onClick(AjaxRequestTarget target) {
-                        System.out.println("DELETE: " + getModelObject());
+                        actionModel.setObject(getModelObject());
 
-                        onDeleteNode(target, getModelObject());
-
-                        target.add(EtcdNodePanel.this);
+                        deleteNodeModal.onShowModal(target);
                     }
                 });
 
@@ -261,11 +344,7 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
     protected void onDetach() {
         super.onDetach();
 
-        nodes.detach();
-    }
-
-    protected void onDeleteNode(AjaxRequestTarget target, EtcdNode nodeToDelete) {
-
+//        nodes.detach();
     }
 
 }
