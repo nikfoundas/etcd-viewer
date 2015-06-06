@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 
 import org.github.etcd.cluster.EtcdPeer;
 
-public class EtcdResourceProxy implements EtcdManager {
+class EtcdResourceProxy implements EtcdManager {
 
     private static final Pattern MEMBER_PATTERN = Pattern.compile("^etcd=([^&]+)&raft=(.+)$");
 
@@ -109,5 +109,13 @@ public class EtcdResourceProxy implements EtcdManager {
     @Override
     public EtcdResponse deleteValue(String key) {
         return delegate.deleteNode(key, false);
+    }
+    @Override
+    public EtcdResponse saveOrUpdate(EtcdNode node, Boolean update) {
+        if (node.isDir()) {
+            return createDirectory(node.getKey(), node.getTtl(), update);
+        } else {
+            return createValue(node.getKey(), node.getValue(), node.getTtl(), update);
+        }
     }
 }

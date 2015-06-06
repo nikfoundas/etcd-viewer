@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:panel>
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Add cluster</h4>
+      </div>
+      <div class="modal-body">
+
+<form wicket:id="form" role="form">
+
+  <div class="form-group" wicket:id="keyGroup">
+    <input wicket:id="key" type="text" class="form-control" placeholder="node key">
+  </div>
+
+  <div class="form-group">
+    <!-- <div class="col-sm-offset-2 col-sm-10"> -->
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" wicket:id="dir" /> <span wicket:id="dirLabel"></span>
+        </label>
+      </div>
+    <!-- </div> -->
+  </div>
+
+  <div class="form-group" wicket:id="valueGroup">
+    <textarea wicket:id="value" class="form-control" rows="10" placeholder="node value"></textarea>
+  </div>
+
+  <div class="form-group" wicket:id="ttlGroup">
+    <input wicket:id="ttl" type="text" class="form-control" placeholder="time to live in seconds" />
+  </div>
+
+</form>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" wicket:id="save">Save</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+
+</wicket:panel>
+</body>
+</html>

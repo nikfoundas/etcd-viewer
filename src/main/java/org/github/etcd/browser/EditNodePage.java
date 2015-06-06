@@ -10,15 +10,15 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.github.etcd.rest.EtcdManager;
 import org.github.etcd.rest.EtcdNode;
-import org.github.etcd.rest.EtcdResourceProxy;
 
 public class EditNodePage extends TemplatePage {
 
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private EtcdResourceProxy proxy;
+    private EtcdManager etcdManager;
 
     private IModel<EtcdNode> editorModel;
 
@@ -50,7 +50,7 @@ public class EditNodePage extends TemplatePage {
                 String key = ConvertUtils.getEtcdKey(getPageParameters());
                 System.out.println("######### Loading MODEL for EDIT: " + key);
                 try {
-                    return proxy.getNode(key).getNode();
+                    return etcdManager.getNode(key).getNode();
                 } catch (NotFoundException e) {
 
                     System.err.println("NOT FOUND ... " + e);
@@ -80,9 +80,9 @@ public class EditNodePage extends TemplatePage {
                 System.out.println("EDITOR MODEL: " + editorModel.getObject());
 
                 if (editorModel.getObject().isDir()) {
-                    proxy.createDirectory(editorModel.getObject().getKey(), editorModel.getObject().getTtl(), updating.getObject());
+                    etcdManager.createDirectory(editorModel.getObject().getKey(), editorModel.getObject().getTtl(), updating.getObject());
                 } else {
-                    proxy.createValue(editorModel.getObject().getKey(), editorModel.getObject().getValue(), editorModel.getObject().getTtl(), updating.getObject());
+                    etcdManager.createValue(editorModel.getObject().getKey(), editorModel.getObject().getValue(), editorModel.getObject().getTtl(), updating.getObject());
                 }
 
                 if (returnTo != null) {

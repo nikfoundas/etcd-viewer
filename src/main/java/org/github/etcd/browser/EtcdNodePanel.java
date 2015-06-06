@@ -9,8 +9,12 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
+import org.apache.wicket.ajax.attributes.AjaxRequestAttributes.EventPropagation;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
@@ -26,6 +30,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.github.etcd.html.node.EditNodeModalPanel;
 import org.github.etcd.rest.EtcdNode;
 
 public class EtcdNodePanel extends GenericPanel<EtcdNode> {
@@ -50,10 +55,54 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
 
     private IModel<List<EtcdNode>> nodes;
 
+    private IModel<EtcdNode> editingNode = Model.of(new EtcdNode());
+    private IModel<Boolean> updating = Model.of(false);
+
+    private EditNodeModalPanel editNodeModal;
+
     public EtcdNodePanel(String id, IModel<EtcdNode> model) {
         super(id, model);
 
         setOutputMarkupId(true);
+
+        add(editNodeModal = new EditNodeModalPanel("editNodeModal", editingNode, updating));
+
+        add(new AjaxLink<String>("addNode", new PropertyModel<String>(getModel(), "key")) {
+            private static final long serialVersionUID = 1L;
+            @Override
+            protected void onComponentTag(ComponentTag tag) {
+                super.onComponentTag(tag);
+                tag.put("data-target", "#" + editNodeModal.getMarkupId());
+            }
+            @Override
+            protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+                super.updateAjaxAttributes(attributes);
+                attributes.setEventPropagation(EventPropagation.BUBBLE);
+            }
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                updating.setObject(false);
+                editingNode.setObject(new EtcdNode());
+
+                StringBuffer newKey = new StringBuffer(getModelObject());
+                if (!getModelObject().endsWith("/")) {
+                    newKey.append('/');
+                }
+                newKey.append("NEW_NODE");
+
+                editingNode.getObject().setKey(newKey.toString());
+
+                editNodeModal.onShowModal(target);
+            }
+            @Override
+            protected void onConfigure() {
+                super.onConfigure();
+                if (EtcdNodePanel.this.getModelObject() != null) {
+                    setVisible(EtcdNodePanel.this.getModelObject().isDir());
+                }
+            }
+        });
+
 
         add(new WebMarkupContainer("icon").add(new AttributeModifier("class", new StringResourceModel("icon.node.dir.${dir}", getModel(), ""))));
 
@@ -154,7 +203,28 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
 
                 link.add(new Label("label", ConvertUtils.getLabel(parameters)));
 
-                item.add(new BookmarkablePageLink<>("edit", EditNodePage.class, parameters));
+                item.add(new AjaxLink<EtcdNode>("edit", item.getModel()) {
+                    private static final long serialVersionUID = 1L;
+                    @Override
+                    protected void onComponentTag(ComponentTag tag) {
+                        super.onComponentTag(tag);
+                        tag.put("data-toggle", "modal");
+                        tag.put("data-target", "#" + editNodeModal.getMarkupId());
+                    }
+                    @Override
+                    protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
+                        super.updateAjaxAttributes(attributes);
+                        attributes.setEventPropagation(EventPropagation.BUBBLE);
+                    }
+                    @Override
+                    public void onClick(AjaxRequestTarget target) {
+                        updating.setObject(true);
+                        editingNode.setObject(getModelObject());
+
+                        editNodeModal.onShowModal(target);
+                    }
+                });
+//                item.add(new BookmarkablePageLink<>("edit", EditNodePage.class, parameters));
 
                 // copy the model value to avoid reloading the model before actual deletion
                 // if we use a detachable model on the link before the deletion it will be

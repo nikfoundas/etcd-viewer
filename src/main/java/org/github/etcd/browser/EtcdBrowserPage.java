@@ -13,9 +13,9 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.github.etcd.cluster.ClusterManager;
 import org.github.etcd.html.cluster.ClusterSelectionPanel;
+import org.github.etcd.rest.EtcdManager;
 import org.github.etcd.rest.EtcdNode;
 import org.github.etcd.rest.EtcdResource;
-import org.github.etcd.rest.EtcdResourceProxy;
 import org.github.etcd.rest.EtcdResourceRouter;
 import org.github.etcd.rest.EtcdResponse;
 
@@ -27,7 +27,7 @@ public class EtcdBrowserPage extends TemplatePage {
     private EtcdResource etcdResource;
 
     @Inject
-    private EtcdResourceProxy proxy;
+    private EtcdManager proxy;
 
     @Inject
     private ClusterManager clusterManager;

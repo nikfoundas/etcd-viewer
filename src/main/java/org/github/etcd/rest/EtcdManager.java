@@ -9,6 +9,8 @@ public interface EtcdManager {
 
     EtcdResponse getNode(String key);
 
+    EtcdResponse saveOrUpdate(EtcdNode node, Boolean update);
+
     EtcdResponse createDirectory(String key, Long ttl, Boolean update);
     EtcdResponse deleteDirectory(String key);
 
