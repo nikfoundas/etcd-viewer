@@ -16,7 +16,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.github.etcd.browser.FormGroupBorder;
+import org.github.etcd.html.utils.FormGroupBorder;
 import org.github.etcd.rest.EtcdManager;
 import org.github.etcd.rest.EtcdNode;
 

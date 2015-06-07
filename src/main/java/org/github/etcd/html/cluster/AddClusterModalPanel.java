@@ -17,9 +17,9 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.UrlValidator;
-import org.github.etcd.browser.FormGroupBorder;
 import org.github.etcd.cluster.ClusterManager;
 import org.github.etcd.cluster.EtcdCluster;
+import org.github.etcd.html.utils.FormGroupBorder;
 
 public class AddClusterModalPanel extends Panel {
 

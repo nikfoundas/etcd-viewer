@@ -18,12 +18,18 @@ import org.github.etcd.rest.EtcdManager;
 import org.github.etcd.rest.EtcdManagerRouter;
 import org.github.etcd.rest.EtcdNode;
 import org.github.etcd.rest.EtcdResource;
-import org.github.etcd.rest.EtcdResponse;
 import org.github.etcd.rest.ResourceProxyFactory;
 
 public class ClusterManagerImpl implements ClusterManager {
 
-    private static final Pattern MEMBER_PATTERN = Pattern.compile("^etcd=([^&]+)&raft=(.+)$");
+    private static final Pattern PEER_PATTERN = Pattern.compile("^etcd=([^&]+)&raft=(.+)$");
+
+    private static final Comparator<EtcdPeer> PEER_SORTER = new Comparator<EtcdPeer>() {
+        @Override
+        public int compare(EtcdPeer o1, EtcdPeer o2) {
+            return o1.getEtcd().compareTo(o2.getEtcd());
+        }
+    };
 
     @Inject
     private ResourceProxyFactory proxyFactory;
@@ -33,20 +39,14 @@ public class ClusterManagerImpl implements ClusterManager {
 
     private Map<String, EtcdCluster> clusters = Collections.synchronizedMap(new LinkedHashMap<String, EtcdCluster>());
 
-    private static final Comparator<EtcdPeer> PEER_SORTER = new Comparator<EtcdPeer>() {
-        @Override
-        public int compare(EtcdPeer o1, EtcdPeer o2) {
-            return o1.getEtcd().compareTo(o2.getEtcd());
-        }
-    };
 
     public ClusterManagerImpl() {
         addCluster("local", "http://localhost:4001/");
         addCluster("local-kvm", "http://192.168.122.101:4001/");
-        addCluster("ena", "http://10.0.0.1:4001/");
-        addCluster("dyo", "http://10.0.0.2:4001/");
-        addCluster("tria", "http://10.0.0.3:4001/");
-        addCluster("tessera", "http://10.0.0.4:4001/");
+//        addCluster("ena", "http://10.0.0.1:4001/");
+//        addCluster("dyo", "http://10.0.0.2:4001/");
+//        addCluster("tria", "http://10.0.0.3:4001/");
+//        addCluster("tessera", "http://10.0.0.4:4001/");
     }
 
     @Override
@@ -141,7 +141,7 @@ public class ClusterManagerImpl implements ClusterManager {
                 decodedValue = node.getValue();
             }
 
-            Matcher m = MEMBER_PATTERN.matcher(decodedValue);
+            Matcher m = PEER_PATTERN.matcher(decodedValue);
             if (m.matches()) {
                 EtcdPeer host = new EtcdPeer();
                 host.setId(node.getKey().substring(node.getKey().lastIndexOf('/') + 1));
@@ -173,64 +173,6 @@ public class ClusterManagerImpl implements ClusterManager {
         cluster.setPeers(peers);
         cluster.setLastRefreshTime(new Date());
 
-//
-//
-//        EtcdResourceProxy p = new EtcdResourceProxy(resource);
-//
-//        try {
-//            String version = p.getVersion();
-//
-//            info("Version of: " + getModelObject().getAddress() + " is: " + version);
-//
-//        } catch (Exception e) {
-//
-//            error("Server: " + getModelObject().getAddress() + " is not accessible");
-//
-//            target.add(feedbackPanel, membersContainer);
-//
-//            return;
-//
-//        }
-//
-//        try {
-//            EtcdSelfStats selfStats = resource.getSelfStats();
-//
-//            String leaderId = selfStats.getLeaderInfo().getLeader();
-//
-//            info("Leader id: " + leaderId);
-//
-//            EtcdCluster leader = null;
-//            for (EtcdPeer host: p.getMachines()) {
-//                if (host.getId().equals(leaderId)) {
-//                    System.out.println("Found the LEADER !!!! : " + host.getEtcd());
-//
-//                    leader  = new EtcdCluster(getModelObject().getName(), host.getEtcd());
-//
-//                    info("Found leader: " + leader);
-//
-//                    break;
-//                }
-//            }
-//
-//            if (leader == null) {
-//
-//                System.err.println("COULD NOT LOCATE LEADER FOR: " + getModelObject());
-//
-//                selectedCluster.setObject(getModelObject());
-//
-//            } else {
-//
-//                selectedCluster.setObject(leader);
-//
-//            }
-//        } catch (Exception e) {
-//
-//            error("Could not locate leader node");
-//
-//            selectedCluster.setObject(getModelObject());
-//        }
-//
-//        target.add(feedbackPanel, membersContainer);
     }
 
 }

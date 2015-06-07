@@ -3,21 +3,14 @@
  */
 package org.github.etcd.rest;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import org.github.etcd.cluster.EtcdPeer;
-
 class EtcdManagerImpl implements EtcdManager {
 
-    private static final Pattern MEMBER_PATTERN = Pattern.compile("^etcd=([^&]+)&raft=(.+)$");
+//    private static final Pattern MEMBER_PATTERN = Pattern.compile("^etcd=([^&]+)&raft=(.+)$");
 
     @Inject
     private EtcdResource delegate;
@@ -39,36 +32,36 @@ class EtcdManagerImpl implements EtcdManager {
         return response.getNode().getNodes();
     }
 
-    public List<EtcdPeer> getMachines2() {
-        EtcdResponse response = delegate.getMachines();
-        if (response == null || response.getNode() == null || response.getNode().getNodes() == null) {
-            return Collections.emptyList();
-        }
-        List<EtcdPeer> members = new ArrayList<>(response.getNode().getNodes().size());
-        for (EtcdNode node : response.getNode().getNodes()) {
-            String decodedValue;
-            try {
-                decodedValue = URLDecoder.decode(node.getValue(), "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-                decodedValue = node.getValue();
-            }
-
-            Matcher m = MEMBER_PATTERN.matcher(decodedValue);
-            if (m.matches()) {
-                EtcdPeer host = new EtcdPeer();
-                host.setId(node.getKey().substring(node.getKey().lastIndexOf('/') + 1));
-                host.setEtcd(m.group(1));
-                host.setRaft(m.group(2));
-
-                members.add(host);
-
-            } else {
-                System.err.println("Value: " + node.getValue() + " is not expected");
-            }
-        }
-        return members;
-    }
+//    public List<EtcdPeer> getMachines2() {
+//        EtcdResponse response = delegate.getMachines();
+//        if (response == null || response.getNode() == null || response.getNode().getNodes() == null) {
+//            return Collections.emptyList();
+//        }
+//        List<EtcdPeer> members = new ArrayList<>(response.getNode().getNodes().size());
+//        for (EtcdNode node : response.getNode().getNodes()) {
+//            String decodedValue;
+//            try {
+//                decodedValue = URLDecoder.decode(node.getValue(), "UTF-8");
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//                decodedValue = node.getValue();
+//            }
+//
+//            Matcher m = MEMBER_PATTERN.matcher(decodedValue);
+//            if (m.matches()) {
+//                EtcdPeer host = new EtcdPeer();
+//                host.setId(node.getKey().substring(node.getKey().lastIndexOf('/') + 1));
+//                host.setEtcd(m.group(1));
+//                host.setRaft(m.group(2));
+//
+//                members.add(host);
+//
+//            } else {
+//                System.err.println("Value: " + node.getValue() + " is not expected");
+//            }
+//        }
+//        return members;
+//    }
 
     @Override
     public String getVersion() {

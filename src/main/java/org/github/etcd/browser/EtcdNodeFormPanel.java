@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.github.etcd.html.utils.FormGroupBorder;
 import org.github.etcd.rest.EtcdNode;
 
 public class EtcdNodeFormPanel extends GenericPanel<EtcdNode> {

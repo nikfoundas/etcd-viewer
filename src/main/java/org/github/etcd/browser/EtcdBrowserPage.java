@@ -9,12 +9,12 @@ import javax.inject.Provider;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.github.etcd.cluster.ClusterManager;
 import org.github.etcd.html.cluster.ClusterSelectionPanel;
+import org.github.etcd.html.node.EtcdNodePanel;
 import org.github.etcd.rest.EtcdManager;
-import org.github.etcd.rest.EtcdNode;
 import org.github.etcd.rest.EtcdResponse;
 
 public class EtcdBrowserPage extends TemplatePage {
@@ -41,7 +41,7 @@ public class EtcdBrowserPage extends TemplatePage {
             protected void onSelectedClusterChanged(AjaxRequestTarget target) {
                 super.onSelectedClusterChanged(target);
 
-                target.add(node);
+                node.switchToRoot(target);
             }
         });
 

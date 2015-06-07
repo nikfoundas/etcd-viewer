@@ -1,4 +1,4 @@
-package org.github.etcd.browser;
+package org.github.etcd.html.utils;
 
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;

@@ -35,6 +35,10 @@
   /* background-color: red; */
 }
 
+.breadcrumb li:first-child span.fa.breadcrumb-icon:before {
+  content: "\f015"; /* fa-home */
+}
+
 </style>
 </wicket:head>
 
@@ -42,6 +46,14 @@
 <body>
 
 <wicket:panel>
+
+<ol class="breadcrumb">
+  <li wicket:id="breadcrumb"><a href="#" wicket:id="key"><span class="fa breadcrumb-icon"></span><span wicket:id="label"></span></a></li>
+  <wicket:enclosure>
+    <li><a wicket:id="addNode" data-toggle="modal"><span class="fa fa-plus"></span></a></li>
+  </wicket:enclosure>
+</ol>
+
 
 <div class="row hidden">
 
@@ -64,16 +76,8 @@
 
 </div>
 
-<ol class="breadcrumb">
-  <li wicket:id="breadcrumb">
-    <a href="#" wicket:id="key"><span wicket:id="label"></span></a>
-  </li>
 
-  <li><a wicket:id="addNode" data-toggle="modal"><span class="fa fa-plus"></span></a></li>
-
-</ol>
-
-<div class="panel panel-default" wicket:id="panelContainer">
+<div class="panel panel-default" wicket:id="contents">
 
   <wicket:enclosure child="value">
     <div class="panel-body">

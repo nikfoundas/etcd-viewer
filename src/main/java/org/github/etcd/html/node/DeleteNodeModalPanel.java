@@ -32,23 +32,22 @@ public class DeleteNodeModalPanel extends GenericPanel<EtcdNode> {
         add(body = new WebMarkupContainer("body"));
         body.setOutputMarkupId(true);
 
-        body.add(new WebMarkupContainer("dirNode") {
+        body.add(new Label("directory", new PropertyModel<>(getModel(), "key")) {
             private static final long serialVersionUID = 1L;
             @Override
             protected void onConfigure() {
                 super.onConfigure();
                 setVisible(DeleteNodeModalPanel.this.getModelObject().isDir());
             }
-        }.add(new Label("key", new PropertyModel<>(getModel(), "key"))));
+        });
 
-        body.add(new WebMarkupContainer("valueNode") {
+        body.add(new Label("key", new PropertyModel<>(getModel(), "key")) {
             private static final long serialVersionUID = 1L;
-            @Override
             protected void onConfigure() {
                 super.onConfigure();
                 setVisible(!DeleteNodeModalPanel.this.getModelObject().isDir());
             }
-        }.add(new Label("key", new PropertyModel<>(getModel(), "key"))));
+        });
 
         add(new AjaxLink<Void>("delete") {
             private static final long serialVersionUID = 1L;
