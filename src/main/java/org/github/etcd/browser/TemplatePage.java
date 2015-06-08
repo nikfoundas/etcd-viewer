@@ -109,8 +109,8 @@ public class TemplatePage extends WebPage {
                 return Arrays.asList(
                         new MenuItem("home", HomePage.class, "Home"),
                         new MenuItem("browse", EtcdBrowserPage.class, "Browse"),
-                        new MenuItem("clusters", ClustersPage.class, "Clusters"),
-                        new MenuItem("about", EditNodePage.class, "About")
+//                        new MenuItem("clusters", ClustersPage.class, "Clusters"),
+                        new MenuItem("about", AboutPage.class, "About")
                         );
             }
         };
@@ -150,8 +150,6 @@ public class TemplatePage extends WebPage {
             }
         };
 
-//        CssHeaderItem bootstrapThemeCss = CssHeaderItem.forReference(bootstrapThemeCssRef);
-
         UrlResourceReference fontAwesomeCssRef = new UrlResourceReference(Url.parse("//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome" + minified + ".css"));
 
         UrlResourceReference bootstrapJsRef = new UrlResourceReference(Url.parse("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap" + minified + ".js")) {
@@ -162,15 +160,11 @@ public class TemplatePage extends WebPage {
             }
         };
 
-        UrlResourceReference animateCssRef = new UrlResourceReference(Url.parse("https://raw.githubusercontent.com/daneden/animate.css/master/animate.css"));
-
         response.render(CssHeaderItem.forReference(bootstrapThemeCssRef));
 
         response.render(JavaScriptHeaderItem.forReference(bootstrapJsRef));
 
         response.render(CssHeaderItem.forReference(fontAwesomeCssRef));
-
-        response.render(CssHeaderItem.forReference(animateCssRef));
 
     }
 

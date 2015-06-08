@@ -3,6 +3,8 @@
  */
 package org.github.etcd.html.node;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -29,10 +31,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.github.etcd.browser.ConvertUtils;
 import org.github.etcd.rest.EtcdManager;
 import org.github.etcd.rest.EtcdNode;
 
@@ -56,6 +55,10 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
         }
     };
 
+    public static final String ROOT_KEY = "/";
+
+    private static final List<String> ROOT_BREADCRUMB = Collections.unmodifiableList(Arrays.asList(ROOT_KEY));
+
     private IModel<EtcdNode> actionModel = Model.of(new EtcdNode());
     private IModel<Boolean> updating = Model.of(false);
 
@@ -67,10 +70,16 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
     @Inject
     private Provider<EtcdManager> etcdManager;
 
-    private final IModel<String> key = Model.of("/");
+    private final IModel<String> key;// = Model.of(ROOT_KEY);
 
     public EtcdNodePanel(String id) {
+        this(id, Model.of(ROOT_KEY));
+    }
+
+    public EtcdNodePanel(String id, IModel<String> keyModel) {
         super(id);
+
+        this.key = keyModel;
 
         setModel(new LoadableDetachableModel<EtcdNode>() {
             private static final long serialVersionUID = 1L;
@@ -119,10 +128,21 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
         contents.add(createNodesView("nodes"));
     }
 
-    public void switchToRoot(AjaxRequestTarget target) {
-        key.setObject("/");
+    @Inject
+    private IModel<String> selectedCluster;
 
-        target.add(this);
+    protected void onNodeKeyUpdated(AjaxRequestTarget target) {
+        /*
+         * TODO: how do we update the browser url to something bookmarkable ???
+         *
+        PageParameters parameters = ConvertUtils.getPageParameters(key.getObject());
+        parameters.add("cluster", selectedCluster.getObject());
+        String url = urlFor(EtcdBrowserPage.class, parameters).toString();
+        System.out.println("Target URL: " + url);
+
+        target.appendJavaScript("window.history.pushState(\"object or string\", \"LALALALA\", \"/fooo/"+absolute+"\");");
+        target.appendJavaScript("setTimeout(\"window.location.href='/" + absolute + "'\", 10);");
+        */
     }
 
     private void createModalPanels() {
@@ -146,29 +166,45 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
     }
 
     private void createBreadcrumb() {
-        IModel<List<PageParameters>> breadcrumb = new ChainingModel<List<PageParameters>>(getModel()) {
+        IModel<List<String>> breadcrumb = new ChainingModel<List<String>>(new PropertyModel<>(getModel(), "key")) {
             private static final long serialVersionUID = 1L;
             @Override
-            public List<PageParameters> getObject() {
+            public List<String> getObject() {
                 @SuppressWarnings("unchecked")
-                IModel<EtcdNode> node = (IModel<EtcdNode>) super.getChainedModel();
-                return ConvertUtils.getBreadcrumb(node.getObject() == null? null : node.getObject().getKey());
+                String key = ((IModel<String>) super.getChainedModel()).getObject();
+                if (key == null || key.length() == 0 || "/".equals(key)) {
+                    return ROOT_BREADCRUMB;
+                }
+                List<String> crumbs = new ArrayList<>();
+                int index = -1;
+                while ((index = key.indexOf('/', index + 1)) != -1) {
+                    if (index == 0) {
+                        crumbs.add("/");
+                    } else {
+                        crumbs.add(key.substring(0, index));
+                    }
+                }
+                crumbs.add(key);
+
+                return crumbs;
             }
         };
 
-        add(new ListView<PageParameters>("breadcrumb", breadcrumb) {
+        add(new ListView<String>("breadcrumb", breadcrumb) {
             private static final long serialVersionUID = 1L;
 
             @Override
-            protected void populateItem(ListItem<PageParameters> item) {
+            protected void populateItem(ListItem<String> item) {
                 AjaxLink<String> link;
-                item.add(link = new AjaxLink<String>("key", Model.of(ConvertUtils.getEtcdKey(item.getModelObject()))) {
+                item.add(link = new AjaxLink<String>("key", Model.of(item.getModelObject())) {
                     private static final long serialVersionUID = 1L;
                     @Override
                     public void onClick(AjaxRequestTarget target) {
                         key.setObject(getModelObject());
 
                         target.add(EtcdNodePanel.this);
+
+                        onNodeKeyUpdated(target);
                     }
                     @Override
                     public String getBeforeDisabledLink() {
@@ -180,14 +216,8 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
                     }
                 });
 
-                Label label;
+                link.add(new Label("label", new KeyLabelModel(item.getModel())));
 
-                link.add(label = new Label("label", ConvertUtils.getLabel(item.getModelObject())));
-
-                // Apply icon to the ETCD root node
-//                if (item.getIndex() == 0) {
-//                    label.add(new AttributeAppender("class", new ResourceModel("icon.breadcrumb.root", "")));
-//                }
                 // Last breadcrumb part should be active
                 if (item.getIndex() == getViewSize() - 1) {
                     item.add(new AttributeAppender("class", Model.of("active"), " "));
@@ -261,15 +291,12 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
                         key.setObject(getModelObject());
-                        System.out.println("UPDATED KEY: " + key.getObject());
-
-//                        EtcdNodePanel.this.getModel().detach();
-//                        ListView.this.getModel().detach();
-//                        nodes.detach();
 
                         target.add(EtcdNodePanel.this);
+                        onNodeKeyUpdated(target);
+
                     }
-                }.add(new Label("label", ConvertUtils.getLabel(item.getModelObject().getKey()))));
+                }.add(new Label("label", new KeyLabelModel(new PropertyModel<String>(item.getModel(), "key")))));
 
                 item.add(new AjaxLink<EtcdNode>("edit", item.getModel()) {
                     private static final long serialVersionUID = 1L;

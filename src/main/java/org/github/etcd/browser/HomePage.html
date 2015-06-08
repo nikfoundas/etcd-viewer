@@ -16,9 +16,6 @@
   </div>
 
 
-<div wicket:id="selectClusterPanel"></div>
-
-<h1 class="animated infinite bounce">Example</h1>
 
   <div class="row">
     <h1>HOME</h1>
@@ -31,25 +28,7 @@
 
    </form> -->
 
-<div class="col-md-3">
-
-<div class="input-group">
-  <input type="text" wicket:id="selectedCluster" class="form-control" placeholder="select cluster" readonly>
-  <span class="input-group-btn">
-    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><span class="fa fa-caret-down"></span></button>
-    <ul class="dropdown-menu dropdown-menu-right" role="menu">
-      <li wicket:id="clusters"><a wicket:id="select"><span wicket:id="name"></span> @ <span wicket:id="address"></span></a></li>
-      <li class="divider"></li>
-      <li><a wicket:id="addCluster" data-toggle="modal">Add another cluster</a></li>
-    </ul>
-  </span>
-</div>
-
-</div>
   </div>
-
-
-<div wicket:id="addClusterModal"></div>
 
 </wicket:extend>
 

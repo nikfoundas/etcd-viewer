@@ -39,8 +39,10 @@ public class EtcdBrowserApplication extends WebApplication
 
         mountPage("/home", HomePage.class);
 
-        mountPage("/etcd/#{key}", EtcdBrowserPage.class);
+        mountPage("/etcd/#{cluster}", EtcdBrowserPage.class);
         mountPage("/edit", EditNodePage.class);
+
+        mountPage("/about", AboutPage.class);
 
         // add your configuration here
     }

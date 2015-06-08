@@ -3,9 +3,6 @@
  */
 package org.github.etcd.browser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class ConvertUtils {
@@ -34,6 +31,7 @@ public class ConvertUtils {
         return parameters;
     }
 
+    /*
     public static List<PageParameters> getBreadcrumb(String etcdKey) {
         String[] keyParts = etcdKey == null ? new String[0] : etcdKey.split("/");
 
@@ -52,19 +50,6 @@ public class ConvertUtils {
 
         return breadcrumb;
     }
-
-    public static String getLabel(String etcdKey) {
-        if (etcdKey == null || etcdKey.indexOf('/') == -1) {
-            return etcdKey;
-        }
-        return etcdKey.substring(etcdKey.lastIndexOf('/') + 1);
-    }
-
-    public static String getLabel(PageParameters pageParameters) {
-        if (pageParameters.getIndexedCount() == 0) {
-            return null;
-        }
-        return pageParameters.get(pageParameters.getIndexedCount() - 1).toString("");
-    }
+    */
 
 }
