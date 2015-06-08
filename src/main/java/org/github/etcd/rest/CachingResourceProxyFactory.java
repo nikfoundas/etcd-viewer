@@ -39,6 +39,7 @@ public class CachingResourceProxyFactory implements ResourceProxyFactory {
         if (clientCache.containsKey(key)) {
             return (T) clientCache.get(key);
         } else {
+            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$ CREATING PROXY FOR: " + baseAddress);
             T proxy = JAXRSClientFactory.create(baseAddress, serviceType, providers);
             clientCache.putIfAbsent(key, proxy);
             return proxy;

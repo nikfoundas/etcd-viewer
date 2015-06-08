@@ -26,7 +26,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.Url;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.UrlResourceReference;
-import org.github.etcd.html.cluster.ClustersPage;
 import org.github.etcd.rest.EtcdResource;
 
 public class TemplatePage extends WebPage {
@@ -55,14 +54,6 @@ public class TemplatePage extends WebPage {
     }
 
     private void createPage() {
-
-//        currentClusterModel = new LoadableDetachableModel<EtcdCluster>() {
-//            private static final long serialVersionUID = 1L;
-//            @Override
-//            protected EtcdCluster load() {
-//                return (EtcdCluster) getSession().getAttribute("currentCluster");
-//            }
-//        };
 
         WebMarkupContainer currentCluster;
         add(currentCluster = new WebMarkupContainer("currentCluster") {
@@ -108,8 +99,7 @@ public class TemplatePage extends WebPage {
             protected List<MenuItem> load() {
                 return Arrays.asList(
                         new MenuItem("home", HomePage.class, "Home"),
-                        new MenuItem("browse", EtcdBrowserPage.class, "Browse"),
-//                        new MenuItem("clusters", ClustersPage.class, "Clusters"),
+                        new MenuItem("navigation", NavigationPage.class, "Navigation"),
                         new MenuItem("about", AboutPage.class, "About")
                         );
             }
@@ -127,9 +117,6 @@ public class TemplatePage extends WebPage {
             }
         });
 
-//        add(new BookmarkablePageLink<>("home", HomePage.class));
-//        add(new BookmarkablePageLink<>("about", HomePage.class));
-//        add(new BookmarkablePageLink<>("browser", EtcdBrowserPage.class));
     }
 
     @Override

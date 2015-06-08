@@ -15,7 +15,7 @@ import org.github.etcd.html.cluster.ClusterSelectionPanel;
 import org.github.etcd.html.node.EtcdNodePanel;
 import org.github.etcd.rest.EtcdManager;
 
-public class EtcdBrowserPage extends TemplatePage {
+public class NavigationPage extends TemplatePage {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public class EtcdBrowserPage extends TemplatePage {
 
     private IModel<String> key;
 
-    public EtcdBrowserPage(PageParameters parameters) {
+    public NavigationPage(PageParameters parameters) {
         super(parameters);
 
         cluster = new LoadableDetachableModel<String>() {

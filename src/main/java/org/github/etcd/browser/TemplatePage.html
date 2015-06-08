@@ -1,24 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:wicket="http://wicket.apache.org">
 <head>
-<!-- Latest compiled and minified CSS -->
-<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> -->
-
-<!-- Optional theme -->
-<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"> -->
-
-<!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"> -->
 
 <wicket:head>
 <style>
 body {
   /* min-height: 2000px; */
   padding-top: 70px;
+  margin-bottom: 60px;
 }
 
 .container #wicketDebugBar {
   top: 60px;
 }
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
 </style>
 </wicket:head>
 
@@ -53,38 +67,33 @@ body {
     </div>
   </nav>
 
-  <!-- Main jumbotron for a primary marketing message or call to action -->
-<!--   <div class="jumbotron">
-    <div class="container">
-      <h1>Hello, world!</h1>
-      <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-      <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
-    </div>
-  </div> -->
-
-
   <div class="container">
 
     <div wicket:id="debug" class="wicketDebugBar"></div>
 
     <wicket:child />
+  </div> <!-- /container -->
 
-    <footer>
-      <p wicket:id="currentCluster">
+    <footer class="footer">
+      <div class="container">
+      <div class="row">
+        <div class="col-xs-6">
+          <a href="https://github.com/nikfoundas/etcd-browser"><span class="fa fa-github"></span> View project on github</a>
+        </div>
+        <div class="col-xs-6">
+          <a href="https://github.com/nikfoundas/etcd-browser/issues/new"><span class="fa fa-bug"></span> Report an issue</a>
+        </div>
+      </div>
+
+      <p wicket:id="currentCluster" class="hidden">
       <strong>Alias: </strong><span wicket:id="name"></span><br>
       <strong>Address: </strong><span wicket:id="address"></span><br>
       <strong>ETCD Version: </strong><span wicket:id="version"></span>
       </p>
-      <p wicket:id="noCurrentCluster"><strong>NO CLUSTER IS CURRENTLY SELECTED</strong></p>
+      <p wicket:id="noCurrentCluster" class="hidden"><strong>NO CLUSTER IS CURRENTLY SELECTED</strong></p>
+      </div><!-- ./container -->
     </footer>
-  </div> <!-- /container -->
 
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
-
-  <!-- Latest compiled and minified JavaScript -->
-  <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
 
 </body>
 </html>

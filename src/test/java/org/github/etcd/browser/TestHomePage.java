@@ -22,9 +22,9 @@ public class TestHomePage
     public void homepageRendersSuccessfully()
     {
         //start and render the test page
-        tester.startPage(EtcdBrowserPage.class);
+        tester.startPage(NavigationPage.class);
 
         //assert rendered page class
-        tester.assertRenderedPage(EtcdBrowserPage.class);
+        tester.assertRenderedPage(NavigationPage.class);
     }
 }
