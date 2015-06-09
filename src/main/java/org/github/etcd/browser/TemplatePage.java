@@ -93,17 +93,20 @@ public class TemplatePage extends WebPage {
             }
         }));
 
+        add(new BookmarkablePageLink<>("home", HomePage.class));
+
         IModel<List<MenuItem>> menuItems = new LoadableDetachableModel<List<MenuItem>>() {
             private static final long serialVersionUID = 1L;
             @Override
             protected List<MenuItem> load() {
                 return Arrays.asList(
-                        new MenuItem("home", HomePage.class, "Home"),
+//                        new MenuItem("home", HomePage.class, "Home"),
                         new MenuItem("navigation", NavigationPage.class, "Navigation"),
                         new MenuItem("about", AboutPage.class, "About")
                         );
             }
         };
+
 
         add(new ListView<MenuItem>("menu", menuItems) {
             private static final long serialVersionUID = 1L;

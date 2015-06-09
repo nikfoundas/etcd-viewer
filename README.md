@@ -2,45 +2,58 @@
 
 [![Build Status](https://travis-ci.org/nikfoundas/etcd-browser.png?branch=master)](https://travis-ci.org/nikfoundas/etcd-browser)
 
-The `etcd-browser` is a java web application that allows you to navigate and modify etcd distributed key-value stores.
+The `etcd-browser` is a java web application that allows you to navigate and modify [etcd][etcd] distributed key-value stores.
 
-The application uses the ETCD v2.0 Rest API to communicate with the underlying key-value store.
+The application uses the [etcd rest API][etcd-api] to communicate with the underlying key-value store.
 
 ## Getting Started
 
 
 ### Run with docker
 
-The easiest way to get etcd-browser is to build a docker image and run the application as a container:
+The easiest way to get etcd-browser is to run a [docker][docker] container with the etcd-browser image:
 
 ```docker run -d -p 8080:8080 nikfoundas/etcd-browser```
 
-The docker image is built on top of the jetty:latest image by deploying the etcd-browser war file to jetty.
+The docker container will deploy the etcd-browser war file to a [jetty][jetty] servlet container.
+
+The default port is built on top of the jetty:latest image by deploying the etcd-browser war file to jetty.
 
 
-### Build
+### Build etcd-browser
 
-In order to build `etcd-browser` you need java-1.7 and maven 3.0.5 or later.
+In order to build `etcd-browser` you need java-1.7 and [maven][maven] 3.0.5 or later.
 
-* Clone this repository
+* Clone the etcd-browser repository
 
-* mvn clean install
+```git clone https://github.com/nikfoundas/etcd-browser.git```
 
-* mvn jetty:run
+* Build the project with maven
 
-* deploy war file to some servlet container (jetty or tomcat)
+```mvn clean install```
 
-* or even build customized docker image to fit your environment.
+* deploy war file to some servlet container ([jetty][jetty] or [tomcat][tomcat])
+
+* Alternatively you can start the etcd-browser with maven jetty plugin
+
+```mvn jetty:run```
+
+* or even build a docker image using the provided Dockerfile
+
+```docker build -t some-repo/etcd-browser .```
 
 
 ### Embed components within your wicket application
 
+If your application is built with [wicket][wicket] you can also use the
+components - panels from etcd-browser to embed the browsing - editing
+functionality in your application.
 
 ## Features
 
 ### Supported etcd API
 
-Etcd browser supports the following actions via the rest etcd api:
+Etcd browser supports the following actions via the [etcd rest API][etcd-api]:
 
 * Get version
 * Get node self statistics which contains the leader information
@@ -48,7 +61,7 @@ Etcd browser supports the following actions via the rest etcd api:
 * Create directories and key-value pairs with optionally providing
 time to live (TTL)
 * Retrieve directories and key value nodes
-* Update key-values
+* Update key-value pairs
 * Delete directories recursively
 * Delete key-value pairs
 
@@ -60,6 +73,10 @@ having to run the application more than once. The etcd clusters are
 stored in memory and they are forgotten after the application is
 restarted.
 
+You can add and remove etcd key-value stores at any time. Removing
+an etcd registry from the etcd-browser does not affect the contents
+of the registry itself.
+
 ### Leader auto detection
 
 In order to add an etcd cluster registry you only need to provide one
@@ -69,15 +86,41 @@ directed to the leader node to avoid redirections.
 
 ### Etcd cluster monitor
 
-Etcd browser allows you to view the machines that participate in the
+Etcd browser enables you to view the machines that participate in the
 etcd cluster along with their status - leader or follower. If some
 etcd host is not accessible then it is marked with red to indicate
 that it is down. Note that for single node etcd registries no
 status is reported by etcd.
 
 
-### Responsive html/css
+### Responsive css
 
-Etcd browser uses twitter bootstrap css framework to enable key-value
+Etcd browser uses twitter [bootstrap][bootstrap] css framework to enable key-value
 storage accessibility even from mobile devices or tablets.
 
+## Next steps
+
+* Provide feedback on communication or etcd api errors
+* Provide log console to record modifications applied
+* Extend functionality to view and modify [fleet][fleet] unit information
+
+## About
+
+
+
+## License
+
+etcd-browser is released under the Apache 2.0 license. See the [LICENSE](LICENSE) file for details.
+
+[etcd]: https://github.com/coreos/etcd
+[etcd-api]: https://github.com/coreos/etcd/blob/master/Documentation/api.md
+[docker]: https://www.docker.com/
+[maven]: http://maven.apache.org
+[wicket]: http://wicket.apache.org/
+[bootstrap]: http://getbootstrap.com/
+[fontawesome]: http://fortawesome.github.io/Font-Awesome/
+[cxf]: http://cxf.apache.org
+[jackson]: https://github.com/FasterXML/jackson
+[jetty]: http://www.eclipse.org/jetty/
+[tomcat]: http://tomcat.apache.org
+[fleet]: https://github.com/coreos/fleet

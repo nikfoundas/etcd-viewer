@@ -16,8 +16,8 @@
 
   <properties>
     <wicket.version>6.19.0</wicket.version>
-    <cxf.version>3.0.1</cxf.version>
-    <jackson.version>2.3.2</jackson.version>
+    <cxf.version>3.1.0</cxf.version>
+    <jackson.version>2.5.3</jackson.version>
     <jetty.version>9.2.10.v20150310</jetty.version>
     <slf4j.version>1.6.4</slf4j.version>
     <log4j.version>1.2.16</log4j.version>
@@ -65,6 +65,11 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
       <version>${jackson.version}</version>
     </dependency>
     <dependency>
