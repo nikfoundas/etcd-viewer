@@ -68,13 +68,15 @@ directed to the leader node to avoid redirections.
 
 ### Etcd cluster monitor
 
+Etcd browser allows you to view the machines that participate in the
+etcd cluster along with their status - leader or follower. If some
+etcd host is not accessible then it is marked with red to indicate
+that it is down. Note that for single node etcd registries no
+status is reported by etcd.
+
+
 ### Responsive html/css
 
 Etcd browser uses twitter bootstrap css framework to enable key-value
 storage accessibility even from mobile devices or tablets.
 
-### Connect to an etcd cluster
-
-### Navigate key value entries
-
-### Modify directory structures and values
