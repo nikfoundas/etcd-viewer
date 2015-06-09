@@ -1,18 +1,10 @@
 package org.github.etcd.rest;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
@@ -25,7 +17,7 @@ public class TestEtcdResource extends Assert {
 
     private static final String TEST_ROOT = "/junit";
 
-    @Before
+//    @Before
     public void setup() {
         ObjectMapper mapper = new ObjectMapper();
         List<Object> providers = new ArrayList<>();
@@ -52,12 +44,12 @@ public class TestEtcdResource extends Assert {
         etcdResource.saveOrUpdate(node , false);
     }
 
-    @After
+//    @After
     public void teardown() {
         etcdResource.delete(TEST_ROOT, true);
     }
 
-    @Test
+//    @Test
     public void testGetVersion() throws Exception {
 
         String version = etcdResource.getVersion();
@@ -69,7 +61,7 @@ public class TestEtcdResource extends Assert {
         System.out.println("ETCD Version: " + version);
     }
 
-    @Test
+//    @Test
     public void testGetRootNode() throws Exception {
 
         EtcdResponse response = etcdResource.getNode("/");
@@ -85,7 +77,7 @@ public class TestEtcdResource extends Assert {
         System.out.println("Root node: " + response.getNode());
     }
 
-    @Test
+//    @Test
     public void testGetTestRootNode() throws Exception {
 
         EtcdResponse response = etcdResource.getNode(TEST_ROOT);
@@ -101,7 +93,7 @@ public class TestEtcdResource extends Assert {
         System.out.println("Test root node: " + response.getNode());
     }
 
-    @Test
+//    @Test
     public void testCreateDeleteDirectory() throws Exception {
 
         String directoryName = TEST_ROOT + "/foobar";
@@ -138,7 +130,7 @@ public class TestEtcdResource extends Assert {
         assertEquals(create.getNode(), delete.getPrevNode());
     }
 
-    @Test
+//    @Test
     public void testCreateDeleteValue() throws Exception {
 
         String key = TEST_ROOT + "/value_create_delete";
@@ -182,7 +174,7 @@ public class TestEtcdResource extends Assert {
         assertEquals(create.getNode(), delete.getPrevNode());
     }
 
-    @Test
+//    @Test
     public void testGetMembers() {
 
         EtcdResponse response = delegate.getMachines();
