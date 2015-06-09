@@ -1,5 +1,7 @@
 # etcd-browser
 
+[![Build Status](https://travis-ci.org/nikfoundas/etcd-browser.png?branch=master)](https://travis-ci.org/nikfoundas/etcd-browser)
+
 The `etcd-browser` is a java web application that allows you to navigate and modify etcd distributed key-value stores.
 
 The application uses the ETCD v2.0 Rest API to communicate with the underlying key-value store.
