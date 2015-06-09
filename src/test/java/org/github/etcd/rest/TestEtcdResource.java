@@ -21,7 +21,7 @@ public class TestEtcdResource extends Assert {
 
     private EtcdResource delegate;
 
-    private EtcdManagerImpl etcdResource;
+    private EtcdManager etcdResource;
 
     private static final String TEST_ROOT = "/junit";
 
@@ -40,18 +40,21 @@ public class TestEtcdResource extends Assert {
 //            }
 //        });
 
-        delegate = JAXRSClientFactory.create("http://192.168.122.101:4001/", EtcdResource.class, providers);
+        delegate = JAXRSClientFactory.create("http://localhost:4001/", EtcdResource.class, providers);
 
         etcdResource = new EtcdManagerImpl(delegate);
 
-//        etcdResource.createDirectory(TEST_ROOT);
+
+        EtcdNode node = new EtcdNode();
+        node.setDir(true);
+        node.setKey(TEST_ROOT);
+
+        etcdResource.saveOrUpdate(node , false);
     }
 
     @After
     public void teardown() {
-
-//        etcdResource.deleteDirectory(TEST_ROOT);
-
+        etcdResource.delete(TEST_ROOT, true);
     }
 
     @Test
@@ -105,7 +108,10 @@ public class TestEtcdResource extends Assert {
 
 //        String testDirectory = "/junit/test_" + System.currentTimeMillis();
 
-        EtcdResponse create = etcdResource.createDirectory(directoryName);
+        EtcdNode node = new EtcdNode();
+        node.setDir(true);
+        node.setKey(directoryName);
+        EtcdResponse create = etcdResource.saveOrUpdate(node, false);
 
         assertNotNull(create);
 
@@ -117,7 +123,7 @@ public class TestEtcdResource extends Assert {
         assertEquals(directoryName, create.getNode().getKey());
         assertTrue(create.getNode().isDir());
 
-        EtcdResponse delete = etcdResource.deleteDirectory(directoryName);
+        EtcdResponse delete = etcdResource.delete(directoryName, true);
 
         assertNotNull(delete);
 
@@ -140,7 +146,11 @@ public class TestEtcdResource extends Assert {
 
 //        String testDirectory = "/junit/test_" + System.currentTimeMillis();
 
-        EtcdResponse create = etcdResource.createValue(key, value);
+        EtcdNode node = new EtcdNode();
+        node.setKey(key);
+        node.setValue(value);
+
+        EtcdResponse create = etcdResource.saveOrUpdate(node, false);
 
         assertNotNull(create);
 
@@ -155,7 +165,7 @@ public class TestEtcdResource extends Assert {
         assertEquals(value, create.getNode().getValue());
 
 
-        EtcdResponse delete = etcdResource.deleteKey(key);
+        EtcdResponse delete = etcdResource.delete(key, false);
 
         assertNotNull(delete);
 
@@ -182,48 +192,48 @@ public class TestEtcdResource extends Assert {
         assertNotNull(response);
         assertNotNull(response.getNode());
         assertNotNull(response.getNode().getNodes());
-        assertEquals(3, members.size());
+        assertEquals(1, members.size());
 
     }
 
-    @Test
+//    @Test
     public void testCreateDirTwice() {
-        String key = TEST_ROOT + "/create_dir_twice";
-
-        EtcdResponse response = etcdResource.createDirectory(key);
-
-        assertEquals(key, response.getNode().getKey());
-        assertTrue(response.getNode().isDir());
-
-        try {
-            Response r = etcdResource.createDir(key);
-
-            System.out.println("Status: " + r.getStatus());
-            System.out.println("Status Family: " + r.getStatusInfo().getFamily());
-            System.out.println("Status Reason: " + r.getStatusInfo().getReasonPhrase());
-            System.out.println("Headers: " + r.getHeaders());
-
-            InputStream is = (InputStream) r.getEntity();
-
-            StringWriter writer = new StringWriter();
-
-            InputStreamReader isr = new InputStreamReader(is);
-
-            char[] buffer = new char[128];
-            long count = 0;
-            int n = 0;
-            while (-1 != (n = isr.read(buffer))) {
-                writer.write(buffer, 0, n);
-                count += n;
-            }
-
-            System.out.println("Entity: " + writer.toString());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        String key = TEST_ROOT + "/create_dir_twice";
+//
+//        EtcdResponse response = etcdResource.createDirectory(key);
+//
+//        assertEquals(key, response.getNode().getKey());
+//        assertTrue(response.getNode().isDir());
+//
+//        try {
+//            Response r = etcdResource.createDir(key);
+//
+//            System.out.println("Status: " + r.getStatus());
+//            System.out.println("Status Family: " + r.getStatusInfo().getFamily());
+//            System.out.println("Status Reason: " + r.getStatusInfo().getReasonPhrase());
+//            System.out.println("Headers: " + r.getHeaders());
+//
+//            InputStream is = (InputStream) r.getEntity();
+//
+//            StringWriter writer = new StringWriter();
+//
+//            InputStreamReader isr = new InputStreamReader(is);
+//
+//            char[] buffer = new char[128];
+//            long count = 0;
+//            int n = 0;
+//            while (-1 != (n = isr.read(buffer))) {
+//                writer.write(buffer, 0, n);
+//                count += n;
+//            }
+//
+//            System.out.println("Entity: " + writer.toString());
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
-    @Test
+//    @Test
     public void testSetValue() {
         EtcdResponse response;
 //        response = etcdResource.setValue("/my/dummy/value", "Dummy content");

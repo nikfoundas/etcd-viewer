@@ -31,7 +31,6 @@ In order to build `etcd-browser` you need java-1.7 and maven 3.0.5 or later.
 * or even build customized docker image to fit your environment.
 
 
-
 ### Embed components within your wicket application
 
 
