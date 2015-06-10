@@ -4,6 +4,9 @@ import org.apache.cxf.jaxrs.client.Client;
 import org.apache.cxf.jaxrs.client.ClientConfiguration;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.transports.http.configuration.ConnectionType;
+import org.github.etcd.service.impl.CachingResourceProxyFactory;
+import org.github.etcd.service.rest.EtcdApiResource;
+import org.github.etcd.service.rest.EtcdResponse;
 
 public class ConfigureCxfClient {
 
@@ -15,7 +18,7 @@ public class ConfigureCxfClient {
 
       CachingResourceProxyFactory factory = new CachingResourceProxyFactory();
 
-      EtcdResource proxy = factory.createProxy("http://localhost:4001/", EtcdResource.class);
+      EtcdApiResource proxy = factory.createProxy("http://localhost:4001/", EtcdApiResource.class);
 
       Client client = WebClient.client(proxy);
 

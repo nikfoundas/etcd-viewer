@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.github.etcd.service.EtcdManager;
+import org.github.etcd.service.impl.EtcdManagerImpl;
+import org.github.etcd.service.rest.EtcdNode;
+import org.github.etcd.service.rest.EtcdApiResource;
+import org.github.etcd.service.rest.EtcdResponse;
 import org.junit.Assert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +16,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 public class TestEtcdResource extends Assert {
 
-    private EtcdResource delegate;
+    private EtcdApiResource delegate;
 
     private EtcdManager etcdResource;
 
@@ -32,7 +37,7 @@ public class TestEtcdResource extends Assert {
 //            }
 //        });
 
-        delegate = JAXRSClientFactory.create("http://localhost:4001/", EtcdResource.class, providers);
+        delegate = JAXRSClientFactory.create("http://localhost:4001/", EtcdApiResource.class, providers);
 
         etcdResource = new EtcdManagerImpl(delegate);
 

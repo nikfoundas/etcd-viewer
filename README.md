@@ -1,8 +1,8 @@
-# etcd-browser
+# etcd-viewer
 
-[![Build Status](https://travis-ci.org/nikfoundas/etcd-browser.png?branch=master)](https://travis-ci.org/nikfoundas/etcd-browser)
+[![Build Status](https://travis-ci.org/nikfoundas/etcd-viewer.png?branch=master)](https://travis-ci.org/nikfoundas/etcd-viewer)
 
-The `etcd-browser` is a java web application that allows you to navigate and modify [etcd][etcd] distributed key-value stores.
+The `etcd-viewer` is a java web application that allows you to navigate and modify [etcd][etcd] distributed key-value stores.
 
 The application uses the [etcd rest API][etcd-api] to communicate with the underlying key-value store.
 
@@ -11,22 +11,22 @@ The application uses the [etcd rest API][etcd-api] to communicate with the under
 
 ### Run with docker
 
-The easiest way to get etcd-browser is to run a [docker][docker] container with the etcd-browser image:
+The easiest way to get etcd-viewer is to run a [docker][docker] container with the etcd-viewer image:
 
-```docker run -d -p 8080:8080 nikfoundas/etcd-browser```
+```docker run -d -p 8080:8080 nikfoundas/etcd-viewer```
 
-The docker container will deploy the etcd-browser war file to a [jetty][jetty] servlet container.
+The docker container will deploy the etcd-viewer war file to a [jetty][jetty] servlet container.
 
-The default port is built on top of the jetty:latest image by deploying the etcd-browser war file to jetty.
+The default port is built on top of the jetty:latest image by deploying the etcd-viewer war file to jetty.
 
 
-### Build etcd-browser
+### Build etcd-viewer
 
-In order to build `etcd-browser` you need java-1.7 and [maven][maven] 3.0.5 or later.
+In order to build `etcd-viewer` you need java-1.7 and [maven][maven] 3.0.5 or later.
 
-* Clone the etcd-browser repository
+* Clone the etcd-viewer repository
 
-```git clone https://github.com/nikfoundas/etcd-browser.git```
+```git clone https://github.com/nikfoundas/etcd-viewer.git```
 
 * Build the project with maven
 
@@ -34,19 +34,19 @@ In order to build `etcd-browser` you need java-1.7 and [maven][maven] 3.0.5 or l
 
 * deploy war file to some servlet container ([jetty][jetty] or [tomcat][tomcat])
 
-* Alternatively you can start the etcd-browser with maven jetty plugin
+* Alternatively you can start the etcd-viewer with maven jetty plugin
 
 ```mvn jetty:run```
 
 * or even build a docker image using the provided Dockerfile
 
-```docker build -t some-repo/etcd-browser .```
+```docker build -t some-repo/etcd-viewer .```
 
 
 ### Embed components within your wicket application
 
 If your application is built with [wicket][wicket] you can also use the
-components - panels from etcd-browser to embed the browsing - editing
+components - panels from etcd-viewer to embed the browsing - editing
 functionality in your application.
 
 ## Features
@@ -74,7 +74,7 @@ stored in memory and they are forgotten after the application is
 restarted.
 
 You can add and remove etcd key-value stores at any time. Removing
-an etcd registry from the etcd-browser does not affect the contents
+an etcd registry from the etcd-viewer does not affect the contents
 of the registry itself.
 
 ### Leader auto detection
@@ -110,7 +110,7 @@ storage accessibility even from mobile devices or tablets.
 
 ## License
 
-etcd-browser is released under the Apache 2.0 license. See the [LICENSE](LICENSE) file for details.
+etcd-viewer is released under the Apache 2.0 license. See the [LICENSE](LICENSE) file for details.
 
 [etcd]: https://github.com/coreos/etcd
 [etcd-api]: https://github.com/coreos/etcd/blob/master/Documentation/api.md

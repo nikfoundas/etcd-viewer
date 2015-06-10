@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+</head>
+<body>
+
+<wicket:extend>
+
+  <!-- Main jumbotron for a primary marketing message or call to action -->
+  <div class="jumbotron">
+    <div class="container">
+      <h1>etcd viewer</h1>
+      <p>
+        Navigate and modify any etcd key-value store within your network.
+        <ul>
+          <li>Supports multiple etcd registries</li>
+          <li>Discovers etcd cluster peers from any given cluster node</li>
+          <li>Auto detects cluster leader node and applies all modifications to it</li>
+        </ul>
+      </p>
+      <p><a wicket:id="navigate" class="btn btn-primary btn-lg" role="button">Navigate etcd registries &raquo;</a></p>
+    </div>
+  </div>
+
+</wicket:extend>
+
+</body>
+</html>

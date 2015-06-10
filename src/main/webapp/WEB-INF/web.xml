@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     version="2.5">
 
-    <display-name>etcd-browser</display-name>
+    <display-name>etcd-viewer</display-name>
 
     <!--
         There are three means to configure Wickets configuration mode and they
@@ -17,16 +17,16 @@
         "deployment". If no configuration is found, "development" is the default. -->
 
     <filter>
-        <filter-name>wicket.etcd-browser</filter-name>
+        <filter-name>wicket.etcd-viewer</filter-name>
         <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
         <init-param>
             <param-name>applicationClassName</param-name>
-            <param-value>org.github.etcd.browser.EtcdBrowserApplication</param-value>
+            <param-value>org.github.etcd.viewer.EtcdViewerApplication</param-value>
         </init-param>
     </filter>
 
     <filter-mapping>
-        <filter-name>wicket.etcd-browser</filter-name>
+        <filter-name>wicket.etcd-viewer</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 </web-app>

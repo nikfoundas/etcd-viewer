@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+
+<wicket:head>
+<style>
+body {
+  /* min-height: 2000px; */
+  padding-top: 70px;
+  margin-bottom: 60px;
+}
+
+.container #wicketDebugBar {
+  top: 60px;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+</style>
+</wicket:head>
+
+</head>
+<body>
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" wicket:id="home">etcd viewer</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li wicket:id="menu"><a wicket:id="link"><span wicket:id="label"></span></a></li>
+        </ul>
+        <form class="navbar-form navbar-right hidden">
+          <div class="form-group">
+            <input type="text" placeholder="Email" class="form-control">
+          </div>
+          <div class="form-group">
+            <input type="password" placeholder="Password" class="form-control">
+          </div>
+          <button type="submit" class="btn btn-success">Sign in</button>
+        </form>
+      </div><!--/.navbar-collapse -->
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div wicket:id="debug" class="wicketDebugBar"></div>
+
+    <wicket:child />
+  </div> <!-- /container -->
+
+    <footer class="footer">
+      <div class="container">
+      <div class="row">
+        <div class="col-xs-6">
+          <a href="https://github.com/nikfoundas/etcd-viewer"><span class="fa fa-github"></span> View project on github</a>
+        </div>
+        <div class="col-xs-6">
+          <a href="https://github.com/nikfoundas/etcd-viewer/issues/new"><span class="fa fa-bug"></span> Report an issue</a>
+        </div>
+      </div>
+
+      <p wicket:id="currentCluster" class="hidden">
+      <strong>Alias: </strong><span wicket:id="name"></span><br>
+      <strong>Address: </strong><span wicket:id="address"></span><br>
+      <strong>ETCD Version: </strong><span wicket:id="version"></span>
+      </p>
+      <p wicket:id="noCurrentCluster" class="hidden"><strong>NO CLUSTER IS CURRENTLY SELECTED</strong></p>
+      </div><!-- ./container -->
+    </footer>
+
+
+</body>
+</html>
