@@ -22,9 +22,18 @@
     <slf4j.version>1.6.4</slf4j.version>
     <log4j.version>1.2.16</log4j.version>
     <junit.version>4.11</junit.version>
+
+    <bootstrap.version>3.3.4</bootstrap.version>
+    <fontawesome.version>4.3.0</fontawesome.version>
+    <guice.version>3.0</guice.version>
+    <jquery.version>1.11.2</jquery.version>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
     <wtp.version>none</wtp.version>
+
+    <!-- default wicket configuration -->
+    <wicket.configuration>deployment</wicket.configuration>
   </properties>
 
   <dependencies>
@@ -126,6 +135,21 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>prod</id>
+      <properties>
+        <wicket.configuration>deployment</wicket.configuration>
+      </properties>
+    </profile>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <wicket.configuration>development</wicket.configuration>
+      </properties>
+    </profile>
+  </profiles>
+
   <build>
     <resources>
       <resource>
@@ -133,7 +157,7 @@
         <directory>src/main/resources</directory>
       </resource>
       <resource>
-        <filtering>false</filtering>
+        <filtering>true</filtering>
         <directory>src/main/java</directory>
         <includes>
           <include>**</include>

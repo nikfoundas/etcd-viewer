@@ -33,14 +33,14 @@ public class CachingResourceProxyFactory implements ResourceProxyFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T createProxy(String baseAddress, Class<T> serviceType) {
-        System.out.println("CachingWebClientProxyFactory.createProxy() " + baseAddress);
+//        System.out.println("CachingWebClientProxyFactory.createProxy() " + baseAddress);
 
         CacheKey key = new CacheKey(baseAddress, serviceType);
 
         if (clientCache.containsKey(key)) {
             return (T) clientCache.get(key);
         } else {
-            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$ CREATING PROXY FOR: " + baseAddress);
+//            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$ CREATING PROXY FOR: " + baseAddress);
             T proxy = JAXRSClientFactory.create(baseAddress, serviceType, providers);
             clientCache.putIfAbsent(key, proxy);
             return proxy;

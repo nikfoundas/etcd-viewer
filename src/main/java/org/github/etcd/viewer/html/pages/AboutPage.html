@@ -1,26 +1,77 @@
 <!DOCTYPE html>
-<html xmlns:wicket="http://wicket.apache.org">
+<html xmlns:wicket="http://wicket.apache.org">\
+<head>
+<wicket:head>
+<style>
+
+img.tool-logo  {
+  max-width: 200px;
+  max-height: 70px;
+}
+
+</style>
+</wicket:head>
+</head>
 <body>
 <wicket:extend>
 
-    <h1>About</h1>
+<div class="page-header">
+  <h1>About <small><span class="fa fa-angle-double-right"></span> etcd viewer</small></h1>
+</div>
 
-    <p>Demo about content</p>
+<div class="row">
+  <div class="col-sm-12">
+    <p>
+      Etcd viewer is open source licensed under Apache 2.0 license and it is hosted on
+      <a href="https://github.com/nikfoundas/etcd-viewer"><span class="fa fa-github"></span> github</a>.
+    </p>
+    <p>
+      Please feel free to <a href="https://github.com/nikfoundas/etcd-viewer/issues/new"><span class="fa fa-bug"></span> report an issue</a> or share your ideas.
+    </p>
+    <p>
+      <a href="https://github.com/nikfoundas/etcd-viewer/blob/master/README.md">View documentation</a> on <span class="fa fa-github"></span> github
+    </p>
+    <p>
+      Contributions are always welcomed.
+    </p>
+  </div><!-- ./col-sm-12 -->
+</div><!-- ./row -->
 
-    <p>ETCD Viewer uses the ETCD v2.0 Rest API to communicate.</p>
+<hr>
 
-    <p>The application is built on top of the following:</p>
-    <ul>
-      <li>Apache Wicket 6.19.0</li>
-      <li>Google Guice 3.0</li>
-      <li>Apache CXF 3.0.1</li>
-      <li>Jackson JSON 2.5.3</li>
-      <li>JAX RS API 2.0</li>
-      <li>JAVAX Inject 1.0</li>
-      <li>Twitter bootstrap v3.3.4</li>
-      <li>Font Awesome 4.3.0</li>
-      <li>JQuery 1.11.2</li>
-    </ul>
+<h3>Features</h3>
+
+<ul class="fa-ul">
+  <li><i class="fa-li fa fa-check"></i>Etcd v2.0 rest API</li>
+  <li><i class="fa-li fa fa-check"></i>Filesystem like key-value store navigation</li>
+  <li><i class="fa-li fa fa-check"></i>Add/delete directories</li>
+  <li><i class="fa-li fa fa-check"></i>Add/delete/update key-value pairs</li>
+  <li><i class="fa-li fa fa-check"></i>Enable Time To Live on directories and values</li>
+  <li><i class="fa-li fa fa-check"></i>Multi-registry support</li>
+  <li><i class="fa-li fa fa-check"></i>Etcd cluster monitor</li>
+  <li><i class="fa-li fa fa-check"></i>Leader auto detection</li>
+</ul>
+
+<hr>
+
+<h3>References</h3>
+
+<div class="row">
+
+  <div class="col-sm-4 col-xs-6" wicket:id="references">
+    <div class="well well-sm text-center">
+
+      <img wicket:id="image" data-src="holder.js/70x70" class="img-rounded tool-logo center-block" alt="broken logo" data-holder-rendered="true">
+
+      <span wicket:id="icon"></span>
+
+      <h4><a wicket:id="url" class="clearfix"><span wicket:id="label">[label]</span></a></h4>
+
+      <p wicket:id="description" class="text-muted">[description]</p>
+    </div><!-- ./well -->
+  </div><!-- ./col-sm-4 -->
+
+</div><!-- ./row -->
 
 </wicket:extend>
 </body>

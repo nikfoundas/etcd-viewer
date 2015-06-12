@@ -13,8 +13,17 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 public class Start {
+
+    private static final String WICKET_CFG = "wicket.configuration"; // or "deployment"
+
+    private enum CfgType {
+        development, deployment
+    }
+
     public static void main(String[] args) throws Exception {
         int timeout = (int) Duration.ONE_HOUR.getMilliseconds();
+
+        System.setProperty(WICKET_CFG, CfgType.development.toString());
 
         Server server = new Server();
 

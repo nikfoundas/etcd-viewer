@@ -21,6 +21,17 @@
   width: 25%;
 }
 
+.etcd-nodes .value-wrapper {
+  display: block;
+  display: -webkit-box;
+  width: 100%;
+  height: 1.2em;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .etcd-nodes .created, .etcd-nodes .modified, .etcd-nodes .ttl {
   width: 10%;
 }
@@ -32,7 +43,6 @@
 
 .etcd-nodes .expiration {
   width: 200px;
-  /* background-color: red; */
 }
 
 .breadcrumb li:first-child span.fa.breadcrumb-icon:before {
@@ -108,7 +118,7 @@
               <a wicket:id="delete" class="action"><span class="fa fa-fw fa-remove"></span></a>
             </div>
           </td>
-          <td><span wicket:id="value"></span></td>
+          <td class="popover-value"><span wicket:id="value" class="value-wrapper"></span></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="createdIndex"></span></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="modifiedIndex"></span></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="ttl"></span></td>
@@ -120,6 +130,18 @@
 
 </div><!-- end of panel -->
 
+<!-- TODO: Popover to show the complete value is not working property
+<script>
+$(document).ready(function() {
+    $(".popover-value").popover({
+        html: true,
+        trigger: 'hover',
+        //placement: 'bottom',
+        title: function() { return $(this).prev('td').text(); },
+        content: function() { return $(this).find('.value-wrapper').html(); }
+    });
+});
+</script> -->
 
 <div wicket:id="editNodeModal"></div>
 <div wicket:id="deleteNodeModal"></div>

@@ -103,7 +103,7 @@ public class RestModule extends AbstractModule {
 
         @Override
         public EtcdApiResource get() {
-            System.out.println("RestModule.EtcdKeyValueStoreProvider.get() " + selectedCluster.getObject());
+//            System.out.println("RestModule.EtcdKeyValueStoreProvider.get() " + selectedCluster.getObject());
 
             if (selectedCluster.getObject() != null) {
                 return factory.createProxy(clusterManager.getCluster(selectedCluster.getObject()).getAddress(), EtcdApiResource.class);

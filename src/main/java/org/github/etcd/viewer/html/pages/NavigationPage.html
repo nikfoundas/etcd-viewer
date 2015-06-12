@@ -10,15 +10,42 @@
 
 <wicket:extend>
 
-<h1>Navigation</h1>
-
-<div class="row">
-
-  <div wicket:id="clusterSelection"></div>
+<div class="page-header">
+<h1>Navigation <small><span class="fa fa-angle-double-right"></span> view & edit etcd registries</small></h1>
 </div>
 
   <div class="row">
+    <!-- <p class="h4 text-muted">Select the etcd key-value store</p> -->
+
+
+
+
+
+    <div wicket:id="clusterSelection"></div>
+
+<blockquote class="blockquote-reverse text-muted">
+  <p>If your key-value store is not listed above you can add another.<br>
+    To view the etcd cluster hosts and their status press the
+    <button class="btn btn-default btn-sm" disabled><span class="fa fa-chevron-down"></span></button>
+    button.<br>
+    To remove the currently selected etcd registry press the
+    <button class="btn btn-default btn-sm" disabled><span class="fa fa-remove"></span></button>
+    button.
+  </p>
+</blockquote>
+
+  </div>
+
+  <div class="row">
+
     <span wicket:id="node"></span>
+
+<blockquote class="blockquote-reverse text-muted">
+    <p>
+      View and modify the contents of the selected etcd registry
+    </p>
+</blockquote>
+
   </div>
 
 </wicket:extend>

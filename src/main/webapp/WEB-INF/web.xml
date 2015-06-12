@@ -23,6 +23,10 @@
             <param-name>applicationClassName</param-name>
             <param-value>org.github.etcd.viewer.EtcdViewerApplication</param-value>
         </init-param>
+        <init-param>
+            <param-name>wicket.configuration</param-name>
+            <param-value>deployment</param-value>
+        </init-param>
     </filter>
 
     <filter-mapping>

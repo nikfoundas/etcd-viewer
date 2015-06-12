@@ -86,12 +86,11 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             @Override
             protected EtcdNode load() {
                 try {
-
-                    System.out.println("-------- LOADING: " + key.getObject());
-
+//                    System.out.println("-------- LOADING: " + key.getObject());
                     return etcdManager.get().getNode(key.getObject()).getNode();
                 } catch (Exception e) {
 //					e.printStackTrace();
+                    // TODO: handle this exception and show some alert on page
                     return null;
                 }
             }

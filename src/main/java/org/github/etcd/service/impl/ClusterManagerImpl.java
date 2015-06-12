@@ -45,11 +45,6 @@ public class ClusterManagerImpl implements ClusterManager {
 
     public ClusterManagerImpl() {
         addCluster("local", "http://localhost:4001/");
-        addCluster("local-kvm", "http://192.168.122.101:4001/");
-//        addCluster("ena", "http://10.0.0.1:4001/");
-//        addCluster("dyo", "http://10.0.0.2:4001/");
-//        addCluster("tria", "http://10.0.0.3:4001/");
-//        addCluster("tessera", "http://10.0.0.4:4001/");
     }
 
     @Override
