@@ -12,13 +12,34 @@ public class EtcdNode implements Serializable {
 
     private Long createdIndex;
     private Long modifiedIndex;
-    private boolean dir = false;
+    private boolean dir;
     private String key;
     private String value;
     private Long ttl;
     private String expiration;
 
     private List<EtcdNode> nodes;
+
+    public EtcdNode() {
+    }
+    public EtcdNode(String key, boolean dir, String value, Long ttl) {
+        this.key = key;
+        this.dir = dir;
+        this.value = value;
+        this.ttl = ttl;
+    }
+    public EtcdNode(String key, String value) {
+        this(key, false, value, null);
+    }
+    public EtcdNode(String key, String value, Long ttl) {
+        this(key, false, value, ttl);
+    }
+    public EtcdNode(String key) {
+        this(key, true, null, null);
+    }
+    public EtcdNode(String key, Long ttl) {
+        this(key, true, null, ttl);
+    }
 
     public Long getCreatedIndex() {
         return createdIndex;
@@ -124,8 +145,8 @@ public class EtcdNode implements Serializable {
     }
     @Override
     public String toString() {
-        return "EtcdNode [createdIndex=" + createdIndex + ", modifiedIndex="
-                + modifiedIndex + ", dir=" + dir + ", key=" + key + ", value="
-                + value + ", nodes=" + nodes + "]";
+        return "EtcdNode [key=" + key + ", dir=" + dir + ", value=" + value
+                + ", ttl=" + ttl + ", nodes=" + nodes + "]";
     }
+
 }

@@ -2,6 +2,7 @@ package org.github.etcd.service.rest;
 
 public class EtcdSelfStats {
 
+    private String id;
     private String name;
     private LeaderInfo leaderInfo;
 
@@ -16,6 +17,17 @@ public class EtcdSelfStats {
     private String startTime;
     private String state;
 
+    @Override
+    public String toString() {
+        return "EtcdSelfStats [id=" + id + ", name=" + name + ", leaderInfo="
+                + leaderInfo + ", state=" + state + "]";
+    }
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
     public String getName() {
         return name;
     }
@@ -65,19 +77,19 @@ public class EtcdSelfStats {
         this.sendAppendRequestCnt = sendAppendRequestCnt;
     }
     public Double getSendBandwidthRate() {
-		return sendBandwidthRate;
-	}
-	public void setSendBandwidthRate(Double sendBandwidthRate) {
-		this.sendBandwidthRate = sendBandwidthRate;
-	}
-	public Double getSendPkgRate() {
-		return sendPkgRate;
-	}
-	public void setSendPkgRate(Double sendPkgRate) {
-		this.sendPkgRate = sendPkgRate;
-	}
+        return sendBandwidthRate;
+    }
+    public void setSendBandwidthRate(Double sendBandwidthRate) {
+        this.sendBandwidthRate = sendBandwidthRate;
+    }
+    public Double getSendPkgRate() {
+        return sendPkgRate;
+    }
+    public void setSendPkgRate(Double sendPkgRate) {
+        this.sendPkgRate = sendPkgRate;
+    }
 
-	public static class LeaderInfo {
+    public static class LeaderInfo {
         private String leader;
         private String uptime;
         private String startTime;
@@ -98,6 +110,10 @@ public class EtcdSelfStats {
         }
         public void setStartTime(String startTime) {
             this.startTime = startTime;
+        }
+        @Override
+        public String toString() {
+            return "LeaderInfo [leader=" + leader + "]";
         }
     }
 }
