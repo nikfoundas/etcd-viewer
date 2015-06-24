@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Etcd-viewer by nikfoundas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Etcd-viewer</h1>
+      <h2 class="project-tagline">etcd key-value store viewer and editor</h2>
+      <a href="https://github.com/nikfoundas/etcd-viewer" class="btn">View on GitHub</a>
+      <a href="https://github.com/nikfoundas/etcd-viewer/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/nikfoundas/etcd-viewer/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="etcd-viewer" class="anchor" href="#etcd-viewer" aria-hidden="true"><span class="octicon octicon-link"></span></a>etcd-viewer</h1>
+
+<p><a href="https://travis-ci.org/nikfoundas/etcd-viewer"><img src="https://travis-ci.org/nikfoundas/etcd-viewer.png?branch=master" alt="Build Status"></a></p>
+
+<p>The <code>etcd-viewer</code> is a java web application that allows you to navigate and modify <a href="https://github.com/coreos/etcd">etcd</a> distributed key-value stores.</p>
+
+<p>The application uses the <a href="https://github.com/coreos/etcd/blob/master/Documentation/api.md">etcd rest API</a> to communicate with the underlying key-value store.</p>
+
+<h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<p><img src="screenshots/navigation.png" alt="navigation screen"></p>
+
+<h3>
+<a id="run-with-docker" class="anchor" href="#run-with-docker" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run with docker</h3>
+
+<p>The easiest way to get etcd-viewer is to run a <a href="https://www.docker.com/">docker</a> container with the etcd-viewer image:</p>
+
+<p><code>docker run -d -p 8080:8080 nikfoundas/etcd-viewer</code></p>
+
+<p>The docker container will deploy the etcd-viewer war file to a <a href="http://www.eclipse.org/jetty/">jetty</a> servlet container.
+The docker image is built on top of the jetty:latest image.</p>
+
+<h3>
+<a id="build-etcd-viewer" class="anchor" href="#build-etcd-viewer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build etcd-viewer</h3>
+
+<p>In order to build <code>etcd-viewer</code> you need java-1.7 and <a href="http://maven.apache.org">maven</a> 3.0.5 or later.</p>
+
+<ul>
+<li>Clone the etcd-viewer repository</li>
+</ul>
+
+<p><code>git clone https://github.com/nikfoundas/etcd-viewer.git</code></p>
+
+<ul>
+<li>Build the project with maven</li>
+</ul>
+
+<p><code>mvn clean install</code></p>
+
+<ul>
+<li><p>deploy war file to some servlet container (<a href="http://www.eclipse.org/jetty/">jetty</a> or <a href="http://tomcat.apache.org">tomcat</a>)</p></li>
+<li><p>Alternatively you can start the etcd-viewer with maven jetty plugin</p></li>
+</ul>
+
+<p><code>mvn jetty:run</code></p>
+
+<ul>
+<li>or even build a docker image using the provided Dockerfile</li>
+</ul>
+
+<p><code>docker build -t some-repo/etcd-viewer .</code></p>
+
+<h3>
+<a id="embed-components-within-your-wicket-application" class="anchor" href="#embed-components-within-your-wicket-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Embed components within your wicket application</h3>
+
+<p>If your application is built with <a href="http://wicket.apache.org/">wicket</a> you can also use the
+components - panels from etcd-viewer to embed the browsing - editing
+functionality in your application.</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<h3>
+<a id="supported-etcd-api" class="anchor" href="#supported-etcd-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>Supported etcd API</h3>
+
+<p>Etcd browser supports the following actions via the <a href="https://github.com/coreos/etcd/blob/master/Documentation/api.md">etcd rest API</a>:</p>
+
+<ul>
+<li>Get version</li>
+<li>Get node self statistics which contains the leader information</li>
+<li>Retrieve machines that participate in the etcd cluster.</li>
+<li>Create directories and key-value pairs with optionally providing
+time to live (TTL)</li>
+<li>Retrieve directories and key value nodes</li>
+<li>Update key-value pairs</li>
+<li>Delete directories recursively</li>
+<li>Delete key-value pairs</li>
+</ul>
+
+<p><img src="screenshots/add-node.png" alt="add node"></p>
+
+<p><img src="screenshots/confirm-delete.png" alt="confirm delete"></p>
+
+<h3>
+<a id="multiple-etcd-key-value-stores" class="anchor" href="#multiple-etcd-key-value-stores" aria-hidden="true"><span class="octicon octicon-link"></span></a>Multiple etcd key-value stores</h3>
+
+<p>You can navigate and modify multiple etcd key-value stores without
+having to run the application more than once. The etcd clusters are
+stored in memory and they are forgotten after the application is
+restarted.</p>
+
+<p>You can add and remove etcd key-value stores at any time. Removing
+an etcd registry from the etcd-viewer does not affect the contents
+of the registry itself.</p>
+
+<p><img src="screenshots/add-registry.png" alt="multiple clusters"></p>
+
+<h3>
+<a id="leader-auto-detection" class="anchor" href="#leader-auto-detection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Leader auto detection</h3>
+
+<p>In order to add an etcd cluster registry you only need to provide one
+alive etcd host. The application discovers the rest of the cluster
+hosts and detects the leader node. All reads and writes are then
+directed to the leader node to avoid redirections.</p>
+
+<h3>
+<a id="etcd-cluster-monitor" class="anchor" href="#etcd-cluster-monitor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Etcd cluster monitor</h3>
+
+<p>Etcd browser enables you to view the machines that participate in the
+etcd cluster along with their status - leader or follower. If some
+etcd host is not accessible then it is marked with red to indicate
+that it is down. Note that for single node etcd registries no
+status is reported by etcd.</p>
+
+<p><img src="screenshots/view-cluster.png" alt="cluster monitor"></p>
+
+<h3>
+<a id="responsive-css" class="anchor" href="#responsive-css" aria-hidden="true"><span class="octicon octicon-link"></span></a>Responsive css</h3>
+
+<p><code>etcd-viewer</code> uses <a href="http://getbootstrap.com/">bootstrap</a> css framework to enable key-value
+storage accessibility even from mobile devices or tablets.</p>
+
+<p><img src="screenshots/responsive.png" alt="responsive"></p>
+
+<h2>
+<a id="next-steps" class="anchor" href="#next-steps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Next steps</h2>
+
+<ul>
+<li>Provide feedback on communication or etcd api errors</li>
+<li>Provide log console to record modifications applied</li>
+<li>Extend functionality to view and modify <a href="https://github.com/coreos/fleet">fleet</a> unit information</li>
+<li>Use thread safe CXF jax-rs api</li>
+</ul>
+
+<h2>
+<a id="about" class="anchor" href="#about" aria-hidden="true"><span class="octicon octicon-link"></span></a>About</h2>
+
+<p><code>etcd-viewer</code> uses the following open source libraries and frameworks:</p>
+
+<ul>
+<li>
+<a href="http://wicket.apache.org/">Apache wicket 6.19.0</a>: Open source Java web framework</li>
+<li>
+<a href="http://cxf.apache.org">Apache CXF 3.0.1</a>: To handle the etcd rest API</li>
+<li>
+<a href="https://github.com/FasterXML/jackson">FasterXML Jackson 2.5.3</a>: To marshal/unmarshal JSON objects to POJOs</li>
+<li>
+<a href="https://github.com/google/guice">Google Guice 3.0</a>: For dependency injection</li>
+<li>
+<a href="http://getbootstrap.com/">Bootstrap 3.3.4</a>: Responsive CSS framework</li>
+<li>
+<a href="https://jquery.com/">jQuery 1.11.2</a>: Open source JavaScript library</li>
+<li>
+<a href="http://fortawesome.github.io/Font-Awesome/">FontAwesome 4.3.0</a>: Iconic web font</li>
+</ul>
+
+<p><img src="screenshots/about.png" alt="about"></p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>etcd-viewer is released under the Apache 2.0 license. See the <a href="LICENSE">LICENSE</a> file for details.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/nikfoundas/etcd-viewer">Etcd-viewer</a> is maintained by <a href="https://github.com/nikfoundas">nikfoundas</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
