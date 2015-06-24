@@ -8,7 +8,7 @@ The application uses the [etcd rest API][etcd-api] to communicate with the under
 
 ## Getting Started
 
-![navigation screen](screenshots/navigation.png)
+![navigation screen](http://nikfoundas.github.io/etcd-viewer/screenshots/navigation.png)
 
 
 ### Run with docker
@@ -66,9 +66,9 @@ time to live (TTL)
 * Delete directories recursively
 * Delete key-value pairs
 
-![add node](screenshots/add-node.png)
+![add node](http://nikfoundas.github.io/etcd-viewer/screenshots/add-node.png)
 
-![confirm delete](screenshots/confirm-delete.png)
+![confirm delete](http://nikfoundas.github.io/etcd-viewer/screenshots/confirm-delete.png)
 
 ### Multiple etcd key-value stores
 
@@ -81,7 +81,7 @@ You can add and remove etcd key-value stores at any time. Removing
 an etcd registry from the etcd-viewer does not affect the contents
 of the registry itself.
 
-![multiple clusters](screenshots/add-registry.png)
+![multiple clusters](http://nikfoundas.github.io/etcd-viewer/screenshots/add-registry.png)
 
 ### Leader auto detection
 
@@ -98,14 +98,14 @@ etcd host is not accessible then it is marked with red to indicate
 that it is down. Note that for single node etcd registries no
 status is reported by etcd.
 
-![cluster monitor](screenshots/view-cluster.png)
+![cluster monitor](http://nikfoundas.github.io/etcd-viewer/screenshots/view-cluster.png)
 
 ### Responsive css
 
 `etcd-viewer` uses [bootstrap][bootstrap] css framework to enable key-value
 storage accessibility even from mobile devices or tablets.
 
-![responsive](screenshots/responsive.png)
+![responsive](http://nikfoundas.github.io/etcd-viewer/screenshots/responsive.png)
 
 ## Next steps
 
@@ -126,7 +126,7 @@ storage accessibility even from mobile devices or tablets.
 * [jQuery 1.11.2][jquery]: Open source JavaScript library
 * [FontAwesome 4.3.0][fontawesome]: Iconic web font
 
-![about](screenshots/about.png)
+![about](http://nikfoundas.github.io/etcd-viewer/screenshots/about.png)
 
 ## License
 
