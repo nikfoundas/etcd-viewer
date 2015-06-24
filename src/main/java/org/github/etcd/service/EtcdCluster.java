@@ -14,7 +14,6 @@ public class EtcdCluster {
     private List<EtcdMember> members;
 
     private String address;
-    private String version;
 
     private Date lastRefreshTime;
 
@@ -47,12 +46,6 @@ public class EtcdCluster {
     }
     public void setLastRefreshTime(Date lastRefreshTime) {
         this.lastRefreshTime = lastRefreshTime;
-    }
-    public String getVersion() {
-        return version;
-    }
-    public void setVersion(String version) {
-        this.version = version;
     }
     @Override
     public String toString() {

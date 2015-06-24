@@ -8,6 +8,7 @@ public class EtcdMember {
     private List<String> peerURLs;
     private List<String> clientURLs;
     private String state;
+    private String version;
     public String getId() {
         return id;
     }
@@ -37,6 +38,12 @@ public class EtcdMember {
     }
     public void setState(String state) {
         this.state = state;
+    }
+    public String getVersion() {
+        return version;
+    }
+    public void setVersion(String version) {
+        this.version = version;
     }
     @Override
     public String toString() {

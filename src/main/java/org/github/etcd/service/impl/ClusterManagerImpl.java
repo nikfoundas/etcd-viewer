@@ -17,8 +17,12 @@ import org.github.etcd.service.EtcdProxyFactory;
 import org.github.etcd.service.rest.EtcdMember;
 import org.github.etcd.service.rest.EtcdProxy;
 import org.github.etcd.service.rest.EtcdSelfStats;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClusterManagerImpl implements ClusterManager {
+
+    private static final Logger log = LoggerFactory.getLogger(ClusterManager.class);
 
     private static final Comparator<EtcdMember> MEMBER_SORTER = new Comparator<EtcdMember>() {
         @Override
@@ -89,52 +93,53 @@ public class ClusterManagerImpl implements ClusterManager {
         // default leader address is the provided one
         String leaderAddress = cluster.getAddress();
 
+        List<EtcdMember> members;
+
         try (EtcdProxy proxy = proxyFactory.getEtcdProxy(leaderAddress)) {
 
-            List<EtcdMember> members = proxy.getMembers();
-
+            members = proxy.getMembers();
             Collections.sort(members, MEMBER_SORTER);
 
-            EtcdSelfStats selfStats = proxy.getSelfStats();
+        } catch (Exception e) {
+            log.error("Last known leader " + leaderAddress + " is not accessible: " + e.getLocalizedMessage(), e);
+            // use the previously discovered members if they exist
+            if (cluster.getMembers() == null) {
+                throw e;
+            }
+            members = cluster.getMembers();
+        }
 
-            String leaderId = selfStats.getLeaderInfo().getLeader();
+        // collect self statistics from each member
+        for (EtcdMember member : members) {
 
-            // collect self statistics from each member
-            for (EtcdMember member : members) {
+            member.setState(null);
+            member.setVersion(null);
 
-                member.setState(null);
+            for (String clientURL : member.getClientURLs()) {
 
-                // do not collect statistics for the provided client address again
-                if (leaderId.equals(member.getId())) {
-                    member.setState(STATE_MAPPINGS.get(selfStats.getState()));
-                    continue;
-                }
+                try (EtcdProxy proxy = proxyFactory.getEtcdProxy(clientURL)) {
 
-                for (String clientURL : member.getClientURLs()) {
+                    EtcdSelfStats memberStats = proxy.getSelfStats();
 
-                    try (EtcdProxy memberProxy = proxyFactory.getEtcdProxy(clientURL)) {
+                    member.setState(STATE_MAPPINGS.get(memberStats.getState()));
 
-                        EtcdSelfStats memberStats = memberProxy.getSelfStats();
-                        member.setState(STATE_MAPPINGS.get(memberStats.getState()));
-
-                        if ("leader".equals(member.getState())) {
-                            leaderAddress = clientURL;
-                        }
-
-                        break;
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if ("leader".equals(member.getState())) {
+                        leaderAddress = clientURL;
                     }
+
+                    member.setVersion(proxy.getVersion());
+
+                    break;
+                } catch (Exception e) {
+                    log.warn("etcd server " + clientURL + " is not accessible: " + e.getLocalizedMessage(), e);
                 }
             }
-
-            cluster.setMembers(members);
-
-            cluster.setAddress(leaderAddress);
-            cluster.setVersion(proxy.getVersion());
-            cluster.setLastRefreshTime(new Date());
-
         }
+
+        cluster.setMembers(members);
+
+        cluster.setAddress(leaderAddress);
+        cluster.setLastRefreshTime(new Date());
 
     }
 

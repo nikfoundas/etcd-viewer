@@ -30,7 +30,7 @@ public class ClusterMembersPanel extends GenericPanel<List<EtcdMember>> {
                 item.add(new Label("clientURLs", new PropertyModel<>(item.getModel(), "clientURLs")));
                 item.add(new Label("peerURLs", new PropertyModel<>(item.getModel(), "peerURLs")));
                 item.add(new Label("state", new PropertyModel<>(item.getModel(), "state")));
-//                item.add(new Label("version", new PropertyModel<>(item.getModel(), "name")));
+                item.add(new Label("version", new PropertyModel<>(item.getModel(), "version")));
 
                 item.add(new AttributeAppender("class", new ChainingModel<String>(item.getModel()) {
                     private static final long serialVersionUID = 1L;
