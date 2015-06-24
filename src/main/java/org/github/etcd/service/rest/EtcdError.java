@@ -1,4 +1,4 @@
-package org.github.etcd.rest;
+package org.github.etcd.service.rest;
 
 public class EtcdError {
     private Integer errorCode;

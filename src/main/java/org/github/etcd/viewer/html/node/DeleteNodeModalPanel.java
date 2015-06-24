@@ -11,15 +11,15 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.github.etcd.service.EtcdManager;
 import org.github.etcd.service.rest.EtcdNode;
+import org.github.etcd.service.rest.EtcdProxy;
 
 public class DeleteNodeModalPanel extends GenericPanel<EtcdNode> {
 
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private Provider<EtcdManager> etcdManager;
+    private Provider<EtcdProxy> etcdProxy;
 
     private WebMarkupContainer body;
 
@@ -57,7 +57,10 @@ public class DeleteNodeModalPanel extends GenericPanel<EtcdNode> {
 
                 EtcdNode node = DeleteNodeModalPanel.this.getModelObject();
 
-                etcdManager.get().delete(node.getKey(), node.isDir());
+                try (EtcdProxy p = etcdProxy.get()) {
+                    // TODO: support both recursive and non recursive delete
+                    p.deleteNode(node, node.isDir());
+                }
 
                 onNodeDeleted(target);
 

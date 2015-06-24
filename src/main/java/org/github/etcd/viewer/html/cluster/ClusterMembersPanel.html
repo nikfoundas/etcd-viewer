@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:panel>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th class="hidden-sm hidden-xs">Name</th>
+      <th>Client URLs</th>
+      <th class="hidden-sm hidden-xs">Peer URLs</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr wicket:id="peers">
+      <td><span wicket:id="id"></span></td>
+      <td class="hidden-sm hidden-xs"><span wicket:id="name"></span></td>
+      <td><span wicket:id="clientURLs"></span></td>
+      <td class="hidden-sm hidden-xs"><span wicket:id="peerURLs"></span></td>
+      <td><span wicket:id="state"></span></td>
+    </tr>
+  </tbody>
+</table>
+
+</wicket:panel>
+</body>
+</html>

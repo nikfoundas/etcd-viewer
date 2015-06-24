@@ -4,14 +4,11 @@
 package org.github.etcd.viewer.html.pages;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.github.etcd.service.ClusterManager;
-import org.github.etcd.service.EtcdManager;
 import org.github.etcd.viewer.ConvertUtils;
 import org.github.etcd.viewer.html.cluster.ClusterSelectionPanel;
 import org.github.etcd.viewer.html.node.EtcdNodePanel;
@@ -20,32 +17,34 @@ public class NavigationPage extends TemplatePage {
 
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    private ClusterManager clusterManager;
-
-    @Inject
-    private Provider<EtcdManager> manager;
-
-    @Inject
-    private IModel<String> selectedCluster;
-
-    private IModel<String> cluster;
-
     private EtcdNodePanel node;
 
     private IModel<String> key;
 
+    @Inject
+    private IModel<String> selectedCluster;
+
     public NavigationPage(PageParameters parameters) {
         super(parameters);
 
-        cluster = new LoadableDetachableModel<String>() {
+        // get cluster name from the page parameters
+        IModel<String> cluster = new LoadableDetachableModel<String>() {
             private static final long serialVersionUID = 1L;
             @Override
             protected String load() {
-                return getPageParameters().get("cluster").toString(null);
+                System.out
+                        .println("NavigationPage.NavigationPage(...).new LoadableDetachableModel() {...}.load()");
+                String clusterName = getPageParameters().get("cluster").toString(null);
+                if (clusterName != null) {
+                    selectedCluster.setObject(clusterName);
+                }
+                return clusterName;
             }
         };
 
+        setDefaultModel(cluster);
+
+        // get initial key from the page parameters
         key = new LoadableDetachableModel<String>() {
             private static final long serialVersionUID = 1L;
             @Override

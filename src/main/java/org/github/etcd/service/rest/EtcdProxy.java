@@ -1,27 +1,34 @@
-package org.github.etcd.rest;
+package org.github.etcd.service.rest;
 
 import java.util.List;
 
-import org.github.etcd.service.rest.EtcdNode;
-import org.github.etcd.service.rest.EtcdSelfStats;
 
 public interface EtcdProxy extends AutoCloseable {
 
+    void close();
     /**
-     * Performs an http GET to the /version endpoint
+     * Performs an http <b>GET</b> to the <b>/version</b> endpoint
      *
      * @return etcd registry version
      */
     String getVersion();
 
     /**
-     * Performs an http GET to the /v2/stats/self endpoint
+     * Performs an http <b>GET</b> to the <b>/v2/stats/self</b> endpoint
      *
      * @return etcd node self statistics
      */
     EtcdSelfStats getSelfStats();
 
-
+    /**
+     * If the reported etcd version is 0.4.x it uses the peer address
+     * <b>http://&lt;host&gt;:7001/</b> and performs an http <b>GET</b>
+     * against the <b>/v2/admin/machines</b> endpoint. Otherwise it
+     * uses the default client provided address URL and performs an
+     * http <b>GET</b> to the <b>/v2/members</b> endpoint.
+     *
+     * @return the list of etcd cluster members and their roles
+     */
     List<EtcdMember> getMembers();
 
     /**

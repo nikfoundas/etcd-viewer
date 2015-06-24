@@ -24,7 +24,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.github.etcd.service.ClusterManager;
 import org.github.etcd.service.EtcdCluster;
-import org.github.etcd.service.EtcdPeer;
+import org.github.etcd.service.rest.EtcdMember;
 
 public class ClusterSelectionPanel extends Panel {
 
@@ -192,7 +192,7 @@ public class ClusterSelectionPanel extends Panel {
             }
         });
 
-        add(clusterPeers = new ClusterPeersPanel("clusterPeers", new PropertyModel<List<EtcdPeer>>(cluster, "peers")));
+        add(clusterPeers = new ClusterMembersPanel("clusterPeers", new PropertyModel<List<EtcdMember>>(cluster, "members")));
 
     }
 

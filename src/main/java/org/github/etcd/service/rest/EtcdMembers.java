@@ -1,8 +1,8 @@
-package org.github.etcd.rest;
+package org.github.etcd.service.rest;
 
 import java.util.List;
 
-class EtcdMembers {
+public class EtcdMembers {
     private List<EtcdMember> members;
 
     public List<EtcdMember> getMembers() {

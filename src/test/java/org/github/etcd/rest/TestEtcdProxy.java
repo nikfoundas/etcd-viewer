@@ -2,8 +2,12 @@ package org.github.etcd.rest;
 
 import java.util.List;
 
+import org.github.etcd.service.rest.EtcdException;
+import org.github.etcd.service.rest.EtcdMember;
 import org.github.etcd.service.rest.EtcdNode;
+import org.github.etcd.service.rest.EtcdProxy;
 import org.github.etcd.service.rest.EtcdSelfStats;
+import org.github.etcd.service.rest.impl.EtcdProxyImpl;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -19,8 +23,13 @@ public class TestEtcdProxy extends Assert {
 
     private static final String JUNIT_ROOT = "/junit_" + System.currentTimeMillis();
 
+    private static EtcdSimulator simulator;
+
     @BeforeClass
     public static void setUp() {
+
+        boolean hasClientURL = System.getProperty("etcd.clientURL") != null;
+
         String clientURL = System.getProperty("etcd.clientURL", "http://localhost:2379/");
 
 //        clientURL = "http://192.168.122.103:4001/";
@@ -29,11 +38,15 @@ public class TestEtcdProxy extends Assert {
 
         // just check accessibility of etcd server
         // if it is not reachable for any reason then
-        // start an inner simulator to do the tests ???
+        // start an inner simulator to do the tests
         try {
             etcdProxy.getVersion();
         } catch (Exception e) {
-            e.printStackTrace();
+
+            if (!hasClientURL) {
+                simulator = new EtcdSimulator();
+                simulator.start();
+            }
         }
     }
 
@@ -41,6 +54,9 @@ public class TestEtcdProxy extends Assert {
     public static void tearDown() throws Exception {
         if (etcdProxy != null) {
             etcdProxy.close();
+        }
+        if (simulator != null) {
+            simulator.stop();
         }
     }
 

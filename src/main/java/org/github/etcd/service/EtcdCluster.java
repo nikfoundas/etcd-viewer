@@ -6,10 +6,12 @@ package org.github.etcd.service;
 import java.util.Date;
 import java.util.List;
 
+import org.github.etcd.service.rest.EtcdMember;
+
 public class EtcdCluster {
 
     private String name;
-    private List<EtcdPeer> peers;
+    private List<EtcdMember> members;
 
     private String address;
     private String version;
@@ -28,11 +30,11 @@ public class EtcdCluster {
     public void setName(String name) {
         this.name = name;
     }
-    public List<EtcdPeer> getPeers() {
-        return peers;
+    public List<EtcdMember> getMembers() {
+        return members;
     }
-    public void setPeers(List<EtcdPeer> peers) {
-        this.peers = peers;
+    public void setMembers(List<EtcdMember> members) {
+        this.members = members;
     }
     public String getAddress() {
         return address;

@@ -32,12 +32,16 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.github.etcd.service.EtcdManager;
 import org.github.etcd.service.rest.EtcdNode;
+import org.github.etcd.service.rest.EtcdProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EtcdNodePanel extends GenericPanel<EtcdNode> {
 
     private static final long serialVersionUID = 1L;
+
+    private static final Logger log = LoggerFactory.getLogger(EtcdNodePanel.class);
 
     private static final Comparator<EtcdNode> NODE_SORTER = new Comparator<EtcdNode>() {
         @Override
@@ -68,9 +72,9 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
     private WebMarkupContainer contents;
 
     @Inject
-    private Provider<EtcdManager> etcdManager;
+    private Provider<EtcdProxy> etcdProxy;
 
-    private final IModel<String> key;// = Model.of(ROOT_KEY);
+    private final IModel<String> key;
 
     public EtcdNodePanel(String id) {
         this(id, Model.of(ROOT_KEY));
@@ -85,11 +89,10 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             private static final long serialVersionUID = 1L;
             @Override
             protected EtcdNode load() {
-                try {
-//                    System.out.println("-------- LOADING: " + key.getObject());
-                    return etcdManager.get().getNode(key.getObject()).getNode();
+                try (EtcdProxy p = etcdProxy.get()) {
+                    return p.getNode(key.getObject());
                 } catch (Exception e) {
-//					e.printStackTrace();
+                    log.warn(e.getLocalizedMessage(), e);
                     // TODO: handle this exception and show some alert on page
                     return null;
                 }
@@ -242,8 +245,10 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
                 updating.setObject(false);
                 actionModel.setObject(new EtcdNode());
 
-                StringBuffer newKey = new StringBuffer(getModelObject());
-                if (!getModelObject().endsWith("/")) {
+                String currentKey = getModelObject() != null? getModelObject() : "";
+
+                StringBuffer newKey = new StringBuffer(currentKey);
+                if (!currentKey.endsWith("/")) {
                     newKey.append('/');
                 }
                 newKey.append("new_node");

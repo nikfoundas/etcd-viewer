@@ -1,50 +1,50 @@
 package org.github.etcd.service.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import org.github.etcd.service.ClusterManager;
 import org.github.etcd.service.EtcdCluster;
-import org.github.etcd.service.EtcdManager;
-import org.github.etcd.service.EtcdManagerRouter;
-import org.github.etcd.service.EtcdPeer;
-import org.github.etcd.service.ResourceProxyFactory;
-import org.github.etcd.service.rest.EtcdNode;
-import org.github.etcd.service.rest.EtcdApiResource;
+import org.github.etcd.service.EtcdProxyFactory;
+import org.github.etcd.service.rest.EtcdMember;
+import org.github.etcd.service.rest.EtcdProxy;
+import org.github.etcd.service.rest.EtcdSelfStats;
 
 public class ClusterManagerImpl implements ClusterManager {
 
-    private static final Pattern PEER_PATTERN = Pattern.compile("^etcd=([^&]+)&raft=(.+)$");
-
-    private static final Comparator<EtcdPeer> PEER_SORTER = new Comparator<EtcdPeer>() {
+    private static final Comparator<EtcdMember> MEMBER_SORTER = new Comparator<EtcdMember>() {
         @Override
-        public int compare(EtcdPeer o1, EtcdPeer o2) {
-            return o1.getEtcd().compareTo(o2.getEtcd());
+        public int compare(EtcdMember o1, EtcdMember o2) {
+            return o1.getName().compareTo(o2.getName());
         }
     };
 
-    @Inject
-    private ResourceProxyFactory proxyFactory;
+    private static final Map<String, String> STATE_MAPPINGS = new HashMap<>();
+
+    static {
+        STATE_MAPPINGS.put("leader", "leader");
+        STATE_MAPPINGS.put("follower", "follower");
+        STATE_MAPPINGS.put("StateLeader", "leader");
+        STATE_MAPPINGS.put("StateFollower", "follower");
+    }
 
     @Inject
-    private EtcdManagerRouter etcdRouter;
+    private EtcdProxyFactory proxyFactory;
 
     private Map<String, EtcdCluster> clusters = Collections.synchronizedMap(new LinkedHashMap<String, EtcdCluster>());
 
 
     public ClusterManagerImpl() {
-        addCluster("local", "http://localhost:4001/");
+        addCluster("default", "http://localhost:2379/");
+        addCluster("kvm", "http://192.168.122.101:4001/");
     }
 
     @Override
@@ -66,12 +66,7 @@ public class ClusterManagerImpl implements ClusterManager {
 
     @Override
     public void removeCluster(String name) {
-
-        EtcdCluster cluster = clusters.remove(name);
-
-        if (cluster != null) {
-            proxyFactory.closeProxy(cluster.getAddress(), EtcdApiResource.class);
-        }
+        clusters.remove(name);
     }
 
     @Override
@@ -91,85 +86,55 @@ public class ClusterManagerImpl implements ClusterManager {
         }
         EtcdCluster cluster = clusters.get(name);
 
-        String leaderId = null;
-        List<EtcdNode> machines = null;
+        // default leader address is the provided one
+        String leaderAddress = cluster.getAddress();
 
-        if (cluster.getPeers() != null && cluster.getPeers().size() > 0) {
-            // first try to retrieve cluster info from one of the past discovered peers
-            for (int i=0; i<cluster.getPeers().size(); i++) {
-                EtcdPeer peer = cluster.getPeers().get(i);
-                try {
-                    EtcdManager etcdResource = etcdRouter.getEtcdManager(peer.getEtcd());
+        try (EtcdProxy proxy = proxyFactory.getEtcdProxy(leaderAddress)) {
 
-                    leaderId = etcdResource.getSelfStats().getLeaderInfo().getLeader();
-                    machines = etcdResource.getMachines();
+            List<EtcdMember> members = proxy.getMembers();
 
-                    break;
+            Collections.sort(members, MEMBER_SORTER);
 
-                } catch (Exception e) {
+            EtcdSelfStats selfStats = proxy.getSelfStats();
 
-                    if (i == cluster.getPeers().size() - 1) {
-                        // this was the last one
-                        throw e;
-                    } else {
-                        // suppress this error and go to the next peer
+            String leaderId = selfStats.getLeaderInfo().getLeader();
+
+            // collect self statistics from each member
+            for (EtcdMember member : members) {
+
+                member.setState(null);
+
+                // do not collect statistics for the provided client address again
+                if (leaderId.equals(member.getId())) {
+                    member.setState(STATE_MAPPINGS.get(selfStats.getState()));
+                    continue;
+                }
+
+                for (String clientURL : member.getClientURLs()) {
+
+                    try (EtcdProxy memberProxy = proxyFactory.getEtcdProxy(clientURL)) {
+
+                        EtcdSelfStats memberStats = memberProxy.getSelfStats();
+                        member.setState(STATE_MAPPINGS.get(memberStats.getState()));
+
+                        if ("leader".equals(member.getState())) {
+                            leaderAddress = clientURL;
+                        }
+
+                        break;
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
 
-        } else {
-            // try to retrieve the cluster info from the initially provided peer
-            EtcdManager providedPeer = etcdRouter.getEtcdManager(cluster.getAddress());
+            cluster.setMembers(members);
 
-            leaderId = providedPeer.getSelfStats().getLeaderInfo().getLeader();
-            machines = providedPeer.getMachines();
+            cluster.setAddress(leaderAddress);
+            cluster.setVersion(proxy.getVersion());
+            cluster.setLastRefreshTime(new Date());
+
         }
-
-//        if (machines == null || machines.getNode() == null || machines.getNode().getNodes() == null) {
-//            throw new RuntimeException("Failed to retrieve peer nodes for cluster: " + name + " using: " + cluster.getAddress());
-//        }
-
-        List<EtcdPeer> peers = new ArrayList<>(machines.size());
-        for (EtcdNode node : machines) {
-            String decodedValue;
-            try {
-                decodedValue = URLDecoder.decode(node.getValue(), "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-                decodedValue = node.getValue();
-            }
-
-            Matcher m = PEER_PATTERN.matcher(decodedValue);
-            if (m.matches()) {
-                EtcdPeer host = new EtcdPeer();
-                host.setId(node.getKey().substring(node.getKey().lastIndexOf('/') + 1));
-                host.setEtcd(m.group(1));
-                host.setRaft(m.group(2));
-
-                // update leader info
-                if (leaderId.equals(host.getId())) {
-                    cluster.setAddress(host.getEtcd());
-                }
-
-                try {
-                    EtcdManager peerEtcd = etcdRouter.getEtcdManager(host.getEtcd());
-                    host.setVersion(peerEtcd.getVersion());
-                    host.setStatus(peerEtcd.getSelfStats().getState());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                peers.add(host);
-
-            } else {
-                System.err.println("Value: " + node.getValue() + " is not expected");
-            }
-        }
-
-        Collections.sort(peers, PEER_SORTER);
-
-        cluster.setPeers(peers);
-        cluster.setLastRefreshTime(new Date());
 
     }
 

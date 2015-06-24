@@ -10,37 +10,38 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.ChainingModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.github.etcd.service.EtcdPeer;
+import org.github.etcd.service.rest.EtcdMember;
 
-public class ClusterPeersPanel extends GenericPanel<List<EtcdPeer>> {
+public class ClusterMembersPanel extends GenericPanel<List<EtcdMember>> {
 
     private static final long serialVersionUID = 1L;
 
-    public ClusterPeersPanel(String id, IModel<List<EtcdPeer>> model) {
+    public ClusterMembersPanel(String id, IModel<List<EtcdMember>> model) {
         super(id, model);
 
         setOutputMarkupId(true);
 
-        add(new ListView<EtcdPeer>("peers", getModel()) {
+        add(new ListView<EtcdMember>("peers", getModel()) {
             private static final long serialVersionUID = 1L;
             @Override
-            protected void populateItem(ListItem<EtcdPeer> item) {
+            protected void populateItem(ListItem<EtcdMember> item) {
                 item.add(new Label("id", new PropertyModel<>(item.getModel(), "id")));
-                item.add(new Label("etcd", new PropertyModel<>(item.getModel(), "etcd")));
-                item.add(new Label("raft", new PropertyModel<>(item.getModel(), "raft")));
-                item.add(new Label("status", new PropertyModel<>(item.getModel(), "status")));
-                item.add(new Label("version", new PropertyModel<>(item.getModel(), "version")));
+                item.add(new Label("name", new PropertyModel<>(item.getModel(), "name")));
+                item.add(new Label("clientURLs", new PropertyModel<>(item.getModel(), "clientURLs")));
+                item.add(new Label("peerURLs", new PropertyModel<>(item.getModel(), "peerURLs")));
+                item.add(new Label("state", new PropertyModel<>(item.getModel(), "state")));
+//                item.add(new Label("version", new PropertyModel<>(item.getModel(), "name")));
 
                 item.add(new AttributeAppender("class", new ChainingModel<String>(item.getModel()) {
                     private static final long serialVersionUID = 1L;
                     @Override
                     public String getObject() {
                         @SuppressWarnings("unchecked")
-                        IModel<EtcdPeer> peerModel = (IModel<EtcdPeer>) getChainedModel();
-                        if (peerModel.getObject().getStatus() == null) {
+                        IModel<EtcdMember> peerModel = (IModel<EtcdMember>) getChainedModel();
+                        if (peerModel.getObject().getState() == null) {
                             return "danger";
                         }
-                        if ("leader".equals(peerModel.getObject().getStatus())) {
+                        if ("leader".equals(peerModel.getObject().getState())) {
                             return "active";
                         }
                         return "";

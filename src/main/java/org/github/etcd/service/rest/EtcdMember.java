@@ -1,4 +1,4 @@
-package org.github.etcd.rest;
+package org.github.etcd.service.rest;
 
 import java.util.List;
 

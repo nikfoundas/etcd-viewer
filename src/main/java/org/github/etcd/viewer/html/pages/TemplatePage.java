@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -26,14 +27,14 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.Url;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.UrlResourceReference;
-import org.github.etcd.service.rest.EtcdApiResource;
+import org.github.etcd.service.rest.EtcdProxy;
 
 public class TemplatePage extends WebPage {
 
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private EtcdApiResource etcdResource;
+    private Provider<EtcdProxy> etcdResource;
 
     @Inject
     private IModel<String> currentClusterModel;
@@ -89,7 +90,7 @@ public class TemplatePage extends WebPage {
             private static final long serialVersionUID = 1L;
             @Override
             protected String load() {
-                return etcdResource.getVersion();
+                return etcdResource.get().getVersion();
             }
         }));
 

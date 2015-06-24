@@ -16,8 +16,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.github.etcd.service.EtcdManager;
 import org.github.etcd.service.rest.EtcdNode;
+import org.github.etcd.service.rest.EtcdProxy;
 import org.github.etcd.viewer.html.utils.FormGroupBorder;
 
 public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
@@ -30,7 +30,7 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
     private EtcdNodeForm form;
 
     @Inject
-    private Provider<EtcdManager> etcdManager;
+    private Provider<EtcdProxy> etcdProxy;
 
     public EditNodeModalPanel(String id, IModel<EtcdNode> model, IModel<Boolean> updatingModel) {
         super(id, model);
@@ -50,7 +50,13 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
 
-                etcdManager.get().saveOrUpdate(getModelObject(), updating.getObject());
+                try (EtcdProxy p = etcdProxy.get()) {
+                    if (updating.getObject()) {
+                        p.updateNode(getModelObject());
+                    } else {
+                        p.saveNode(getModelObject());
+                    }
+                }
 
                 onNodeSaved(target);
 

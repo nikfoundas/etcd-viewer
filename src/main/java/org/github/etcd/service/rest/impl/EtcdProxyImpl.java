@@ -1,6 +1,5 @@
-package org.github.etcd.rest;
+package org.github.etcd.service.rest.impl;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +18,12 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
+import org.github.etcd.service.rest.EtcdError;
+import org.github.etcd.service.rest.EtcdException;
+import org.github.etcd.service.rest.EtcdMember;
+import org.github.etcd.service.rest.EtcdMembers;
 import org.github.etcd.service.rest.EtcdNode;
+import org.github.etcd.service.rest.EtcdProxy;
 import org.github.etcd.service.rest.EtcdResponse;
 import org.github.etcd.service.rest.EtcdSelfStats;
 import org.slf4j.Logger;
@@ -49,7 +53,7 @@ public class EtcdProxyImpl implements EtcdProxy {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         if (client != null) {
             client.close();
             client = null;
@@ -90,7 +94,8 @@ public class EtcdProxyImpl implements EtcdProxy {
 
             for (Map<String, String> item : items) {
                 EtcdMember member = new EtcdMember();
-                member.setName(item.get("name"));
+                member.setId(item.get("name"));
+                member.setName(member.getId());
                 member.setState(item.get("state"));
                 member.setClientURLs(Arrays.asList(item.get("clientURL")));
                 member.setPeerURLs(Arrays.asList(item.get("peerURL")));
