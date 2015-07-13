@@ -12,6 +12,14 @@
     content: "\f078"; /* fa-chevron-down */
 }
 
+.panel .table-responsive.cluster-peers {
+  margin-bottom: 0;
+}
+
+.panel .table-responsive.cluster-peers .table {
+  margin-bottom: 0;
+}
+
 </style>
 </wicket:head>
 </head>
@@ -23,7 +31,7 @@
   <div class="panel-heading">
     <div class="row">
       <div class="col-xs-8 col-sm-9">
-        <div class="input-group input-group-lg" wicket:id="selectInputGroup">
+        <div class="input-group" wicket:id="selectInputGroup">
           <input type="text" wicket:id="selectedCluster" class="form-control" placeholder="select etcd registry" readonly>
           <div class="input-group-btn">
             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"><span class="fa fa-caret-down"></span></button>
@@ -37,10 +45,10 @@
       </div><!-- ./col-xs-8 -->
       <div class="col-xs-4 col-sm-3">
         <div class="pull-left">
-          <a wicket:id="deleteCluster" class="btn btn-default btn-lg" data-toggle="modal"><span class="fa fa-remove"></span></a>
+          <a wicket:id="deleteCluster" class="btn btn-default" data-toggle="modal"><span class="fa fa-remove"></span></a>
         </div>
         <div class="pull-right">
-          <a class="btn btn-default btn-lg chevron collapsed" data-toggle="collapse" href="#collapsingBody" aria-expanded="false"><span class="fa collapse-chevron"></span></a>
+          <a class="btn btn-default chevron collapsed" data-toggle="collapse" href="#collapsingBody" aria-expanded="false"><span class="fa collapse-chevron"></span></a>
         </div>
       </div><!-- ./col-xs-4 -->
     </div><!-- ./row -->
@@ -50,18 +58,23 @@
 
     <div class="panel-body" wicket:id="body">
 
-<!--       <a wicket:id="refresh" class="btn btn-default"><span class="fa fa-refresh"></span> Refresh</a>
-      <a href="#" class="btn btn-default">Delete</a> -->
+      <div class="row">
+        <!-- <div class="col-sm-6 h4"><span class="fa fa-tag"></span> <span wicket:id="name"></span> <small wicket:id="address">[leader address]</small></div> -->
 
-      <h3>Name: <span wicket:id="name"></span></h3>
+        <div class="col-sm-6 h4"><span class="fa fa-tag"></span> <strong wicket:id="name"></strong> <span class="hidden text-muted" wicket:id="address">[leader address]</span></div>
 
-      <h4>Leader address: <strong wicket:id="address"></strong></h4>
+        <div class="col-sm-6 text-muted text-right">Last refresh at <span wicket:id="lastRefreshTime"></span> <button wicket:id="refresh" class="btn btn-default btn-sm"><span class="fa fa-refresh"></span></button></div>
+      </div>
 
-      <p>Last refresh time: <span wicket:id="lastRefreshTime"></span> <span class="pull-right"><button wicket:id="refresh" class="btn btn-default"><span class="fa fa-refresh"></span> Refresh</button></span></p>
+      <p class="hidden h4"><span class="hidden" wicket_id="name"></span><small class="hidden"> [<span wicket_id="address"></span>]</small> <small class="pull-right"><span>Last check 15 minutes ago</span> <a href="#" class="btn btn-default btn-sm"><span class="fa fa-refresh"></span></a></small></p>
+
+      <h4 class="hidden">Leader address: <strong wicket_id="address"></strong></h4>
+
+      <p class="hidden">Last refresh time: <span wicket_id="lastRefreshTime"></span> <span class="pull-right"><button wicket_id="refresh" class="btn btn-default"><span class="fa fa-refresh"></span> Refresh</button></span></p>
 
     </div><!-- ./panel-body -->
 
-    <div class="table-responsive" wicket:id="clusterPeers"></div>
+    <div class="table-responsive cluster-peers" wicket:id="clusterPeers"></div>
 
   </div><!-- ./collapsingBody -->
 

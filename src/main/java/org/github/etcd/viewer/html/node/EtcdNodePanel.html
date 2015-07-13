@@ -3,14 +3,9 @@
 <head>
 <wicket:head>
 <style>
+
 .etcd-nodes .icon {
-  /* width: 34px; */
-
   width: 3%;
-}
-
-.etcd-nodes .actions {
-  width: 48px;
 }
 
 .etcd-nodes .key {
@@ -25,7 +20,7 @@
   display: block;
   display: -webkit-box;
   width: 100%;
-  height: 1.3em;
+  height: 1.4em;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -36,17 +31,34 @@
   width: 10%;
 }
 
-.etcd-nodes a.action {
-  text-decoration: none;
-  color: #333;
-}
-
 .etcd-nodes .expiration {
   width: 200px;
 }
 
 .breadcrumb li:first-child span.fa.breadcrumb-icon:before {
   content: "\f015"; /* fa-home */
+}
+
+
+td.key-cell-link > a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.breadcrumb.node-breadcrumb {
+  margin-right: 125px; /* leave enough space for the actions */
+}
+
+.btn-group.node-actions {
+  position: absolute;
+  right: 15px;
+  top: 0;
+}
+
+a.edit-value, a.edit-value:hover, a.edit-value:focus {
+  text-decoration: none;
+  color: #333;
 }
 
 </style>
@@ -57,51 +69,52 @@
 
 <wicket:panel>
 
-<ol class="breadcrumb">
-  <li wicket:id="breadcrumb"><a href="#" wicket:id="key"><span class="fa breadcrumb-icon"></span><span wicket:id="label"></span></a></li>
-  <wicket:enclosure>
-    <li><a wicket:id="addNode" data-toggle="modal"><span class="fa fa-plus"></span></a></li>
-  </wicket:enclosure>
-</ol>
-
 
 <div class="row hidden">
-
-<div class="col-sm-6 col-md-8">
-<h4><span wicket:id="icon"></span> <span wicket:id="key"></span></h4>
-</div>
-
-<div class="col-sm-6 col-md-4">
-
-<div class="well well-sm">
-  <dl class="dl-horizontal">
-    <dt>Created</dt>    <dd><span wicket:id="createdIndex"></span></dd>
-    <dt>Modified</dt>   <dd><span wicket:id="modifiedIndex"></span></dd>
-    <dt>TTL</dt>        <dd><span wicket:id="ttl"></span></dd>
-    <dt>Expiration</dt> <dd><span wicket:id="expiration"></span></dd>
-  </dl>
-</div>
-
-</div>
-
-</div>
-
-
-<div class="panel panel-default" wicket:id="contents">
-
-  <wicket:enclosure child="value">
-    <div class="panel-body">
-      <span wicket:id="value"></span>
+  <div class="col-sm-6 col-md-8">
+    <h4><span wicket:id="icon"></span> <span wicket:id="key"></span></h4>
+  </div>
+  <div class="col-sm-6 col-md-4">
+    <div class="well well-sm">
+      <dl class="dl-horizontal">
+        <dt>Created</dt>    <dd><span wicket_id="createdIndex"></span></dd>
+        <dt>Modified</dt>   <dd><span wicket_id="modifiedIndex"></span></dd>
+        <dt>TTL</dt>        <dd><span wicket_id="ttl"></span></dd>
+        <dt>Expiration</dt> <dd><span wicket_id="expiration"></span></dd>
+      </dl>
     </div>
-  </wicket:enclosure>
+  </div>
+</div>
+
+
+
+<div wicket:id="breadcrumbAndActions" class="row">
+  <div class="col-xs-12">
+
+    <ol class="breadcrumb node-breadcrumb">
+      <li wicket:id="breadcrumb"><a href="#" wicket:id="key"><span class="fa breadcrumb-icon"></span><span wicket:id="label"></span></a></li>
+    </ol>
+
+    <div class="btn-group node-actions" role="group" aria-label="...">
+      <a wicket:id="addNode" href="#" class="btn btn-default"><span class="fa fa-plus"></span></a>
+      <a wicket:id="editNode" href="#" class="btn btn-default"><span class="fa fa-pencil"></span></a>
+      <a wicket:id="deleteNode" href="#" class="btn btn-default"><span class="fa fa-trash"></span></a>
+    </div>
+
+  </div><!-- ./col-xs-12 -->
+</div><!-- ./row -->
+
+<div wicket:id="contents">
+
+<div class="panel panel-default">
 
   <wicket:enclosure child="nodes">
-    <table class="table etcd-nodes table-hover">
+    <table class="table etcd-nodes table-hover table-condensed-">
       <thead>
         <tr>
           <th class="icon"></th>
-          <th class="key">Key</th>
-          <th class="value">Value</th>
+          <th class="key"></th>
+          <th class="value"></th>
           <th class="created hidden-sm hidden-xs">Created</th>
           <th class="modified hidden-sm hidden-xs">Modifed</th>
           <th class="ttl hidden-sm hidden-xs">TTL</th>
@@ -109,16 +122,30 @@
         </tr>
       </thead>
       <tbody>
+        <tr class="active">
+          <td><span class="fa fa-folder-open-o fa-fw"></span></td>
+          <td>.</td>
+          <td></td>
+          <td class="hidden-sm hidden-xs"><span wicket:id="createdIndex"></span></td>
+          <td class="hidden-sm hidden-xs"><span wicket:id="modifiedIndex"></span></td>
+          <td class="hidden-sm hidden-xs"><span wicket:id="ttl"></span></td>
+          <td class="hidden-sm hidden-xs"><span wicket:id="expiration"></span></td>
+        </tr>
+        <wicket:enclosure child="goUp">
+          <tr>
+            <td><span class="fa fa-level-up fa-fw"></span></td>
+            <td class="key-cell-link"><a href="#" wicket:id="goUp">..</a></td>
+            <td></td>
+            <td class="hidden-sm hidden-xs"></td>
+            <td class="hidden-sm hidden-xs"></td>
+            <td class="hidden-sm hidden-xs"></td>
+            <td class="hidden-sm hidden-xs"></td>
+          </tr>
+        </wicket:enclosure>
         <tr wicket:id="nodes">
           <td><span wicket:id="icon"></span></td>
-          <td>
-            <a href="#" wicket:id="key"><span wicket:id="label"></span></a>
-            <div class="pull-right">
-              <a wicket:id="edit" class="action"><span class="fa fa-fw fa-edit"></span></a>
-              <a wicket:id="delete" class="action"><span class="fa fa-fw fa-remove"></span></a>
-            </div>
-          </td>
-          <td class="popover-value"><span wicket:id="value" class="value-wrapper"></span></td>
+          <td class="key-cell-link"><a href="#" wicket:id="key"><span wicket:id="label"></span></a></td>
+          <td><div class="popover-value"><span wicket:id="value" class="value-wrapper"></span></div></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="createdIndex"></span></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="modifiedIndex"></span></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="ttl"></span></td>
@@ -130,21 +157,33 @@
 
 </div><!-- end of panel -->
 
-<!-- TODO: Popover to show the complete value is not working property
+<wicket:enclosure child="editValue">
+  <a href="#" wicket:id="editValue" class="edit-value">
+    <div class="well clearfix">
+      <span class="pull-left" wicket:id="value"></span>
+      <span class="pull-right"><span class="fa fa-pencil text-muted"></span></span>
+    </div>
+  </a>
+</wicket:enclosure>
+
+</div><!-- ./contents -->
+
+<!-- TODO: Popover to show the complete value
 <script>
 $(document).ready(function() {
     $(".popover-value").popover({
         html: true,
         trigger: 'hover',
-        //placement: 'bottom',
-        title: function() { return $(this).prev('td').text(); },
+        placement: 'bottom',
+        title: function() { return $(this).parent('td').prev('td').text(); },
         content: function() { return $(this).find('.value-wrapper').html(); }
     });
 });
-</script> -->
+</script>-->
 
 <div wicket:id="editNodeModal"></div>
 <div wicket:id="deleteNodeModal"></div>
+
 
 </wicket:panel>
 

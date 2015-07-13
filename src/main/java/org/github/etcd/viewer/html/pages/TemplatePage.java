@@ -151,6 +151,8 @@ public class TemplatePage extends WebPage {
             }
         };
 
+        response.render(bootstrapCss);
+
         response.render(CssHeaderItem.forReference(bootstrapThemeCssRef));
 
         response.render(JavaScriptHeaderItem.forReference(bootstrapJsRef));

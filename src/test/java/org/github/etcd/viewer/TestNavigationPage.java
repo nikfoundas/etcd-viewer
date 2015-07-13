@@ -20,7 +20,7 @@ public class TestNavigationPage
     }
 
     @Test
-    public void homepageRendersSuccessfully()
+    public void navigationPageRendersSuccessfully()
     {
         //start and render the test page
         tester.startPage(NavigationPage.class);

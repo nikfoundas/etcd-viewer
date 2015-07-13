@@ -3,6 +3,47 @@
 <head>
 <wicket:head>
 <style>
+a.full-link {
+display: block;
+height: 100%;
+width: 100%;
+}
+
+.verticalLine {
+    border-right: solid #ff0000;
+}
+
+a.selection {
+  text-decoration: none;
+  color: #333;
+  /* font-size: 1.4em; */
+  margin-right: 15px;
+
+display: inline-block;
+height: 100%;
+width: 30px;
+}
+
+a.selection > .fa.selection.circle:before {
+    content: "\f10c"; /* fa-circle-o */
+}
+
+a.selection.selected > .fa.selection.circle:before {
+    content: "\f05d"; /* fa-check-circle-o */
+}
+
+a.selection > .fa.selection.square:before {
+    content: "\f096"; /* fa-square-o */
+}
+
+a.selection.selected > .fa.selection.square:before {
+    content: "\f046"; /* fa-check-square-o */
+}
+
+.blockquote-reverse.comments {
+  font-size: 14px;
+}
+
 </style>
 </wicket:head>
 </head>
@@ -14,6 +55,7 @@
 <h1>Navigation <small><span class="fa fa-angle-double-right"></span> view & edit etcd registries</small></h1>
 </div>
 
+
   <div class="row">
     <!-- <p class="h4 text-muted">Select the etcd key-value store</p> -->
 
@@ -23,7 +65,7 @@
 
     <div wicket:id="clusterSelection"></div>
 
-<blockquote class="blockquote-reverse text-muted">
+<blockquote class="blockquote-reverse text-muted comments">
   <p>If your key-value store is not listed above you can add another.<br>
     To view the etcd cluster hosts and their status press the
     <button class="btn btn-default btn-sm" disabled><span class="fa fa-chevron-down"></span></button>
@@ -40,7 +82,7 @@
 
     <span wicket:id="node"></span>
 
-<blockquote class="blockquote-reverse text-muted">
+<blockquote class="blockquote-reverse text-muted comments">
     <p>
       View and modify the contents of the etcd registry
     </p>

@@ -7,6 +7,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -82,6 +83,8 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
 
         private static final long serialVersionUID = 1L;
 
+        private FormGroupBorder valueGroup;
+
         public EtcdNodeForm(String id, IModel<EtcdNode> model) {
             super(id, model);
 
@@ -94,25 +97,37 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
                 }
             }.setRequired(true)));
 
-            add(new FormGroupBorder("valueGroup", new ResourceModel("editModal.form.value.label", "Value")) {
+            add(valueGroup = new FormGroupBorder("valueGroup", new ResourceModel("editModal.form.value.label", "Value")) {
                 private static final long serialVersionUID = 1L;
                 @Override
                 protected void onConfigure() {
                     setVisible(!EtcdNodeForm.this.getModelObject().isDir());
                 }
-            }.add(new TextArea<String>("value") {
+            });
+            valueGroup.setOutputMarkupPlaceholderTag(true);
+            valueGroup.add(new TextArea<String>("value") {
                 private static final long serialVersionUID = 1L;
                 @Override
                 protected void onConfigure() {
                     setEnabled(!EtcdNodeForm.this.getModelObject().isDir());
                 }
-            }));
+            });
 
-            add(new AjaxCheckBox("dir") {
+            WebMarkupContainer dirGroup;
+            add(dirGroup = new WebMarkupContainer("dirGroup") {
+                private static final long serialVersionUID = 1L;
+                @Override
+                protected void onConfigure() {
+                    super.onConfigure();
+                    setVisible(!updating.getObject());
+                }
+            });
+
+            dirGroup.add(new AjaxCheckBox("dir") {
                 private static final long serialVersionUID = 1L;
                 @Override
                 protected void onUpdate(AjaxRequestTarget target) {
-                    target.add(EtcdNodeForm.this);
+                    target.add(valueGroup);
                 }
                 @Override
                 protected void onConfigure() {
@@ -121,7 +136,7 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
                 }
             });
 
-            add(new Label("dirLabel", new ResourceModel("editModal.form.dir.label", "Directory")));
+            dirGroup.add(new Label("dirLabel", new ResourceModel("editModal.form.dir.label", "Directory")));
 
             add(new FormGroupBorder("ttlGroup", new ResourceModel("editModal.form.ttl.label", "Time to live")).add(new TextField<>("ttl")));
 

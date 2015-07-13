@@ -20,7 +20,7 @@ public class TestAboutPage
     }
 
     @Test
-    public void homepageRendersSuccessfully()
+    public void aboutPageRendersSuccessfully()
     {
         //start and render the test page
         tester.startPage(AboutPage.class);
