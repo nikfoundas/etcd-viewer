@@ -54,7 +54,7 @@ functionality in your application.
 
 ### Supported etcd API
 
-Etcd browser supports the following actions via the [etcd rest API][etcd-api]:
+Etcd viewer supports the following actions via the [etcd rest API][etcd-api]:
 
 * Get version
 * Get node self statistics which contains the leader information
@@ -92,7 +92,7 @@ directed to the leader node to avoid redirections.
 
 ### Etcd cluster monitor
 
-Etcd browser enables you to view the machines that participate in the
+Etcd viewer enables you to view the machines that participate in the
 etcd cluster along with their status - leader or follower. If some
 etcd host is not accessible then it is marked with red to indicate
 that it is down. Note that for single node etcd registries no
