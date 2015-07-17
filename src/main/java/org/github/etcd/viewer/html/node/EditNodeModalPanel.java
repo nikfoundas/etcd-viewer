@@ -6,22 +6,22 @@ import javax.inject.Provider;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.github.etcd.service.rest.EtcdException;
 import org.github.etcd.service.rest.EtcdNode;
 import org.github.etcd.service.rest.EtcdProxy;
+import org.github.etcd.viewer.html.modal.GenericModalPanel;
 import org.github.etcd.viewer.html.utils.FormGroupBorder;
 
-public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
+public class EditNodeModalPanel extends GenericModalPanel<EtcdNode> {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,9 +37,6 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
         super(id, model);
         this.updating = updatingModel;
 
-        setOutputMarkupId(true);
-        add(AttributeAppender.append("class", "modal fade"));
-
         add(title = new Label("title", new StringResourceModel("editModal.title.updating.${}", updating, "Edit Node")));
         title.setOutputMarkupId(true);
 
@@ -52,21 +49,28 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
                 super.onSubmit(target, form);
 
                 try (EtcdProxy p = etcdProxy.get()) {
-                    if (updating.getObject()) {
-                        p.updateNode(getModelObject());
-                    } else {
-                        p.saveNode(getModelObject());
+                    try {
+                        if (updating.getObject()) {
+                            p.updateNode(getModelObject());
+
+                            success("Updated: " + getModelObject());
+
+                        } else {
+                            p.saveNode(getModelObject());
+
+                            success("Created: " + getModelObject());
+                        }
+                    } catch (EtcdException e) {
+                        System.err.println("Caught error: " + e);
+                        error(e.toString());
+                        error(" - API error: " + e.getApiError());
+                        error(" - " + e.getCause());
                     }
                 }
 
                 onNodeSaved(target);
 
-                target.appendJavaScript("$('#" + EditNodeModalPanel.this.getMarkupId() + "').modal('hide');");
-            }
-
-            @Override
-            protected void onAfterSubmit(AjaxRequestTarget target, Form<?> form) {
-                super.onAfterSubmit(target, form);
+                modalHide(target);
             }
 
             @Override
@@ -144,11 +148,14 @@ public class EditNodeModalPanel extends GenericPanel<EtcdNode> {
 
     }
 
-    public void onShowModal(AjaxRequestTarget target) {
+    @Override
+    public void beforeModalShow(AjaxRequestTarget target) {
         target.add(title, form);
 
         form.clearInput();
     }
+
     protected void onNodeSaved(AjaxRequestTarget target) {
     }
+
 }

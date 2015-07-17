@@ -12,7 +12,6 @@ import org.apache.wicket.ajax.attributes.AjaxRequestAttributes.EventPropagation;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.datetime.markup.html.basic.DateLabel;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
@@ -25,6 +24,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.github.etcd.service.ClusterManager;
 import org.github.etcd.service.EtcdCluster;
 import org.github.etcd.service.rest.EtcdMember;
+import org.github.etcd.viewer.html.modal.TriggerModalLink;
 
 public class ClusterSelectionPanel extends Panel {
 
@@ -44,6 +44,22 @@ public class ClusterSelectionPanel extends Panel {
 
     private AddClusterModalPanel addClusterModal;
     private DeleteClusterModalPanel deleteClusterModal;
+
+/*    private IModel<Boolean> clusterExpanded = new IModel<Boolean>() {
+        private static final long serialVersionUID = 1L;
+        @Override
+        public void detach() {
+        }
+        @Override
+        public Boolean getObject() {
+            Boolean value = (Boolean) Session.get().getAttribute("clusterExpanded");
+            return value == null ? false : value;
+        }
+        @Override
+        public void setObject(Boolean object) {
+            Session.get().setAttribute("clusterExpanded", object);
+        }
+    };*/
 
     public ClusterSelectionPanel(String id) {
         super(id);
@@ -66,26 +82,13 @@ public class ClusterSelectionPanel extends Panel {
                 super.onClusterDeleted(target);
 
                 selectedCluster.setObject(null);
-                onSelectedClusterChanged(target);
+
+                onSelectedClusterDeleted(target);
             }
         });
 
-        add(deleteCluster = new AjaxLink<Void>("deleteCluster") {
+        add(deleteCluster = new TriggerModalLink<Void>("deleteCluster", deleteClusterModal) {
             private static final long serialVersionUID = 1L;
-            @Override
-            protected void onComponentTag(ComponentTag tag) {
-                super.onComponentTag(tag);
-                tag.put("data-target", "#" + deleteClusterModal.getMarkupId());
-            }
-            @Override
-            protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
-                super.updateAjaxAttributes(attributes);
-                attributes.setEventPropagation(EventPropagation.BUBBLE);
-            }
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                deleteClusterModal.onShowModal(target);
-            }
             @Override
             protected void onConfigure() {
                 super.onConfigure();
@@ -95,6 +98,7 @@ public class ClusterSelectionPanel extends Panel {
                     add(AttributeModifier.remove("disabled"));
                 }
             }
+
         });
 
         add(selectInputGroup = new WebMarkupContainer("selectInputGroup"));
@@ -105,7 +109,7 @@ public class ClusterSelectionPanel extends Panel {
             private static final long serialVersionUID = 1L;
             @Override
             protected String load() {
-                return selectedCluster.getObject() == null ? null : selectedCluster.getObject() + " @ " + clusterManager.getCluster(selectedCluster.getObject()).getAddress();
+                return selectedCluster.getObject() == null || clusterManager.getCluster(selectedCluster.getObject()) == null ? null : selectedCluster.getObject() + " @ " + clusterManager.getCluster(selectedCluster.getObject()).getAddress();
             }
         }));
 
@@ -143,23 +147,7 @@ public class ClusterSelectionPanel extends Panel {
             }
         });
 
-        selectInputGroup.add(new AjaxLink<Void>("addCluster") {
-            private static final long serialVersionUID = 1L;
-            @Override
-            protected void onComponentTag(ComponentTag tag) {
-                super.onComponentTag(tag);
-                tag.put("data-target", "#" + addClusterModal.getMarkupId());
-            }
-            @Override
-            protected void updateAjaxAttributes(AjaxRequestAttributes attributes) {
-                super.updateAjaxAttributes(attributes);
-                attributes.setEventPropagation(EventPropagation.BUBBLE);
-            }
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                addClusterModal.onShowModal(target);
-            }
-        });
+        selectInputGroup.add(new TriggerModalLink<Void>("addCluster", addClusterModal));
 
 
         add(body = new WebMarkupContainer("body"));
@@ -173,8 +161,6 @@ public class ClusterSelectionPanel extends Panel {
             }
         };
 
-//        body.add(new ClusterDetailsPanel("clusterDetails", cluster, null));
-
         body.add(new Label("name", new PropertyModel<>(cluster, "name")));
 
         body.add(DateLabel.forDatePattern("lastRefreshTime", new PropertyModel<Date>(cluster, "lastRefreshTime"), "yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
@@ -185,10 +171,7 @@ public class ClusterSelectionPanel extends Panel {
             private static final long serialVersionUID = 1L;
             @Override
             public void onClick(AjaxRequestTarget target) {
-
-                clusterManager.refreshCluster(getModelObject());
-
-                target.add(body, clusterPeers);
+                onSelectedClusterRefresh(target);
             }
         });
 
@@ -196,14 +179,26 @@ public class ClusterSelectionPanel extends Panel {
 
     }
 
-    protected void onSelectedClusterChanged(AjaxRequestTarget target) {
-
+    private void refreshCluster() {
         try {
             clusterManager.refreshCluster(selectedCluster.getObject());
+            success("Successfully refreshed etcd cluster: " + selectedCluster.getObject());
         } catch (Exception e) {
-            e.printStackTrace();
+            error("Failed to connect to etcd cluster: " + selectedCluster.getObject());
         }
+    }
 
+    protected void onSelectedClusterRefresh(AjaxRequestTarget target) {
+        refreshCluster();
+        target.add(body, clusterPeers);
+    }
+
+    protected void onSelectedClusterChanged(AjaxRequestTarget target) {
+        refreshCluster();
+        target.add(selectInputGroup, deleteCluster, body, clusterPeers);
+    }
+
+    protected void onSelectedClusterDeleted(AjaxRequestTarget target) {
         target.add(selectInputGroup, deleteCluster, body, clusterPeers);
     }
 

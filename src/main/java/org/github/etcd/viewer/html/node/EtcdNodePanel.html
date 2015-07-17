@@ -40,7 +40,7 @@
 }
 
 
-td.key-cell-link > a {
+td.table-cell-link > a {
   display: block;
   width: 100%;
   height: 100%;
@@ -60,6 +60,28 @@ a.edit-value, a.edit-value:hover, a.edit-value:focus {
   text-decoration: none;
   color: #333;
 }
+
+
+tr.active span.fa.node-icon:before {
+  content: "\f015"; /* fa-home */
+}
+
+tr.dir-true span.fa.node-icon:before {
+  content: "\f114"; /* fa-folder-o */
+}
+
+tr.dir-false span.fa.node-icon:before {
+  content: "\f0f6"; /* fa-file-text-o */
+}
+
+tr.dir-true.active span.fa.node-icon:before {
+  content: "\f07c"; /* fa-folder-open */
+}
+
+tr.dir-false.active span.fa.node-icon:before {
+  content: "\f15c"; /* fa-file-text */
+}
+
 
 </style>
 </wicket:head>
@@ -96,9 +118,9 @@ a.edit-value, a.edit-value:hover, a.edit-value:focus {
     </ol>
 
     <div class="btn-group node-actions" role="group" aria-label="...">
-      <a wicket:id="addNode" href="#" class="btn btn-default"><span class="fa fa-plus"></span></a>
-      <a wicket:id="editNode" href="#" class="btn btn-default"><span class="fa fa-pencil"></span></a>
-      <a wicket:id="deleteNode" href="#" class="btn btn-default"><span class="fa fa-trash"></span></a>
+      <a wicket:id="addNode" href="#" class="btn btn-default tooltip-trigger" title="Add another key-value or directory"><span class="fa fa-plus"></span></a>
+      <a wicket:id="editNode" href="#" class="btn btn-default tooltip-trigger" title="Edit current node"><span class="fa fa-pencil"></span></a>
+      <a wicket:id="deleteNode" href="#" class="btn btn-default tooltip-trigger" title="Delete current node"><span class="fa fa-trash"></span></a>
     </div>
 
   </div><!-- ./col-xs-12 -->
@@ -109,12 +131,12 @@ a.edit-value, a.edit-value:hover, a.edit-value:focus {
 <div class="panel panel-default">
 
   <wicket:enclosure child="nodes">
-    <table class="table etcd-nodes table-hover table-condensed-">
+    <table class="table etcd-nodes table-hover">
       <thead>
         <tr>
           <th class="icon"></th>
-          <th class="key"></th>
-          <th class="value"></th>
+          <th class="key">Key</th>
+          <th class="value">Value</th>
           <th class="created hidden-sm hidden-xs">Created</th>
           <th class="modified hidden-sm hidden-xs">Modifed</th>
           <th class="ttl hidden-sm hidden-xs">TTL</th>
@@ -122,8 +144,8 @@ a.edit-value, a.edit-value:hover, a.edit-value:focus {
         </tr>
       </thead>
       <tbody>
-        <tr class="active">
-          <td><span class="fa fa-folder-open-o fa-fw"></span></td>
+        <tr class="active" wicket:id="currentNode">
+          <td><span class="fa fa-fw node-icon"></span></td>
           <td>.</td>
           <td></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="createdIndex"></span></td>
@@ -131,20 +153,18 @@ a.edit-value, a.edit-value:hover, a.edit-value:focus {
           <td class="hidden-sm hidden-xs"><span wicket:id="ttl"></span></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="expiration"></span></td>
         </tr>
-        <wicket:enclosure child="goUp">
-          <tr>
-            <td><span class="fa fa-level-up fa-fw"></span></td>
-            <td class="key-cell-link"><a href="#" wicket:id="goUp">..</a></td>
-            <td></td>
-            <td class="hidden-sm hidden-xs"></td>
-            <td class="hidden-sm hidden-xs"></td>
-            <td class="hidden-sm hidden-xs"></td>
-            <td class="hidden-sm hidden-xs"></td>
-          </tr>
-        </wicket:enclosure>
+        <tr>
+          <td><span class="fa fa-level-up fa-fw"></span></td>
+          <td class="table-cell-link"><a href="#" wicket:id="goUp">..</a></td>
+          <td></td>
+          <td class="hidden-sm hidden-xs"></td>
+          <td class="hidden-sm hidden-xs"></td>
+          <td class="hidden-sm hidden-xs"></td>
+          <td class="hidden-sm hidden-xs"></td>
+        </tr>
         <tr wicket:id="nodes">
-          <td><span wicket:id="icon"></span></td>
-          <td class="key-cell-link"><a href="#" wicket:id="key"><span wicket:id="label"></span></a></td>
+          <td><span class="fa fa-fw node-icon"></span></td>
+          <td class="table-cell-link"><a href="#" wicket:id="key"><span wicket:id="label"></span></a></td>
           <td><div class="popover-value"><span wicket:id="value" class="value-wrapper"></span></div></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="createdIndex"></span></td>
           <td class="hidden-sm hidden-xs"><span wicket:id="modifiedIndex"></span></td>

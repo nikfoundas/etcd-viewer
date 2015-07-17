@@ -4,11 +4,9 @@ import javax.inject.Inject;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.util.visit.IVisit;
@@ -19,9 +17,10 @@ import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.UrlValidator;
 import org.github.etcd.service.ClusterManager;
 import org.github.etcd.service.EtcdCluster;
+import org.github.etcd.viewer.html.modal.GenericModalPanel;
 import org.github.etcd.viewer.html.utils.FormGroupBorder;
 
-public class AddClusterModalPanel extends Panel {
+public class AddClusterModalPanel extends GenericModalPanel<Void> {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,10 +33,7 @@ public class AddClusterModalPanel extends Panel {
     private Form<?> form;
 
     public AddClusterModalPanel(String id) {
-        super(id);
-
-        setOutputMarkupId(true);
-        add(AttributeAppender.append("class", "modal fade"));
+        super(id, null);
 
         add(form = new Form<>("form", new CompoundPropertyModel<>(AddClusterModalPanel.this)));
 
@@ -63,7 +59,7 @@ public class AddClusterModalPanel extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
 
-                System.out.println("ON SUBMIT -- ADD CLUSTER");
+//                System.out.println("ON SUBMIT -- ADD CLUSTER");
 
                 target.add(form);
 
@@ -71,15 +67,15 @@ public class AddClusterModalPanel extends Panel {
 
                 onClusterAdded(target, cluster);
 
-                target.appendJavaScript("$('#" + AddClusterModalPanel.this.getMarkupId() + "').modal('hide');");
+                modalHide(target);
             }
 
-            @Override
-            protected void onAfterSubmit(AjaxRequestTarget target, Form<?> form) {
-                super.onAfterSubmit(target, form);
-                name = null;
-                address = null;
-            }
+//            @Override
+//            protected void onAfterSubmit(AjaxRequestTarget target, Form<?> form) {
+//                super.onAfterSubmit(target, form);
+//                name = null;
+//                address = null;
+//            }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form<?> form) {
@@ -91,7 +87,12 @@ public class AddClusterModalPanel extends Panel {
         });
     }
 
-    public void onShowModal(AjaxRequestTarget target) {
+    protected void onClusterAdded(AjaxRequestTarget target, EtcdCluster addedCluster) {
+//        System.out.println("AddClusterModalPanel.onClusterAdded()");
+    }
+
+    @Override
+    public void beforeModalShow(AjaxRequestTarget target) {
         target.add(form);
 
         form.clearInput();
@@ -104,10 +105,6 @@ public class AddClusterModalPanel extends Panel {
                 }
             }
         });
-    }
-
-    protected void onClusterAdded(AjaxRequestTarget target, EtcdCluster addedCluster) {
-        System.out.println("AddClusterModalPanel.onClusterAdded()");
     }
 
 }

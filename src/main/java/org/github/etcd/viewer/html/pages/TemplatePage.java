@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.devutils.debugbar.DebugBar;
 import org.apache.wicket.markup.head.CssHeaderItem;
@@ -54,7 +55,27 @@ public class TemplatePage extends WebPage {
         createPage();
     }
 
+    protected IModel<?> getPageTitleModel() {
+        return new StringResourceModel("page.title", this, getDefaultModel(), getDefaultPageTitle());
+    }
+
+    protected String getDefaultPageTitle() {
+        return "etcd viewer";
+    }
+
+    private Label title;
+
     private void createPage() {
+
+        add(title = new Label("title", new LoadableDetachableModel<Object>() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            protected Object load() {
+                return getPageTitleModel().getObject();
+            }
+        }));
+
+        title.setOutputMarkupId(true);
 
         WebMarkupContainer currentCluster;
         add(currentCluster = new WebMarkupContainer("currentCluster") {
@@ -121,6 +142,10 @@ public class TemplatePage extends WebPage {
             }
         });
 
+    }
+
+    protected void updatePageTitle(AjaxRequestTarget target) {
+        target.add(title);
     }
 
     @Override

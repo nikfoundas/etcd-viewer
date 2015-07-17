@@ -4,13 +4,12 @@ import javax.inject.Inject;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.github.etcd.service.ClusterManager;
+import org.github.etcd.viewer.html.modal.GenericModalPanel;
 
-public class DeleteClusterModalPanel extends GenericPanel<String> {
+public class DeleteClusterModalPanel extends GenericModalPanel<String> {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,9 +20,6 @@ public class DeleteClusterModalPanel extends GenericPanel<String> {
 
     public DeleteClusterModalPanel(String id, IModel<String> model) {
         super(id, model);
-
-        setOutputMarkupId(true);
-        add(AttributeAppender.append("class", "modal fade"));
 
         add(name = new Label("name", getModel()));
         name.setOutputMarkupId(true);
@@ -38,12 +34,13 @@ public class DeleteClusterModalPanel extends GenericPanel<String> {
 
                 onClusterDeleted(target);
 
-                target.appendJavaScript("$('#" + DeleteClusterModalPanel.this.getMarkupId() + "').modal('hide');");
+                modalHide(target);
             }
         });
     }
 
-    public void onShowModal(AjaxRequestTarget target) {
+    @Override
+    public void beforeModalShow(AjaxRequestTarget target) {
         target.add(name);
     }
 

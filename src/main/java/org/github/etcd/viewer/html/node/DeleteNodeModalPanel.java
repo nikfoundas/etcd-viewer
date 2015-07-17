@@ -5,16 +5,16 @@ import javax.inject.Provider;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.github.etcd.service.rest.EtcdException;
 import org.github.etcd.service.rest.EtcdNode;
 import org.github.etcd.service.rest.EtcdProxy;
+import org.github.etcd.viewer.html.modal.GenericModalPanel;
 
-public class DeleteNodeModalPanel extends GenericPanel<EtcdNode> {
+public class DeleteNodeModalPanel extends GenericModalPanel<EtcdNode> {
 
     private static final long serialVersionUID = 1L;
 
@@ -25,9 +25,6 @@ public class DeleteNodeModalPanel extends GenericPanel<EtcdNode> {
 
     public DeleteNodeModalPanel(String id, IModel<EtcdNode> model) {
         super(id, model);
-
-        setOutputMarkupId(true);
-        add(AttributeAppender.append("class", "modal fade"));
 
         add(body = new WebMarkupContainer("body"));
         body.setOutputMarkupId(true);
@@ -60,17 +57,23 @@ public class DeleteNodeModalPanel extends GenericPanel<EtcdNode> {
                 try (EtcdProxy p = etcdProxy.get()) {
                     // TODO: support both recursive and non recursive delete
                     p.deleteNode(node, node.isDir());
+
+                    warn("Deleted: " + node);
+
+                } catch (EtcdException e) {
+                    error("Failed to delete: " + node);
                 }
 
                 onNodeDeleted(target);
 
-                target.appendJavaScript("$('#" + DeleteNodeModalPanel.this.getMarkupId() + "').modal('hide');");
+                modalHide(target);
             }
         });
 
     }
 
-    public void onShowModal(AjaxRequestTarget target) {
+    @Override
+    public void beforeModalShow(AjaxRequestTarget target) {
         target.add(body);
     }
 

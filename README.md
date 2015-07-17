@@ -130,7 +130,7 @@ storage accessibility even from mobile devices or tablets.
 
 ## License
 
-etcd-viewer is released under the Apache 2.0 license. See the [LICENSE](LICENSE) file for details.
+etcd-viewer is released under the Apache 2.0 license. See the [LICENSE](http://nikfoundas.github.io/etcd-viewer/LICENSE) file for details.
 
 [etcd]: https://github.com/coreos/etcd
 [etcd-api]: https://github.com/coreos/etcd/blob/master/Documentation/api.md

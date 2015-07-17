@@ -165,6 +165,9 @@ public class EtcdProxyImpl implements EtcdProxy {
     }
 
     private String normalizeKey(final String key) {
+        if (key == null) {
+            return "";
+        }
         return key.startsWith("/") ? key.substring(1) : key;
     }
 

@@ -64,4 +64,9 @@ public class AboutPage extends TemplatePage {
         });
     }
 
+    @Override
+    protected String getDefaultPageTitle() {
+        return "etcd viewer | about";
+    }
+
 }
