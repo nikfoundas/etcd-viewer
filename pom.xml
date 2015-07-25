@@ -7,7 +7,7 @@
 
   <groupId>org.github.etcd</groupId>
   <artifactId>etcd-viewer</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
 
   <packaging>war</packaging>
 
