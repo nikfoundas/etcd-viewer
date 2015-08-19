@@ -5,7 +5,7 @@
     <title>Etcd-viewer by nikfoundas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
@@ -31,7 +31,7 @@
 <h2>
 <a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started</h2>
 
-<p><img src="screenshots/navigation.png" alt="navigation screen"></p>
+<p><img src="http://nikfoundas.github.io/etcd-viewer/screenshots/navigation.png" alt="navigation screen"></p>
 
 <h3>
 <a id="run-with-docker" class="anchor" href="#run-with-docker" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run with docker</h3>
@@ -86,7 +86,7 @@ functionality in your application.</p>
 <h3>
 <a id="supported-etcd-api" class="anchor" href="#supported-etcd-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>Supported etcd API</h3>
 
-<p>Etcd browser supports the following actions via the <a href="https://github.com/coreos/etcd/blob/master/Documentation/api.md">etcd rest API</a>:</p>
+<p>Etcd viewer supports the following actions via the <a href="https://github.com/coreos/etcd/blob/master/Documentation/api.md">etcd rest API</a>:</p>
 
 <ul>
 <li>Get version</li>
@@ -100,9 +100,9 @@ time to live (TTL)</li>
 <li>Delete key-value pairs</li>
 </ul>
 
-<p><img src="screenshots/add-node.png" alt="add node"></p>
+<p><img src="http://nikfoundas.github.io/etcd-viewer/screenshots/add-node.png" alt="add node"></p>
 
-<p><img src="screenshots/confirm-delete.png" alt="confirm delete"></p>
+<p><img src="http://nikfoundas.github.io/etcd-viewer/screenshots/confirm-delete.png" alt="confirm delete"></p>
 
 <h3>
 <a id="multiple-etcd-key-value-stores" class="anchor" href="#multiple-etcd-key-value-stores" aria-hidden="true"><span class="octicon octicon-link"></span></a>Multiple etcd key-value stores</h3>
@@ -116,7 +116,7 @@ restarted.</p>
 an etcd registry from the etcd-viewer does not affect the contents
 of the registry itself.</p>
 
-<p><img src="screenshots/add-registry.png" alt="multiple clusters"></p>
+<p><img src="http://nikfoundas.github.io/etcd-viewer/screenshots/add-registry.png" alt="multiple clusters"></p>
 
 <h3>
 <a id="leader-auto-detection" class="anchor" href="#leader-auto-detection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Leader auto detection</h3>
@@ -129,13 +129,13 @@ directed to the leader node to avoid redirections.</p>
 <h3>
 <a id="etcd-cluster-monitor" class="anchor" href="#etcd-cluster-monitor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Etcd cluster monitor</h3>
 
-<p>Etcd browser enables you to view the machines that participate in the
+<p>Etcd viewer enables you to view the machines that participate in the
 etcd cluster along with their status - leader or follower. If some
 etcd host is not accessible then it is marked with red to indicate
 that it is down. Note that for single node etcd registries no
 status is reported by etcd.</p>
 
-<p><img src="screenshots/view-cluster.png" alt="cluster monitor"></p>
+<p><img src="http://nikfoundas.github.io/etcd-viewer/screenshots/view-cluster.png" alt="cluster monitor"></p>
 
 <h3>
 <a id="responsive-css" class="anchor" href="#responsive-css" aria-hidden="true"><span class="octicon octicon-link"></span></a>Responsive css</h3>
@@ -143,16 +143,19 @@ status is reported by etcd.</p>
 <p><code>etcd-viewer</code> uses <a href="http://getbootstrap.com/">bootstrap</a> css framework to enable key-value
 storage accessibility even from mobile devices or tablets.</p>
 
-<p><img src="screenshots/responsive.png" alt="responsive"></p>
+<p><img src="http://nikfoundas.github.io/etcd-viewer/screenshots/responsive.png" alt="responsive"></p>
 
 <h2>
 <a id="next-steps" class="anchor" href="#next-steps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Next steps</h2>
 
 <ul>
-<li>Provide feedback on communication or etcd api errors</li>
+<li>Provide feedback on communication or etcd api errors (partially done)</li>
 <li>Provide log console to record modifications applied</li>
 <li>Extend functionality to view and modify <a href="https://github.com/coreos/fleet">fleet</a> unit information</li>
-<li>Use thread safe CXF jax-rs api</li>
+<li>Use thread safe CXF jax-rs api (done)</li>
+<li>Support client side basic authentication for etcd with authentication enabled. Check <a href="https://github.com/coreos/etcd/blob/master/Documentation/auth_api.md">etcd auth api</a>. (etcd 2.1.x and later)</li>
+<li>Support user and role management (etcd 2.1.x and later)</li>
+<li>Provide documentation and hooks to import etcd client certificates</li>
 </ul>
 
 <h2>
@@ -177,12 +180,12 @@ storage accessibility even from mobile devices or tablets.</p>
 <a href="http://fortawesome.github.io/Font-Awesome/">FontAwesome 4.3.0</a>: Iconic web font</li>
 </ul>
 
-<p><img src="screenshots/about.png" alt="about"></p>
+<p><img src="http://nikfoundas.github.io/etcd-viewer/screenshots/about.png" alt="about"></p>
 
 <h2>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
-<p>etcd-viewer is released under the Apache 2.0 license. See the <a href="LICENSE">LICENSE</a> file for details.</p>
+<p>etcd-viewer is released under the Apache 2.0 license. See the <a href="http://nikfoundas.github.io/etcd-viewer/LICENSE">LICENSE</a> file for details.</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/nikfoundas/etcd-viewer">Etcd-viewer</a> is maintained by <a href="https://github.com/nikfoundas">nikfoundas</a>.</span>
@@ -195,4 +198,3 @@ storage accessibility even from mobile devices or tablets.</p>
   
   </body>
 </html>
-
