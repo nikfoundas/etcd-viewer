@@ -109,10 +109,13 @@ storage accessibility even from mobile devices or tablets.
 
 ## Next steps
 
-* Provide feedback on communication or etcd api errors
+* Provide feedback on communication or etcd api errors (partially done)
 * Provide log console to record modifications applied
 * Extend functionality to view and modify [fleet][fleet] unit information
-* Use thread safe CXF jax-rs api
+* Use thread safe CXF jax-rs api (done)
+* Support client side basic authentication for etcd with authentication enabled. Check [etcd auth api](https://github.com/coreos/etcd/blob/master/Documentation/auth_api.md). (etcd 2.1.x and later)
+* Support user and role management (etcd 2.1.x and later)
+* Provide documentation and hooks to import etcd client certificates
 
 ## About
 
