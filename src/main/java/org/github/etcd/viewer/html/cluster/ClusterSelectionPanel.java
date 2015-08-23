@@ -18,6 +18,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.ChainingModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
@@ -33,7 +34,7 @@ public class ClusterSelectionPanel extends Panel {
     @Inject
     private ClusterManager clusterManager;
 
-    @Inject
+//    @Inject
     private IModel<String> selectedCluster;
 
     private WebMarkupContainer selectInputGroup;
@@ -63,6 +64,13 @@ public class ClusterSelectionPanel extends Panel {
 
     public ClusterSelectionPanel(String id) {
         super(id);
+
+        selectedCluster = new LoadableDetachableModel<String>() {
+            @Override
+            protected String load() {
+                return getPage().getPageParameters().get("cluster").toOptionalString();
+            }
+        };
 
         add(addClusterModal = new AddClusterModalPanel("addClusterModal") {
             private static final long serialVersionUID = 1L;
@@ -144,6 +152,14 @@ public class ClusterSelectionPanel extends Panel {
 
                 select.add(new Label("name", name));
                 select.add(new Label("address", new PropertyModel<>(item.getModel(), "address")));
+
+                item.add(new AttributeAppender("class", new ChainingModel<String>(name) {
+                    private static final long serialVersionUID = 1L;
+                    @Override
+                    public String getObject() {
+                        return super.getObject().equals(selectedCluster.getObject()) ? "disabled" : "";
+                    }
+                }));
             }
         });
 

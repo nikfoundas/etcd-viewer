@@ -10,7 +10,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -31,6 +30,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.github.etcd.service.EtcdProxyFactory;
 import org.github.etcd.service.rest.EtcdNode;
 import org.github.etcd.service.rest.EtcdProxy;
 import org.github.etcd.viewer.ConvertUtils;
@@ -76,20 +76,17 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
     private WebMarkupContainer contents;
 
     @Inject
-    private Provider<EtcdProxy> etcdProxy;
+    private EtcdProxyFactory proxyFactory;
 
-    @Inject
-    private IModel<String> selectedCluster;
+    private IModel<String> registry;
 
     private final IModel<String> key;
     private final IModel<String> parentKey;
 
-    public EtcdNodePanel(String id) {
-        this(id, Model.of(ROOT_KEY));
-    }
-
-    public EtcdNodePanel(String id, IModel<String> keyModel) {
+    public EtcdNodePanel(String id, IModel<String> etcdRegistry, IModel<String> keyModel) {
         super(id);
+
+        this.registry = etcdRegistry;
 
         this.key = keyModel;
 
@@ -97,10 +94,10 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             private static final long serialVersionUID = 1L;
             @Override
             protected EtcdNode load() {
-                if (selectedCluster.getObject() == null) {
+                if (registry.getObject() == null) {
                     return null;
                 }
-                try (EtcdProxy p = etcdProxy.get()) {
+                try (EtcdProxy p = proxyFactory.getEtcdProxyByName(registry.getObject())) {
 
                     return p.getNode(key.getObject());
                 } catch (Exception e) {
@@ -179,6 +176,14 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
         contents.add(createNodesView("nodes"));
     }
 
+    @Override
+    protected void onDetach() {
+        super.onDetach();
+
+        registry.detach();
+        key.detach();
+        parentKey.detach();
+    }
     protected void onNodeKeyUpdated(AjaxRequestTarget target) {
     }
 
@@ -208,7 +213,7 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
                 super.onNodeDeleted(target);
 
                 PageParameters params = ConvertUtils.getPageParameters(parentKey.getObject());
-                params.add("cluster", selectedCluster.getObject());
+                params.add("cluster", registry.getObject());
 
                 setResponsePage(NavigationPage.class, params);
 
@@ -373,7 +378,7 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
     }
 
     private AbstractLink createNavigationLink(final String id, final IModel<String> targetKey) {
-        return new NavigationPageLink(id, selectedCluster, targetKey);
+        return new NavigationPageLink(id, registry, targetKey);
 
 /*        return new AjaxLink<String>(id, targetKey) {
             private static final long serialVersionUID = 1L;

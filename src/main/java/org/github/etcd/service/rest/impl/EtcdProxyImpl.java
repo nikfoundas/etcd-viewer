@@ -1,15 +1,19 @@
 package org.github.etcd.service.rest.impl;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.RedirectionException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -35,16 +39,33 @@ public class EtcdProxyImpl implements EtcdProxy {
     private static final Logger LOG = LoggerFactory.getLogger(EtcdProxy.class);
 
     private final String targetUrl;
+    private final String authenticationToken;
     private Client client;
 
-    public EtcdProxyImpl(String targetUrl) {
+    public EtcdProxyImpl(String targetUrl, String authenticationToken) {
         this.targetUrl = targetUrl;
+        this.authenticationToken = authenticationToken;
+    }
+
+    public EtcdProxyImpl(String targetUrl) {
+        this(targetUrl, null);
     }
 
     private WebTarget getWebTarget() {
         if (client == null) {
             client = ClientBuilder.newClient();
             client.register(JacksonJsonProvider.class);
+
+            // register the basic authentication filter if authentication information is provided
+            if (authenticationToken != null) {
+                client.register(new ClientRequestFilter() {
+                    @Override
+                    public void filter(ClientRequestContext requestContext) throws IOException {
+                        requestContext.getHeaders().add("Authorization", "Basic " + authenticationToken);
+                    }
+                });
+            }
+
         }
 
         WebTarget target = client.target(targetUrl);
@@ -69,6 +90,17 @@ public class EtcdProxyImpl implements EtcdProxy {
     }
 
     @Override
+    public Boolean isAuthEnabled() {
+        try {
+            Map<String, Object> result = getWebTarget().path("/v2/auth/enable").request(MediaType.APPLICATION_JSON).get(new GenericType<Map<String, Object>>() {});
+            return (Boolean) result.get("enabled");
+        } catch (NotFoundException e) {
+//            LOG.warn(e.toString(), e);
+            return false;
+        }
+    }
+
+    @Override
     public EtcdSelfStats getSelfStats() {
         return new ExceptionHandlingProcessor<>(EtcdSelfStats.class).process(getWebTarget().path("/v2/stats/self").request(MediaType.APPLICATION_JSON).buildGet());
     }
@@ -79,6 +111,8 @@ public class EtcdProxyImpl implements EtcdProxy {
         String version = getVersion();
 
         LOG.info("Using version: '{}' to detect cluster members", version);
+
+        LOG.info("Authentication is: " + (isAuthEnabled() ? "enabled" : "disabled"));
 
         if (version.contains("etcd 0.4")) {
 

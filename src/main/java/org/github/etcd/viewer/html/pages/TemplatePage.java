@@ -10,10 +10,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.devutils.debugbar.DebugBar;
-import org.apache.wicket.markup.head.CssHeaderItem;
-import org.apache.wicket.markup.head.HeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -25,10 +22,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.Url;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.request.resource.UrlResourceReference;
 import org.github.etcd.service.rest.EtcdProxy;
+import org.github.etcd.viewer.html.resource.WebResources;
 
 public class TemplatePage extends WebPage {
 
@@ -37,7 +33,7 @@ public class TemplatePage extends WebPage {
     @Inject
     private Provider<EtcdProxy> etcdResource;
 
-    @Inject
+//    @Inject
     private IModel<String> currentClusterModel;
 
     public TemplatePage() {
@@ -66,6 +62,13 @@ public class TemplatePage extends WebPage {
     private Label title;
 
     private void createPage() {
+
+        currentClusterModel = new LoadableDetachableModel<String>() {
+            @Override
+            protected String load() {
+                return getPageParameters().get("cluster").toOptionalString();
+            }
+        };
 
         add(title = new Label("title", new LoadableDetachableModel<Object>() {
             private static final long serialVersionUID = 1L;
@@ -123,7 +126,7 @@ public class TemplatePage extends WebPage {
             protected List<MenuItem> load() {
                 return Arrays.asList(
 //                        new MenuItem("home", HomePage.class, "Home"),
-                        new MenuItem("navigation", NavigationPage.class, "Navigation"),
+//                        new MenuItem("navigation", NavigationPage.class, "Navigation"),
                         new MenuItem("about", AboutPage.class, "About")
                         );
             }
@@ -142,6 +145,9 @@ public class TemplatePage extends WebPage {
             }
         });
 
+        add(new SignInPanel("authPanel"));
+        add(new SelectRegistryPanel("selectRegistry"));
+        add(new SignOutPanel("signOut"));
     }
 
     protected void updatePageTitle(AjaxRequestTarget target) {
@@ -152,38 +158,9 @@ public class TemplatePage extends WebPage {
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
 
-        String minified = getApplication().getResourceSettings().getUseMinifiedResources() ? ".min" : "";
-
-        UrlResourceReference bootstrapCssRef = new UrlResourceReference(Url.parse("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap" + minified + ".css"));
-
-        final CssHeaderItem bootstrapCss = CssHeaderItem.forReference(bootstrapCssRef);
-
-        UrlResourceReference bootstrapThemeCssRef = new UrlResourceReference(Url.parse("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme" + minified + ".css")) {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public Iterable<? extends HeaderItem> getDependencies() {
-                return Arrays.asList(bootstrapCss);
-            }
-        };
-
-        UrlResourceReference fontAwesomeCssRef = new UrlResourceReference(Url.parse("//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome" + minified + ".css"));
-
-        UrlResourceReference bootstrapJsRef = new UrlResourceReference(Url.parse("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap" + minified + ".js")) {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public Iterable<? extends HeaderItem> getDependencies() {
-                return Arrays.asList(bootstrapCss, JavaScriptHeaderItem.forReference(getApplication().getJavaScriptLibrarySettings().getJQueryReference()));
-            }
-        };
-
-        response.render(bootstrapCss);
-
-        response.render(CssHeaderItem.forReference(bootstrapThemeCssRef));
-
-        response.render(JavaScriptHeaderItem.forReference(bootstrapJsRef));
-
-        response.render(CssHeaderItem.forReference(fontAwesomeCssRef));
-
+        WebResources.renderBootstrapHeader(response);
+        WebResources.renderBootstrapThemeHeader(response);
+        WebResources.renderFontAwesomeHeader(response);
     }
 
     @SuppressWarnings("unused")

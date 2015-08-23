@@ -7,11 +7,11 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import org.apache.wicket.Session;
 import org.apache.wicket.model.IModel;
 import org.github.etcd.service.impl.ClusterManagerImpl;
 import org.github.etcd.service.rest.EtcdProxy;
 import org.github.etcd.service.rest.impl.EtcdProxyImpl;
+import org.github.etcd.viewer.EtcdWebSession;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -33,13 +33,13 @@ public class RestModule extends AbstractModule {
 
         bindConstant().annotatedWith(Names.named(ETCD_NODE)).to(etcdAddress);
 
-        bind(EtcdProxy.class).toProvider(EtcdProxyProvider.class);//.in(Singleton.class);
+//        bind(EtcdProxy.class).toProvider(EtcdProxyProvider.class);//.in(Singleton.class);
 
         bind(ClusterManager.class).to(ClusterManagerImpl.class).in(Singleton.class);
 
         bind(EtcdProxyFactory.class).to(EtcdProxyFactoryImpl.class).in(Singleton.class);
 
-        bind(new TypeLiteral<IModel<String>>() {}).to(SessionStoredClusterNameModel.class).in(Singleton.class);
+//        bind(new TypeLiteral<IModel<String>>() {}).to(SessionStoredClusterNameModel.class).in(Singleton.class);
     }
 
     private static class SessionStoredClusterNameModel implements IModel<String> {
@@ -49,11 +49,14 @@ public class RestModule extends AbstractModule {
         }
         @Override
         public String getObject() {
-            return (String) Session.get().getAttribute(SELECTED_CLUSTER_NAME);
+            return EtcdWebSession.get().getSelectedCluster();
+//            return (String) Session.get().getAttribute(SELECTED_CLUSTER_NAME);
         }
         @Override
         public void setObject(String object) {
-            Session.get().setAttribute(SELECTED_CLUSTER_NAME, object);
+//            Session.get().setAttribute(SELECTED_CLUSTER_NAME, object);
+
+            EtcdWebSession.get().setSelectedCluster(object);
         }
     }
 
@@ -73,16 +76,34 @@ public class RestModule extends AbstractModule {
             if (selectedCluster.getObject() == null) {
                 throw new RuntimeException("There is no selected cluster yet");
             }
-            return proxyFactory.getEtcdProxy(clusterManager.getCluster(selectedCluster.getObject()).getAddress());
+            return proxyFactory.getEtcdProxy(selectedCluster.getObject(), clusterManager.getCluster(selectedCluster.getObject()).getAddress());
         }
     }
 
     private static class EtcdProxyFactoryImpl implements EtcdProxyFactory {
 
+        @Inject
+        private ClusterManager clusterManager;
+
         @Override
-        public EtcdProxy getEtcdProxy(String address) {
-            return new EtcdProxyImpl(address);
+        public EtcdProxy getEtcdProxyOld(String address) {
+            return new EtcdProxyImpl(address, null);
         }
+
+        @Override
+        public EtcdProxy getEtcdProxy(String registry, String address) {
+            String authToken = null;
+            if (EtcdWebSession.exists()) {
+                authToken = EtcdWebSession.get().getBasicAuthenticationToken(registry);
+            }
+            return new EtcdProxyImpl(address, authToken);
+        }
+
+        @Override
+        public EtcdProxy getEtcdProxyByName(String registry) {
+            return getEtcdProxy(registry, clusterManager.getCluster(registry).getAddress());
+        }
+
     }
 
 }

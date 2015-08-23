@@ -13,6 +13,8 @@ public interface EtcdProxy extends AutoCloseable {
      */
     String getVersion();
 
+    Boolean isAuthEnabled();
+
     /**
      * Performs an http <b>GET</b> to the <b>/v2/stats/self</b> endpoint
      *

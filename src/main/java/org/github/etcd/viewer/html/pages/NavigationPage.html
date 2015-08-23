@@ -14,7 +14,56 @@
   margin-bottom: 0;
 }
 
+.dropdown-menu.dropdown-menu-signin {
+  width: 300px;
+  background-color: #eee;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-signin .btn-signin {
+  margin-top: 10px;
+}
+
 </style>
+
+
+<script>
+ $(document).ready(function()
+ {
+   //Handles menu drop down`enter code here`
+   //$('.dropdown-menu').find('form').click(function (e) {
+   // e.stopPropagation();
+   // });
+
+      $(document).on('click', '.dropdown-menu-form', function (e)
+      {
+        e.stopPropagation();
+      });
+
+      $(document).on('click', '.dropdown-menu-form no-button', function (e)
+      {
+        closeDropDownForm(e);
+      });
+
+      $(document).on('click', '.dropdown-menu-form .close', function (e)
+      {
+        closeDropDownForm(e);
+      });
+
+      closeDropDownForm = function (event)
+      {
+        $(event.target).closest('.dropdown-menu-form').parent().removeClass('open');
+      }
+
+  });
+  </script>
+
+
 </wicket:head>
 
 
@@ -26,6 +75,7 @@
 <div class="page-header">
 <h1>Navigation <small><span class="fa fa-angle-double-right"></span> view & edit etcd registries</small></h1>
 </div>
+
 
   <div class="row">
     <!-- <p class="h4 text-muted">Select the etcd key-value store</p> -->
@@ -53,7 +103,6 @@
 <div class="row">
   <div class="col-xs-12">
     <div wicket:id="feedback"></div>
-    <hr>
   </div>
 </div>
 
@@ -77,8 +126,34 @@
 
 <script>
 $(function () {
-  $('.tooltip-trigger').tooltip();
+  //$('.tooltip-trigger').tooltip();
 });
+
+/* (function ($)
+        {
+
+          $(document).on('click', '.dropdown-menu-form', function (e)
+          {
+            e.stopPropagation();
+          });
+
+          $(document).on('click', '.dropdown-menu-form button', function (e)
+          {
+            closeDropDownForm(e);
+          });
+
+          $(document).on('click', '.dropdown-menu-form .close', function (e)
+          {
+            closeDropDownForm(e);
+          });
+
+          closeDropDownForm = function (event)
+          {
+            $(event.target).closest('.dropdown-menu-form').parent().removeClass('open');
+          }
+
+        })(jQuery); */
+
 </script>
 
 </wicket:extend>

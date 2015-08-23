@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:panel>
+
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="fa fa-user-times"></span> <span class="label label-danger" wicket:id="authCount">[authentications count]</span> <span class="caret"></span></a>
+<ul class="dropdown-menu dropdown-menu-right dropdown-menu-signout">
+
+<!--   <li>
+    <div>
+      <form class="form-signin" wicket_id="authForm">
+        <h4>sign in to kvm</h4>
+        <span class="help-block">Sign in to <b>kvm</b></span>
+
+        <div class="input-group">
+          <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+          <input wicket_id="username" type="text" class="form-control" placeholder="username" required/>
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+          <input wicket_id="password" type="password" class="form-control" placeholder="password" required/>
+        </div>
+        <button type="submit" class="btn btn-success btn-block btn-signin">Sign in</button>
+      </form>
+    </div>
+  </li> -->
+
+  <li class="dropdown-header">Select user to sign out</li>
+
+  <li wicket:id="authentications"><a wicket:id="signOut"><span class="fa fa-angle-double-right"></span> <span wicket:id="username"></span><span wicket:id="cluster" class="pull-right text-muted"></span></a></li>
+
+  <li role="separator" class="divider"></li>
+
+  <li><a wicket:id="signOutAll"><span class="fa fa-sign-out"></span> Sign out all users</a></li>
+
+  <!-- <li role="separator" class="divider visible-xs"></li> -->
+</ul>
+
+
+</wicket:panel>
+
+<wicket:remove>
+
+         <ul class="nav navbar-nav navbar-right hidden">
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Navigation <span class="caret"></span></a>
+                  <ul class="dropdown-menu dropdown-menu-right dropdown-menu-cluster">
+                    <li class="dropdown-header">Select cluster</li>
+                    <li><a href="#"><span class="fa fa-angle-double-right"></span> default<span class="text-muted pull-right">http://localhost:2379/</span></a></li>
+                    <li class="my-active"><a href="#"><span class="fa fa-angle-double-right"></span> production<span class="text-muted pull-right">http://localhost:2379/</span></a></li>
+                    <li><a href="#"><span class="fa fa-angle-double-right"></span> lab<span class="text-muted pull-right">http://localhost:2379/</span></a></li>
+                    <li><a href="#"><span class="fa fa-angle-double-right"></span> test<span class="text-muted pull-right">http://localhost:2379/</span></a></li>
+                    <li class=""><a href="#"><span class="fa fa-angle-double-right"></span> production_123456789<span class="text-muted pull-right">https://192.168.122.199:2379/</span></a></li>
+
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#"><span class="fa fa-plus"></span> Add another cluster</a></li>
+                  </ul>
+                </li>
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="fa fa-user-times"></span> Sign out <span class="caret"></span></a>
+            <ul class="dropdown-menu dropdown-menu-right dropdown-menu-signout">
+              <li class="dropdown-header">Select user to sign out</li>
+
+              <li class="my-active"><a href="#"><span class="fa fa-angle-double-right"></span> root <span class="text-muted pull-right">production</span></a></li>
+              <li><a href="#"><span class="fa fa-angle-double-right"></span> guest <span class="text-muted pull-right">lab</span></a></li>
+              <li><a href="#"><span class="fa fa-angle-double-right"></span> alice <span class="text-muted pull-right">neverland</span></a></li>
+
+              <li role="separator" class="divider"></li>
+              <li><a href="#"><span class="fa fa-sign-out"></span> Sign out all users</a></li>
+            </ul>
+          </li>
+
+
+        </ul>
+
+</wicket:remove>
+</body>
+</html>

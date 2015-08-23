@@ -95,7 +95,7 @@ public class ClusterManagerImpl implements ClusterManager {
 
         List<EtcdMember> members;
 
-        try (EtcdProxy proxy = proxyFactory.getEtcdProxy(leaderAddress)) {
+        try (EtcdProxy proxy = proxyFactory.getEtcdProxy(name, leaderAddress)) {
 
             members = proxy.getMembers();
             Collections.sort(members, MEMBER_SORTER);
@@ -117,7 +117,7 @@ public class ClusterManagerImpl implements ClusterManager {
 
             for (String clientURL : member.getClientURLs()) {
 
-                try (EtcdProxy proxy = proxyFactory.getEtcdProxy(clientURL)) {
+                try (EtcdProxy proxy = proxyFactory.getEtcdProxy(name, clientURL)) {
 
                     EtcdSelfStats memberStats = proxy.getSelfStats();
 

@@ -2,6 +2,8 @@ package org.github.etcd.rest;
 
 import java.util.List;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.github.etcd.service.rest.EtcdException;
 import org.github.etcd.service.rest.EtcdMember;
 import org.github.etcd.service.rest.EtcdNode;
@@ -33,8 +35,11 @@ public class TestEtcdProxy extends Assert {
         String clientURL = System.getProperty("etcd.clientURL", "http://localhost:2379/");
 
 //        clientURL = "http://192.168.122.103:4001/";
+        String username = "root";
+        String password = "root";
+        String token = DatatypeConverter.printBase64Binary((username + ":" + password).getBytes());
 
-        etcdProxy = new EtcdProxyImpl(clientURL);
+        etcdProxy = new EtcdProxyImpl(clientURL, token);
 
         // just check accessibility of etcd server
         // if it is not reachable for any reason then
