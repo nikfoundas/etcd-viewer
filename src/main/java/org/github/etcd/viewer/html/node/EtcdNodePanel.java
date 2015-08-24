@@ -97,7 +97,10 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
                 if (registry.getObject() == null) {
                     return null;
                 }
-                try (EtcdProxy p = proxyFactory.getEtcdProxyByName(registry.getObject())) {
+                try (EtcdProxy p = proxyFactory.getEtcdProxy(registry.getObject())) {
+
+                    System.out
+                            .println("EtcdNodePanel.EtcdNodePanel(...).new LoadableDetachableModel() {...}.load() " + key.getObject());
 
                     return p.getNode(key.getObject());
                 } catch (Exception e) {

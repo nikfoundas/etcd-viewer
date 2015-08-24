@@ -19,11 +19,21 @@ import org.github.etcd.service.EtcdCluster;
 
 public class SelectRegistryPanel extends Panel {
 
+    private static final long serialVersionUID = 1L;
+
     @Inject
     private ClusterManager clusterManager;
 
     public SelectRegistryPanel(String id) {
         super(id);
+
+        add(new Label("currentRegistry", new LoadableDetachableModel<String>() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            protected String load() {
+                return getPage().getPageParameters().get("cluster").toString("Select registry");
+            }
+        }));
 
         IModel<List<EtcdCluster>> clusterList = new LoadableDetachableModel<List<EtcdCluster>>() {
             private static final long serialVersionUID = 1L;
@@ -32,13 +42,6 @@ public class SelectRegistryPanel extends Panel {
                 return clusterManager.getClusters();
             }
         };
-
-        add(new Label("currentRegistry", new LoadableDetachableModel<String>() {
-            @Override
-            protected String load() {
-                return getPage().getPageParameters().get("cluster").toString("Select registry");
-            }
-        }));
 
         add(new ListView<EtcdCluster>("clusters", clusterList) {
             private static final long serialVersionUID = 1L;
@@ -59,7 +62,7 @@ public class SelectRegistryPanel extends Panel {
                     public String getObject() {
                         String clusterName = super.getObject();
                         if (NavigationPage.class.equals(getPage().getPageClass()) && clusterName.equals(getPage().getPageParameters().get("cluster").toString(""))) {
-                            return "my-active";
+                            return "selected";
                         } else {
                             return "";
                         }

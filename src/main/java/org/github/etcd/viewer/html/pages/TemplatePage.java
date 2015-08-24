@@ -33,8 +33,7 @@ public class TemplatePage extends WebPage {
     @Inject
     private Provider<EtcdProxy> etcdResource;
 
-//    @Inject
-    private IModel<String> currentClusterModel;
+    private IModel<String> registry;
 
     public TemplatePage() {
         super();
@@ -63,7 +62,8 @@ public class TemplatePage extends WebPage {
 
     private void createPage() {
 
-        currentClusterModel = new LoadableDetachableModel<String>() {
+        registry = new LoadableDetachableModel<String>() {
+            private static final long serialVersionUID = 1L;
             @Override
             protected String load() {
                 return getPageParameters().get("cluster").toOptionalString();
@@ -86,13 +86,13 @@ public class TemplatePage extends WebPage {
             @Override
             protected void onConfigure() {
                 super.onConfigure();
-                setVisible(currentClusterModel.getObject() != null);
+                setVisible(registry.getObject() != null);
 
                 setVisible(false);
             }
         });
-        currentCluster.add(new Label("name", new PropertyModel<>(currentClusterModel, "name")));
-        currentCluster.add(new Label("address", new PropertyModel<>(currentClusterModel, "address")));
+        currentCluster.add(new Label("name", new PropertyModel<>(registry, "name")));
+        currentCluster.add(new Label("address", new PropertyModel<>(registry, "address")));
 
 
         add(new WebMarkupContainer("noCurrentCluster") {
@@ -100,7 +100,7 @@ public class TemplatePage extends WebPage {
             @Override
             protected void onConfigure() {
                 super.onConfigure();
-                setVisible(currentClusterModel.getObject() == null);
+                setVisible(registry.getObject() == null);
             }
         });
 
@@ -148,6 +148,13 @@ public class TemplatePage extends WebPage {
         add(new SignInPanel("authPanel"));
         add(new SelectRegistryPanel("selectRegistry"));
         add(new SignOutPanel("signOut"));
+    }
+
+    @Override
+    protected void onDetach() {
+        super.onDetach();
+
+        registry.detach();
     }
 
     protected void updatePageTitle(AjaxRequestTarget target) {

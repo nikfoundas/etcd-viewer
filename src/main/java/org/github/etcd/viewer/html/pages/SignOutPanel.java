@@ -18,11 +18,13 @@ import org.github.etcd.viewer.EtcdWebSession.AuthenticationData;
 
 public class SignOutPanel extends Panel {
 
+    private static final long serialVersionUID = 1L;
+
     private IModel<List<AuthenticationData>> authentications = new LoadableDetachableModel<List<AuthenticationData>>() {
         private static final long serialVersionUID = 1L;
         @Override
         protected List<AuthenticationData> load() {
-            return new ArrayList<>(EtcdWebSession.get().getAuths());
+            return new ArrayList<>(EtcdWebSession.get().getAuthentications());
         }
     };
 
@@ -30,6 +32,7 @@ public class SignOutPanel extends Panel {
         super(id);
 
         add(new Label("authCount", new LoadableDetachableModel<Integer>() {
+            private static final long serialVersionUID = 1L;
             @Override
             protected Integer load() {
                 return authentications.getObject().size();
@@ -42,17 +45,17 @@ public class SignOutPanel extends Panel {
             protected void populateItem(ListItem<AuthenticationData> item) {
                 Link<AuthenticationData> signOut;
                 item.add(signOut = new Link<AuthenticationData>("signOut", item.getModel()) {
+                    private static final long serialVersionUID = 1L;
                     @Override
                     public void onClick() {
-                        System.out.println("Trying to sign out: " + getModelObject());
 
                         String username = getModelObject().getUsername();
                         String cluster = getModelObject().getCluster();
 
                         if (EtcdWebSession.get().signOut(cluster, username)) {
-                            System.out.println("Successfully signed out user: " + username + " from: " + cluster);
+                            info("Successfully signed out user: " + username + " from: " + cluster);
                         } else {
-                            System.out.println("Failed to sign out user: " + username + " from: " + cluster);
+                            error("Failed to sign out user: " + username + " from: " + cluster);
                         }
 
                         setResponsePage(getPage().getPageClass(), getPage().getPageParameters());
@@ -63,33 +66,23 @@ public class SignOutPanel extends Panel {
 
                 signOut.add(new Label("cluster", new PropertyModel<String>(item.getModel(), "cluster")));
 
-/*                item.add(new AttributeAppender("class", new ChainingModel<String>(nameModel) {
-                    private static final long serialVersionUID = 1L;
-                    @Override
-                    public String getObject() {
-                        String clusterName = super.getObject();
-                        if (NavigationPage.class.equals(getPage().getPageClass()) && clusterName.equals(getPage().getPageParameters().get("cluster").toString(""))) {
-                            return "my-active";
-                        } else {
-                            return "";
-                        }
-                    }
-                }));*/
             }
         });
 
         add(new StatelessLink<Void>("signOutAll") {
+            private static final long serialVersionUID = 1L;
             @Override
             public void onClick() {
-//                EtcdWebSession.get().clearAllAuthentications();
-
                 EtcdWebSession.get().invalidate();
-
                 setResponsePage(Application.get().getHomePage());
-
-//                setResponsePage(getPage().getPageClass(), getPage().getPageParameters());
             }
         });
+    }
+
+    @Override
+    protected void onDetach() {
+        super.onDetach();
+        authentications.detach();
     }
 
     @Override

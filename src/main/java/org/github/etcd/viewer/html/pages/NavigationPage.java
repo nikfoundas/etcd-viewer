@@ -3,18 +3,17 @@
  */
 package org.github.etcd.viewer.html.pages;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.github.etcd.service.rest.EtcdProxy;
 import org.github.etcd.viewer.ConvertUtils;
 import org.github.etcd.viewer.html.cluster.ClusterSelectionPanel;
 import org.github.etcd.viewer.html.node.EtcdNodePanel;
@@ -23,13 +22,14 @@ public class NavigationPage extends TemplatePage {
 
     private static final long serialVersionUID = 1L;
 
-    private EtcdNodePanel node;
-
+    private IModel<String> registry;
     private IModel<String> key;
 
-    private IModel<String> registry;
+    private EtcdNodePanel node;
 
     private FeedbackPanel feedback;
+
+    private IModel<String> jumpToKey = Model.of();
 
     public NavigationPage(PageParameters parameters) {
         super(parameters);
@@ -81,6 +81,18 @@ public class NavigationPage extends TemplatePage {
             }
         };
 
+        Form<Void> jumpToForm;
+        add(jumpToForm = new Form<Void>("jumpToForm") {
+            private static final long serialVersionUID = 1L;
+            @Override
+            protected void onSubmit() {
+                super.onSubmit();
+
+                setResponsePage(NavigationPage.class, ConvertUtils.getPageParameters(jumpToKey.getObject()).add("cluster", registry.getObject()));
+            }
+        });
+        jumpToForm.add(new TextField<>("key", jumpToKey));
+
         add(new ClusterSelectionPanel("clusterSelection") {
             private static final long serialVersionUID = 1L;
             @Override
@@ -130,9 +142,6 @@ public class NavigationPage extends TemplatePage {
         });
 
     }
-
-    @Inject
-    private Provider<EtcdProxy> etcdProxy;
 
     @Override
     protected void onConfigure() {

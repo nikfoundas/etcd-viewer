@@ -16,8 +16,6 @@ public class SignInPanel extends GenericPanel<String> {
 
     private static final long serialVersionUID = 1L;
 
-//    private static final CssResourceReference SIGNIN_CSS = new CssResourceReference(AuthPanel.class, "signin.css");
-
     private String username;
     private String password;
 
@@ -43,7 +41,7 @@ public class SignInPanel extends GenericPanel<String> {
         super.onConfigure();
 
         setVisible(registry.getObject() != null &&
-                proxyFactory.getEtcdProxyByName(registry.getObject()).isAuthEnabled() &&
+                proxyFactory.getEtcdProxy(registry.getObject()).isAuthEnabled() &&
                 !EtcdWebSession.get().hasAuthentication(registry.getObject()));
     }
 
@@ -71,8 +69,6 @@ public class SignInPanel extends GenericPanel<String> {
         @Override
         protected void onSubmit() {
             super.onSubmit();
-
-            System.out.println("AuthPanel(user: " + username + ", cluster: " + registry.getObject() + ")");
 
             EtcdWebSession.get().signIn(registry.getObject(), username, password);
 

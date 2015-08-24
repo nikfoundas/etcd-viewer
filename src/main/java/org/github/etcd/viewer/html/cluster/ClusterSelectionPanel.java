@@ -34,8 +34,7 @@ public class ClusterSelectionPanel extends Panel {
     @Inject
     private ClusterManager clusterManager;
 
-//    @Inject
-    private IModel<String> selectedCluster;
+    private IModel<String> registry;
 
     private WebMarkupContainer selectInputGroup;
     private WebMarkupContainer body;
@@ -46,26 +45,11 @@ public class ClusterSelectionPanel extends Panel {
     private AddClusterModalPanel addClusterModal;
     private DeleteClusterModalPanel deleteClusterModal;
 
-/*    private IModel<Boolean> clusterExpanded = new IModel<Boolean>() {
-        private static final long serialVersionUID = 1L;
-        @Override
-        public void detach() {
-        }
-        @Override
-        public Boolean getObject() {
-            Boolean value = (Boolean) Session.get().getAttribute("clusterExpanded");
-            return value == null ? false : value;
-        }
-        @Override
-        public void setObject(Boolean object) {
-            Session.get().setAttribute("clusterExpanded", object);
-        }
-    };*/
-
     public ClusterSelectionPanel(String id) {
         super(id);
 
-        selectedCluster = new LoadableDetachableModel<String>() {
+        registry = new LoadableDetachableModel<String>() {
+            private static final long serialVersionUID = 1L;
             @Override
             protected String load() {
                 return getPage().getPageParameters().get("cluster").toOptionalString();
@@ -78,18 +62,18 @@ public class ClusterSelectionPanel extends Panel {
             protected void onClusterAdded(AjaxRequestTarget target, EtcdCluster addedCluster) {
                 super.onClusterAdded(target, addedCluster);
 
-                selectedCluster.setObject(addedCluster.getName());
+                registry.setObject(addedCluster.getName());
                 onSelectedClusterChanged(target);
             }
         });
 
-        add(deleteClusterModal = new DeleteClusterModalPanel("deleteClusterModal", selectedCluster) {
+        add(deleteClusterModal = new DeleteClusterModalPanel("deleteClusterModal", registry) {
             private static final long serialVersionUID = 1L;
             @Override
             protected void onClusterDeleted(AjaxRequestTarget target) {
                 super.onClusterDeleted(target);
 
-                selectedCluster.setObject(null);
+                registry.setObject(null);
 
                 onSelectedClusterDeleted(target);
             }
@@ -100,7 +84,7 @@ public class ClusterSelectionPanel extends Panel {
             @Override
             protected void onConfigure() {
                 super.onConfigure();
-                if (selectedCluster.getObject() == null) {
+                if (registry.getObject() == null) {
                     add(AttributeAppender.append("disabled", "disabled"));
                 } else {
                     add(AttributeModifier.remove("disabled"));
@@ -117,7 +101,7 @@ public class ClusterSelectionPanel extends Panel {
             private static final long serialVersionUID = 1L;
             @Override
             protected String load() {
-                return selectedCluster.getObject() == null || clusterManager.getCluster(selectedCluster.getObject()) == null ? null : selectedCluster.getObject() + " @ " + clusterManager.getCluster(selectedCluster.getObject()).getAddress();
+                return registry.getObject() == null || clusterManager.getCluster(registry.getObject()) == null ? null : registry.getObject() + " @ " + clusterManager.getCluster(registry.getObject()).getAddress();
             }
         }));
 
@@ -139,7 +123,7 @@ public class ClusterSelectionPanel extends Panel {
                     private static final long serialVersionUID = 1L;
                     @Override
                     public void onClick(AjaxRequestTarget target) {
-                        selectedCluster.setObject(getModelObject());
+                        registry.setObject(getModelObject());
 
                         onSelectedClusterChanged(target);
                     }
@@ -157,7 +141,7 @@ public class ClusterSelectionPanel extends Panel {
                     private static final long serialVersionUID = 1L;
                     @Override
                     public String getObject() {
-                        return super.getObject().equals(selectedCluster.getObject()) ? "disabled" : "";
+                        return super.getObject().equals(registry.getObject()) ? "disabled" : "";
                     }
                 }));
             }
@@ -173,7 +157,7 @@ public class ClusterSelectionPanel extends Panel {
             private static final long serialVersionUID = 1L;
             @Override
             protected EtcdCluster load() {
-                return clusterManager.getCluster(selectedCluster.getObject());
+                return clusterManager.getCluster(registry.getObject());
             }
         };
 
@@ -194,13 +178,19 @@ public class ClusterSelectionPanel extends Panel {
         add(clusterPeers = new ClusterMembersPanel("clusterPeers", new PropertyModel<List<EtcdMember>>(cluster, "members")));
 
     }
+    @Override
+    protected void onDetach() {
+        super.onDetach();
+
+        registry.detach();
+    }
 
     private void refreshCluster() {
         try {
-            clusterManager.refreshCluster(selectedCluster.getObject());
-            success("Successfully refreshed etcd cluster: " + selectedCluster.getObject());
+            clusterManager.refreshCluster(registry.getObject());
+            success("Successfully refreshed etcd cluster: " + registry.getObject());
         } catch (Exception e) {
-            error("Failed to connect to etcd cluster: " + selectedCluster.getObject());
+            error("Failed to connect to etcd cluster: " + registry.getObject());
         }
     }
 

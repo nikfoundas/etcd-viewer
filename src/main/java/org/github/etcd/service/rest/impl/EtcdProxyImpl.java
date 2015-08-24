@@ -200,9 +200,9 @@ public class EtcdProxyImpl implements EtcdProxy {
 
     private String normalizeKey(final String key) {
         if (key == null) {
-            return "";
+            return "/";
         }
-        return key.startsWith("/") ? key.substring(1) : key;
+        return key.startsWith("/") ? key.substring(1) + "/" : key + "/";
     }
 
     protected EtcdResponse saveOrUpdateNode(EtcdNode node, Boolean update) {
