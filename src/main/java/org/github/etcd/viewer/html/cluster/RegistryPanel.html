@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<wicket:head>
+<style>
+
+.panel-registry .selected .panel-title {
+  font-weight: bold;
+}
+
+.panel-registry .fa-database {
+  display: inline-block;
+}
+
+.panel-registry .fa-angle-double-right, .panel-registry .fa-user-secret, .panel-registry .fa-lock {
+  display: none;
+}
+
+.panel-registry .panel-title a[aria-expanded="true"] .fa-database {
+  display: none;
+}
+
+.panel-registry .panel-title a[aria-expanded="true"] .fa-angle-double-right {
+  display: inline-block;
+}
+
+.panel-registry .auth-enabled .fa-user-secret, .panel-registry .auth-enabled .fa-lock {
+  display: inline-block;
+}
+
+.panel-registry .panel-title .address {
+  margin-right: 0px;
+}
+
+.panel-registry .panel-title .fa-refresh {
+  display: none;
+}
+
+.panel-registry .must-refresh .panel-title .fa-refresh {
+  display: inline-block;
+}
+
+.panel-registry .panel-title a[aria-expanded="true"]  {
+  font-weight: bold;
+}
+
+.panel-registry .panel-title > a:hover, .panel-registry .panel-title > a:focus {
+  text-decoration: none;
+}
+
+.panel-registry .panel-title a {
+  display: block;
+  /* width: 100%; */
+  /* height: 100%; */
+  margin: -10px -15px;
+  padding: 10px 15px;
+}
+
+</style>
+</wicket:head>
+</head>
+<body>
+<wicket:panel>
+
+  <div class="panel-heading" role="tab" wicket:id="heading">
+    <h4 class="panel-title clearfix">
+      <a role="button" wicket:id="link" data-toggle="collapse">
+            <span class="fa fa-fw fa-database"></span><span class="fa fa-fw fa-angle-double-right"></span>&nbsp;
+            <span wicket:id="name" class="address"></span>&nbsp;
+
+            <span class="fa fa-fw fa-refresh"></span><span class="fa fa-fw fa-user-secret"></span><span class="fa fa-fw fa-lock"></span>
+          <span class="pull-right">
+            <span class="text-muted address-" wicket:id="address"></span>
+            <!-- <span class="fa fa-fw fa-refresh"></span><span class="fa fa-fw fa-user-secret"></span> -->
+          </span>
+      </a>
+    </h4>
+  </div>
+  <div wicket:id="collapsingBody" class="panel-collapse collapse table-responsive" role="tabpanel">
+    <div class="panel-body">
+      <div class="row">
+        <!-- <div class="col-sm-6 h4"><span class="fa fa-tag"></span> <span wicket:id="name"></span> <small wicket:id="address">[leader address]</small></div> -->
+
+
+        <div class="col-sm-6 h4"><span class="fa fa-tag"></span> <strong wicket_id="name"></strong> <span class="text-muted">Authentication: <span wicket_id="authEnabled"></span></span></div>
+
+        <div class="col-sm-6 text-muted text-right">Last refresh at <span wicket:id="lastRefreshTime"></span>
+
+          <div class="btn-group">
+            <button wicket:id="refresh" class="btn btn-default" title="Refresh etcd cluster nodes"><span class="fa fa-refresh"></span></button>
+            <button wicket:id="delete" data-toggle="modal" class="btn btn-danger"><span class="fa fa-trash"></span></button>
+          </div>
+
+        </div>
+
+      </div>
+<hr>
+    </div>
+    <wicket:container wicket:id="clusterPeers"></wicket:container>
+  </div>
+
+</wicket:panel>
+</body>
+</html>

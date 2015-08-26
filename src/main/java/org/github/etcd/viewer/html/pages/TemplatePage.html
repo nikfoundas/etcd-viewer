@@ -107,7 +107,7 @@ html {
         </ul>
 
         <ul class="nav navbar-nav">
-          <li><a wicket:id="home"><span class="fa fa-home fa-fw"></span> Home</a></li>
+          <li wicket:id="homeMenuItem"><a wicket:id="home"><span class="fa fa-home fa-fw"></span> Home</a></li>
           <li class="dropdown" wicket:id="selectRegistry"></li>
         </ul>
 
@@ -118,7 +118,7 @@ html {
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
-          <li wicket:id="menu"><a wicket:id="link"><span wicket:id="label"></span></a></li>
+          <li wicket:id="aboutMenuItem"><a wicket:id="about">About</a></li>
         </ul>
 
       </div><!--/.navbar-collapse -->
@@ -135,23 +135,17 @@ html {
   <footer class="footer">
     <div class="container">
       <div class="row">
-<p class="text-center text-muted">version: <strong><wicket:message key="etcd-viewer.version">[version]</wicket:message></strong></p>
-<p class="text-center"><a href="https://github.com/nikfoundas/etcd-viewer"><span class="fa fa-github"></span> View project on github</a> - <a href="https://github.com/nikfoundas/etcd-viewer/issues/new"><span class="fa fa-bug"></span> Report an issue</a></p>
-<p class="text-center text-muted">
-  This application is released under the <a href="https://github.com/nikfoundas/etcd-viewer/blob/master/LICENSE">Apache 2.0 license</a>.
-</p>
+        <p class="text-center text-muted">version: <strong><wicket:message key="etcd-viewer.version">[version]</wicket:message></strong></p>
+        <p class="text-center">
+          <a href="https://nikfoundas.github.io/etcd-viewer"><span class="fa fa-github"></span> View project on github</a>&nbsp;-&nbsp;
+          <a href="https://github.com/nikfoundas/etcd-viewer/issues/new"><span class="fa fa-bug"></span> Report an issue</a>
+        </p>
+        <p class="text-center text-muted">
+          This application is released under the <a href="https://github.com/nikfoundas/etcd-viewer/blob/master/LICENSE">Apache 2.0 license</a>.
+        </p>
       </div>
     </div>
-
-      <div class="container hidden">
-      <p wicket:id="currentCluster" class="hidden">
-      <strong>Alias: </strong><span wicket:id="name"></span><br>
-      <strong>Address: </strong><span wicket:id="address"></span><br>
-      <strong>ETCD Version: </strong><span wicket:id="version"></span>
-      </p>
-      <p wicket:id="noCurrentCluster" class="hidden"><strong>NO CLUSTER IS CURRENTLY SELECTED</strong></p>
-      </div><!-- ./container -->
-    </footer>
+  </footer>
 
 
 </body>

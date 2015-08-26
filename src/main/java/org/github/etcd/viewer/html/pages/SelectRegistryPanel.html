@@ -3,14 +3,17 @@
 <body>
 <wicket:panel>
 
-<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="fa fa-database fa-fw"></span> <span wicket:id="currentRegistry"></span> <span class="label label-default">2</span> <span class="caret"></span></a>
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+  <span class="fa fa-database fa-fw"></span> <span wicket:id="currentRegistry"></span> <span wicket:id="count" class="label label-default">[registry count]</span> <span class="caret"></span>
+</a>
 <ul class="dropdown-menu dropdown-menu-registry">
   <li class="dropdown-header">Select registry</li>
 
   <li wicket:id="clusters"><a wicket:id="link"><span class="fa fa-angle-double-right"></span> <span wicket:id="name"></span><span wicket:id="address" class="pull-right text-muted"></span></a></li>
 
   <li role="separator" class="divider"></li>
-  <li><a href="#"><span class="fa fa-plus"></span> Add another registry</a></li>
+
+  <li><a wicket:id="registries"><span class="fa fa-cogs fa-fw"></span> Manage registries</a></li>
 </ul>
 
 </wicket:panel>

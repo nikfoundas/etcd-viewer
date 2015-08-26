@@ -10,6 +10,7 @@ import org.github.etcd.viewer.html.pages.AboutPage;
 import org.github.etcd.viewer.html.pages.HomePage;
 import org.github.etcd.viewer.html.pages.NavigationPage;
 import org.github.etcd.viewer.html.pages.AuthPage;
+import org.github.etcd.viewer.html.pages.RegistriesPage;
 
 /**
  * Application object for your web application.
@@ -54,6 +55,8 @@ public class EtcdViewerApplication extends AuthenticatedWebApplication
 
         mountPage("/home", HomePage.class);
         mountPage("/etcd/#{cluster}", NavigationPage.class);
+        mountPage("/registries", RegistriesPage.class);
+
         mountPage("/about", AboutPage.class);
 
         mountPage("/signin", AuthPage.class);

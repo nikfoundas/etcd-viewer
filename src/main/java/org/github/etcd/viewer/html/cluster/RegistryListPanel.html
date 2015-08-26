@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<wicket:head>
+<style>
+
+
+
+
+
+</style>
+</wicket:head>
+</head>
+<body>
+<wicket:panel>
+
+<div class="panel-group" role="tablist" aria-multiselectable="true" wicket:id="panelGroup">
+  <wicket:container wicket:id="registries">
+    <div class="panel panel-default panel-registry" wicket:id="registry"></div>
+  </wicket:container>
+</div>
+
+<div wicket:id="addClusterModal"></div>
+<div wicket:id="deleteClusterModal"></div>
+
+<button wicket:id="addCluster" class="btn btn-primary btn-lg">Add registry</button>
+
+<!-- <button wicket:id="deleteCluster" class="btn btn-danger btn-lg">Delete registry</button> -->
+
+</wicket:panel>
+</body>
+</html>

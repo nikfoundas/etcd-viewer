@@ -99,9 +99,6 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
                 }
                 try (EtcdProxy p = proxyFactory.getEtcdProxy(registry.getObject())) {
 
-                    System.out
-                            .println("EtcdNodePanel.EtcdNodePanel(...).new LoadableDetachableModel() {...}.load() " + key.getObject());
-
                     return p.getNode(key.getObject());
                 } catch (Exception e) {
                     log.warn(e.getLocalizedMessage(), e);
@@ -197,7 +194,7 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
     }
 
     private void createModalPanels() {
-        add(editNodeModal = new EditNodeModalPanel("editNodeModal", actionModel, updating) {
+        add(editNodeModal = new EditNodeModalPanel("editNodeModal", actionModel, registry, updating) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -209,7 +206,7 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
                 EtcdNodePanel.this.onNodedSaved(target);
             }
         });
-        add(deleteNodeModal = new DeleteNodeModalPanel("deleteNodeModal", actionModel) {
+        add(deleteNodeModal = new DeleteNodeModalPanel("deleteNodeModal", actionModel, registry) {
             private static final long serialVersionUID = 1L;
             @Override
             protected void onNodeDeleted(AjaxRequestTarget target) {

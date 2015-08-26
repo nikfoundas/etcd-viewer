@@ -11,7 +11,7 @@ public class TriggerModalLink<T> extends AjaxLink<T> {
 
     private static final long serialVersionUID = 1L;
 
-    private GenericModalPanel<?> targetModal;
+    private final GenericModalPanel<?> targetModal;
 
     public TriggerModalLink(String id, IModel<T> model, GenericModalPanel<?> targetModal) {
         super(id, model);

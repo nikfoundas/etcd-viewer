@@ -100,6 +100,8 @@ public class ClusterManagerImpl implements ClusterManager {
             members = proxy.getMembers();
             Collections.sort(members, MEMBER_SORTER);
 
+            cluster.setAuthEnabled(proxy.isAuthEnabled());
+
         } catch (Exception e) {
             log.error("Last known leader " + leaderAddress + " is not accessible: " + e.getLocalizedMessage(), e);
             // use the previously discovered members if they exist
@@ -125,9 +127,13 @@ public class ClusterManagerImpl implements ClusterManager {
 
                     if ("leader".equals(member.getState())) {
                         leaderAddress = clientURL;
+
+                        cluster.setAuthEnabled(proxy.isAuthEnabled());
+
                     }
 
                     member.setVersion(proxy.getVersion());
+
 
                     break;
                 } catch (Exception e) {
@@ -140,6 +146,7 @@ public class ClusterManagerImpl implements ClusterManager {
 
         cluster.setAddress(leaderAddress);
         cluster.setLastRefreshTime(new Date());
+        cluster.setRefreshed(true);
 
     }
 

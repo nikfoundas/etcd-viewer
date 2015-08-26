@@ -42,7 +42,7 @@ public class ClusterMembersPanel extends GenericPanel<List<EtcdMember>> {
                             return "danger";
                         }
                         if ("leader".equals(peerModel.getObject().getState())) {
-                            return "active";
+                            return "success";
                         }
                         return "";
                     }

@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -27,11 +28,23 @@ public class SelectRegistryPanel extends Panel {
     public SelectRegistryPanel(String id) {
         super(id);
 
+        add(AttributeAppender.append("class", new LoadableDetachableModel<String>() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            protected String load() {
+                return getPage().getPageClass().equals(NavigationPage.class) || getPage().getPageClass().equals(RegistriesPage.class) ? "active" : "";
+            }
+        }));
+
         add(new Label("currentRegistry", new LoadableDetachableModel<String>() {
             private static final long serialVersionUID = 1L;
             @Override
             protected String load() {
-                return getPage().getPageParameters().get("cluster").toString("Select registry");
+                if (getPage().getPageClass().equals(RegistriesPage.class)) {
+                    return "Manage registries";
+                } else {
+                    return getPage().getPageParameters().get("cluster").toString("Select registry");
+                }
             }
         }));
 
@@ -42,6 +55,16 @@ public class SelectRegistryPanel extends Panel {
                 return clusterManager.getClusters();
             }
         };
+
+        add(new Label("count", new LoadableDetachableModel<Integer>() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            protected Integer load() {
+                return clusterManager.getClusters().size();
+            }
+        }));
+
+        add(new BookmarkablePageLink<>("registries", RegistriesPage.class));
 
         add(new ListView<EtcdCluster>("clusters", clusterList) {
             private static final long serialVersionUID = 1L;

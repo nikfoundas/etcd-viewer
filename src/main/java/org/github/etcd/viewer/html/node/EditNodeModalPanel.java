@@ -1,7 +1,6 @@
 package org.github.etcd.viewer.html.node;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
@@ -15,6 +14,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.github.etcd.service.EtcdProxyFactory;
 import org.github.etcd.service.rest.EtcdException;
 import org.github.etcd.service.rest.EtcdNode;
 import org.github.etcd.service.rest.EtcdProxy;
@@ -30,12 +30,15 @@ public class EditNodeModalPanel extends GenericModalPanel<EtcdNode> {
     private Label title;
     private EtcdNodeForm form;
 
-    @Inject
-    private Provider<EtcdProxy> etcdProxy;
+    private final IModel<String> registry;
 
-    public EditNodeModalPanel(String id, IModel<EtcdNode> model, IModel<Boolean> updatingModel) {
+    @Inject
+    private EtcdProxyFactory proxyFactory;
+
+    public EditNodeModalPanel(String id, IModel<EtcdNode> model, IModel<String> registryName, IModel<Boolean> updatingModel) {
         super(id, model);
         this.updating = updatingModel;
+        this.registry = registryName;
 
         add(title = new Label("title", new StringResourceModel("editModal.title.updating.${}", updating, "Edit Node")));
         title.setOutputMarkupId(true);
@@ -48,7 +51,7 @@ public class EditNodeModalPanel extends GenericModalPanel<EtcdNode> {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
 
-                try (EtcdProxy p = etcdProxy.get()) {
+                try (EtcdProxy p = proxyFactory.getEtcdProxy(registry.getObject())) {
                     try {
                         if (updating.getObject()) {
                             p.updateNode(getModelObject());
