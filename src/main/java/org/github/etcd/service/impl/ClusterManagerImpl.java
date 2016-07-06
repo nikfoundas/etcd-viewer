@@ -45,10 +45,17 @@ public class ClusterManagerImpl implements ClusterManager {
 
     private Map<String, EtcdCluster> clusters = Collections.synchronizedMap(new LinkedHashMap<String, EtcdCluster>());
 
+    private static final String DEFAULT_ETCD_CLIENT = "ETCD_CLIENT_URL";
 
     public ClusterManagerImpl() {
-        addCluster("default", "http://localhost:2379/");
-        addCluster("kvm", "http://192.168.122.101:4001/");
+
+        String etcdAddress = System.getenv(DEFAULT_ETCD_CLIENT);
+        if (etcdAddress == null) {
+            etcdAddress = System.getProperty(DEFAULT_ETCD_CLIENT, "http://localhost:2379/");
+        }
+
+        addCluster("default", etcdAddress);
+        // addCluster("kvm", "http://192.168.122.201:2379/");
     }
 
     @Override
