@@ -222,6 +222,86 @@
     </testResources>
 
     <plugins>
+    
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>ant-execute</id>
+            <phase>prepare-package</phase>
+            <configuration>
+              <target>
+              <mkdir dir="src/main/webapp/fonts"/>
+              <mkdir dir="src/main/webapp/cdn"/>
+              <echo message="plugin classpath:  ${bootstrap.version}" />
+
+              <get src="https://maxcdn.bootstrapcdn.com/bootstrap/${bootstrap.version}/css/bootstrap.css"
+                            dest="src/main/webapp/cdn/bootstrap.css"
+                            verbose="false"
+                            usetimestamp="true"/>
+              <get src="https://maxcdn.bootstrapcdn.com/bootstrap/${bootstrap.version}/css/bootstrap.min.css"
+                            dest="src/main/webapp/cdn/bootstrap.min.css"
+                            verbose="false"
+                            usetimestamp="true"/>
+
+              <get src="https://maxcdn.bootstrapcdn.com/bootstrap/${bootstrap.version}/css/bootstrap-theme.css"
+                            dest="src/main/webapp/cdn/bootstrap-theme.css"
+                            verbose="false"
+                            usetimestamp="true"/>
+              <get src="https://maxcdn.bootstrapcdn.com/bootstrap/${bootstrap.version}/css/bootstrap-theme.min.css"
+                            dest="src/main/webapp/cdn/bootstrap-theme.min.css"
+                            verbose="false"
+                            usetimestamp="true"/>
+
+              <get src="https://maxcdn.bootstrapcdn.com/bootstrap/${bootstrap.version}/js/bootstrap.js"
+                            dest="src/main/webapp/cdn/bootstrap.js"
+                            verbose="false"
+                            usetimestamp="true"/>
+              <get src="https://maxcdn.bootstrapcdn.com/bootstrap/${bootstrap.version}/js/bootstrap.min.js"
+                            dest="src/main/webapp/cdn/bootstrap.min.js"
+                            verbose="false"
+                            usetimestamp="true"/>
+
+              <get src="https://maxcdn.bootstrapcdn.com/font-awesome/${fontawesome.version}/css/font-awesome.css"
+                            dest="src/main/webapp/cdn/font-awesome.css"
+                            verbose="false"
+                            usetimestamp="true"/>
+              <get src="https://maxcdn.bootstrapcdn.com/font-awesome/${fontawesome.version}/css/font-awesome.min.css"
+                            dest="src/main/webapp/cdn/font-awesome.min.css"
+                            verbose="false"
+                            usetimestamp="true"/>
+              <get src="https://maxcdn.bootstrapcdn.com/font-awesome/${fontawesome.version}/fonts/fontawesome-webfont.woff2?v=${fontawesome.version}"
+                            dest="src/main/webapp/fonts/fontawesome-webfont.woff2"
+                            verbose="false"
+                            usetimestamp="true"/>
+              <get src="https://maxcdn.bootstrapcdn.com/font-awesome/${fontawesome.version}/fonts/fontawesome-webfont.woff?v=${fontawesome.version}"
+                            dest="src/main/webapp/fonts/fontawesome-webfont.woff"
+                            verbose="false"
+                            usetimestamp="true"/>
+              <get src="https://maxcdn.bootstrapcdn.com/font-awesome/${fontawesome.version}/fonts/fontawesome-webfont.ttf?v=${fontawesome.version}"
+                            dest="src/main/webapp/fonts/fontawesome-webfont.ttf"
+                            verbose="false"
+                            usetimestamp="true"/>
+
+              <get src="https://maxcdn.bootstrapcdn.com/font-awesome/${fontawesome.version}/fonts/fontawesome-webfont.eot?v=${fontawesome.version}"
+                            dest="src/main/webapp/fonts/fontawesome-webfont.eot"
+                            verbose="false"
+                            usetimestamp="true"/>
+              <get src="https://maxcdn.bootstrapcdn.com/font-awesome/${fontawesome.version}/fonts/fontawesome-webfont.svg?v=${fontawesome.version}#fontawesomeregular"
+                            dest="src/main/webapp/fonts/fontawesome-webfont.svg"
+                            verbose="false"
+                            usetimestamp="true"/>
+
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <inherited>true</inherited>
         <groupId>org.apache.maven.plugins</groupId>

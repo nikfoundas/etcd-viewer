@@ -2,3 +2,5 @@ target
 .settings
 .project
 .classpath
+src/main/webapp/cdn
+src/main/webapp/fonts
