@@ -43,6 +43,19 @@
       <artifactId>wicket-core</artifactId>
       <version>${wicket.version}</version>
     </dependency>
+
+    <!-- Make bootstrap and font-awesome available locally -->
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>bootstrap</artifactId>
+      <version>${bootstrap.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>font-awesome</artifactId>
+      <version>${fontawesome.version}</version>
+    </dependency>
+
     <!-- OPTIONAL DEPENDENCY
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -106,6 +119,12 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-rs-service-description</artifactId>
       <version>${cxf.version}</version>
     </dependency>
 

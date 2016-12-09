@@ -14,9 +14,21 @@ import org.apache.wicket.resource.JQueryResourceReference;
 
 public final class WebResources {
 
-    private static final UrlResourceReference BOOTSTRAP_CSS = new UrlResourceReference(Url.parse("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap" + getMinifiedPrefix() + ".css"));
+    private static final String BOOTSTRAP_VERSION = "3.3.4";
+    private static final String FONT_AWESOME_VERSION = "4.3.0";
 
-    private static final UrlResourceReference BOOTSTRAP_THEME_CSS = new UrlResourceReference(Url.parse("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme" + getMinifiedPrefix() + ".css")) {
+    private static final String MAXCDN_URL_PREFIX = "https://maxcdn.bootstrapcdn.com/";
+    private static final String WEBJARS_URL_PREFIX = "/webjars/";
+
+    private static final String BOOTSTRAP_CSS_URL = "bootstrap/" + BOOTSTRAP_VERSION + "/css/bootstrap" + getMinifiedSuffix() + ".css";
+    private static final String BOOTSTRAP_THEME_CSS_URL = "bootstrap/" + BOOTSTRAP_VERSION + "/css/bootstrap-theme" + getMinifiedSuffix() + ".css";
+    private static final String BOOTSTRAP_JS_URL = "bootstrap/" + BOOTSTRAP_VERSION + "/js/bootstrap" + getMinifiedSuffix() + ".js";
+
+    private static final String FONT_AWESOME_CSS_URL = "font-awesome/" + FONT_AWESOME_VERSION + "/css/font-awesome" + getMinifiedSuffix() + ".css";
+
+    private static final ResourceReference BOOTSTRAP_CSS = new UrlResourceReference(Url.parse(getUrlPrefix() + BOOTSTRAP_CSS_URL));
+
+    private static final ResourceReference BOOTSTRAP_THEME_CSS = new UrlResourceReference(Url.parse(getUrlPrefix() + BOOTSTRAP_THEME_CSS_URL)) {
         private static final long serialVersionUID = 1L;
         @Override
         public Iterable<? extends HeaderItem> getDependencies() {
@@ -24,9 +36,7 @@ public final class WebResources {
         }
     };
 
-    private static final UrlResourceReference FONT_AWESOME_CSS = new UrlResourceReference(Url.parse("//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome" + getMinifiedPrefix() + ".css"));
-
-    private static final UrlResourceReference BOOTSTRAP_JS = new UrlResourceReference(Url.parse("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap" + getMinifiedPrefix() + ".js")) {
+    private static final ResourceReference BOOTSTRAP_JS = new UrlResourceReference(Url.parse(getUrlPrefix() + BOOTSTRAP_JS_URL)) {
         private static final long serialVersionUID = 1L;
         @Override
         public Iterable<? extends HeaderItem> getDependencies() {
@@ -42,8 +52,14 @@ public final class WebResources {
         }
     };
 
-    private static String getMinifiedPrefix() {
+    private static final ResourceReference FONT_AWESOME_CSS = new UrlResourceReference(Url.parse(getUrlPrefix() + FONT_AWESOME_CSS_URL));
+
+    private static String getMinifiedSuffix() {
         return Application.get().getResourceSettings().getUseMinifiedResources() ? ".min" : "";
+    }
+
+    private static String getUrlPrefix() {
+        return Boolean.parseBoolean(System.getProperty("USE_MAXCDN", "false")) ? MAXCDN_URL_PREFIX : WEBJARS_URL_PREFIX;
     }
 
     public static void renderBootstrapHeader(IHeaderResponse response) {
