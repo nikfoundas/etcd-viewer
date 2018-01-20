@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.github.etcd.service.rest;
+package org.github.etcd.service.api;
 
 import java.io.Serializable;
 import java.util.List;

@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.github.etcd.service.rest.EtcdException;
-import org.github.etcd.service.rest.EtcdMember;
-import org.github.etcd.service.rest.EtcdNode;
-import org.github.etcd.service.rest.EtcdProxy;
-import org.github.etcd.service.rest.EtcdSelfStats;
-import org.github.etcd.service.rest.impl.EtcdProxyImpl;
+import org.github.etcd.service.api.EtcdException;
+import org.github.etcd.service.api.EtcdMember;
+import org.github.etcd.service.api.EtcdNode;
+import org.github.etcd.service.api.EtcdProxy;
+import org.github.etcd.service.api.EtcdSelfStats;
+import org.github.etcd.service.api.v2.EtcdProxyImpl;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

@@ -24,7 +24,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.github.etcd.service.ClusterManager;
 import org.github.etcd.service.EtcdCluster;
-import org.github.etcd.service.rest.EtcdMember;
+import org.github.etcd.service.api.EtcdMember;
 import org.github.etcd.viewer.html.modal.TriggerModalLink;
 
 public class ClusterSelectionPanel extends Panel {

@@ -6,7 +6,7 @@ package org.github.etcd.service;
 import java.util.Date;
 import java.util.List;
 
-import org.github.etcd.service.rest.EtcdMember;
+import org.github.etcd.service.api.EtcdMember;
 
 public class EtcdCluster {
 
@@ -18,14 +18,16 @@ public class EtcdCluster {
     private boolean refreshed = false;
     private boolean authEnabled;
     private String address;
+    private ApiVersion apiVersion;
 
     private Date lastRefreshTime;
 
     public EtcdCluster() {
     }
-    public EtcdCluster(String name, String address) {
+    public EtcdCluster(String name, String address, ApiVersion apiVersion) {
         this.name = name;
         this.address = address;
+        this.apiVersion = apiVersion;
     }
     public String getName() {
         return name;
@@ -62,6 +64,12 @@ public class EtcdCluster {
     }
     public void setAuthEnabled(boolean authEnabled) {
         this.authEnabled = authEnabled;
+    }
+    public ApiVersion getApiVersion() {
+        return apiVersion;
+    }
+    public void setApiVersion(ApiVersion apiVersion) {
+        this.apiVersion = apiVersion;
     }
     public boolean mustRefresh() {
         if (!refreshed) {

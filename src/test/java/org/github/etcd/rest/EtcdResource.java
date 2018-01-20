@@ -13,9 +13,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.github.etcd.service.rest.EtcdMembers;
-import org.github.etcd.service.rest.EtcdResponse;
-import org.github.etcd.service.rest.EtcdSelfStats;
+import org.github.etcd.service.api.EtcdMembers;
+import org.github.etcd.service.api.EtcdResponse;
+import org.github.etcd.service.api.EtcdSelfStats;
 
 @Path("/")
 public interface EtcdResource extends AutoCloseable {

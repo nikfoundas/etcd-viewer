@@ -11,12 +11,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.github.etcd.service.ApiVersion;
 import org.github.etcd.service.ClusterManager;
 import org.github.etcd.service.EtcdCluster;
 import org.github.etcd.service.EtcdProxyFactory;
-import org.github.etcd.service.rest.EtcdMember;
-import org.github.etcd.service.rest.EtcdProxy;
-import org.github.etcd.service.rest.EtcdSelfStats;
+import org.github.etcd.service.api.EtcdMember;
+import org.github.etcd.service.api.EtcdProxy;
+import org.github.etcd.service.api.EtcdSelfStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class ClusterManagerImpl implements ClusterManager {
             etcdAddress = System.getProperty(DEFAULT_ETCD_CLIENT, "http://localhost:2379/");
         }
 
-        addCluster("default", etcdAddress);
+        addCluster("default", etcdAddress, ApiVersion.V2);
         // addCluster("kvm", "http://192.168.122.201:2379/");
     }
 
@@ -69,8 +70,8 @@ public class ClusterManagerImpl implements ClusterManager {
     }
 
     @Override
-    public EtcdCluster addCluster(String name, String etcdPeerAddress) {
-        EtcdCluster cluster = new EtcdCluster(name, etcdPeerAddress);
+    public EtcdCluster addCluster(String name, String etcdPeerAddress, ApiVersion apiVersion) {
+        EtcdCluster cluster = new EtcdCluster(name, etcdPeerAddress, apiVersion);
         clusters.put(name, cluster);
         return cluster;
     }
@@ -99,10 +100,11 @@ public class ClusterManagerImpl implements ClusterManager {
 
         // default leader address is the provided one
         String leaderAddress = cluster.getAddress();
+        ApiVersion apiVersion = cluster.getApiVersion();
 
         List<EtcdMember> members;
 
-        try (EtcdProxy proxy = proxyFactory.getEtcdProxy(name, leaderAddress)) {
+        try (EtcdProxy proxy = proxyFactory.getEtcdProxy(name, leaderAddress, apiVersion)) {
 
             members = proxy.getMembers();
             Collections.sort(members, MEMBER_SORTER);
@@ -126,7 +128,7 @@ public class ClusterManagerImpl implements ClusterManager {
 
             for (String clientURL : member.getClientURLs()) {
 
-                try (EtcdProxy proxy = proxyFactory.getEtcdProxy(name, clientURL)) {
+                try (EtcdProxy proxy = proxyFactory.getEtcdProxy(name, clientURL, apiVersion)) {
 
                     EtcdSelfStats memberStats = proxy.getSelfStats();
 

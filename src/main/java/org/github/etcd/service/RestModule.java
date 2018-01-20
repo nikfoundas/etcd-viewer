@@ -7,8 +7,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.github.etcd.service.impl.ClusterManagerImpl;
-import org.github.etcd.service.rest.EtcdProxy;
-import org.github.etcd.service.rest.impl.EtcdProxyImpl;
+import org.github.etcd.service.api.EtcdProxy;
+import org.github.etcd.service.api.v2.EtcdProxyImpl;
 import org.github.etcd.viewer.EtcdWebSession;
 
 import com.google.inject.AbstractModule;
@@ -42,7 +42,7 @@ public class RestModule extends AbstractModule {
         private ClusterManager clusterManager;
 
         @Override
-        public EtcdProxy getEtcdProxy(String registry, String address) {
+        public EtcdProxy getEtcdProxy(String registry, String address, ApiVersion apiVersion) {
             String authToken = null;
             if (EtcdWebSession.exists()) {
                 authToken = EtcdWebSession.get().getBasicAuthenticationToken(registry);
@@ -52,7 +52,8 @@ public class RestModule extends AbstractModule {
 
         @Override
         public EtcdProxy getEtcdProxy(String registry) {
-            return getEtcdProxy(registry, clusterManager.getCluster(registry).getAddress());
+            EtcdCluster cluster = clusterManager.getCluster(registry);
+            return getEtcdProxy(registry, cluster.getAddress(), cluster.getApiVersion());
         }
 
     }

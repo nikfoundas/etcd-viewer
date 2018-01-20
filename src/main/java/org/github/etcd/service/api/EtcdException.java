@@ -1,4 +1,4 @@
-package org.github.etcd.service.rest;
+package org.github.etcd.service.api;
 
 import javax.ws.rs.WebApplicationException;
 

@@ -1,4 +1,4 @@
-package org.github.etcd.service.rest;
+package org.github.etcd.service.api;
 
 /**
  * Pojo entity that maps to the json object returned

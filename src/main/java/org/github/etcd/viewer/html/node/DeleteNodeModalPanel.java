@@ -9,9 +9,9 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.github.etcd.service.EtcdProxyFactory;
-import org.github.etcd.service.rest.EtcdException;
-import org.github.etcd.service.rest.EtcdNode;
-import org.github.etcd.service.rest.EtcdProxy;
+import org.github.etcd.service.api.EtcdException;
+import org.github.etcd.service.api.EtcdNode;
+import org.github.etcd.service.api.EtcdProxy;
 import org.github.etcd.viewer.html.modal.GenericModalPanel;
 
 public class DeleteNodeModalPanel extends GenericModalPanel<EtcdNode> {
