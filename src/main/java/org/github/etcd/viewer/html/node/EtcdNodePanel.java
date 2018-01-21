@@ -413,10 +413,15 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
         @Override
         protected String load() {
             String etcdKey = key.getObject();
-            if (etcdKey == null || etcdKey.indexOf('/') == -1) {
+            if (etcdKey == null || etcdKey.indexOf('/') == -1 || "/".equals(etcdKey)) {
                 return etcdKey;
             }
-            return etcdKey.substring(0, etcdKey.lastIndexOf('/'));
+            if (etcdKey.endsWith("/")) {
+                // Find the 2nd to last /
+                return etcdKey.substring(0, etcdKey.lastIndexOf('/', etcdKey.length()-2));
+            } else {
+                return etcdKey.substring(0, etcdKey.lastIndexOf('/'));
+            }
         }
     }
 
@@ -435,11 +440,15 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
 
         @Override
         public String getObject() {
+            String parentKey = key.getObject();
+            if (parentKey == null) {
+                parentKey = "";
+            }
             String etcdKey = super.getObject();
-            if (etcdKey == null || etcdKey.indexOf('/') == -1) {
+            if (etcdKey == null || etcdKey.indexOf('/') == -1 || "/".equals(etcdKey)) {
                 return etcdKey;
             }
-            return etcdKey.substring(etcdKey.lastIndexOf('/') + 1);
+            return etcdKey.substring(parentKey.length());
         }
 
     }
