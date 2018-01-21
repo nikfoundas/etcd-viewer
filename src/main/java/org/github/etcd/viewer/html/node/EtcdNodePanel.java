@@ -440,15 +440,15 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
 
         @Override
         public String getObject() {
-            String parentKey = key.getObject();
-            if (parentKey == null) {
-                parentKey = "";
-            }
             String etcdKey = super.getObject();
             if (etcdKey == null || etcdKey.indexOf('/') == -1 || "/".equals(etcdKey)) {
                 return etcdKey;
             }
-            return etcdKey.substring(parentKey.length());
+            if (etcdKey.endsWith("/")) {
+                return etcdKey.substring(etcdKey.lastIndexOf('/', etcdKey.length()-2) + 1);
+            } else {
+                return etcdKey.substring(etcdKey.lastIndexOf('/') + 1);
+            }
         }
 
     }
