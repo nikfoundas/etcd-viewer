@@ -35,19 +35,19 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
-public class EtcdProxyImpl implements EtcdProxy {
+public class EtcdV2ProxyImpl implements EtcdProxy {
     private static final Logger LOG = LoggerFactory.getLogger(EtcdProxy.class);
 
     private final String targetUrl;
     private final String authenticationToken;
     private Client client;
 
-    public EtcdProxyImpl(String targetUrl, String authenticationToken) {
+    public EtcdV2ProxyImpl(String targetUrl, String authenticationToken) {
         this.targetUrl = targetUrl;
         this.authenticationToken = authenticationToken;
     }
 
-    public EtcdProxyImpl(String targetUrl) {
+    public EtcdV2ProxyImpl(String targetUrl) {
         this(targetUrl, null);
     }
 

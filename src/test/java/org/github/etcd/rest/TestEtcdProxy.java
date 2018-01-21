@@ -9,7 +9,7 @@ import org.github.etcd.service.api.EtcdMember;
 import org.github.etcd.service.api.EtcdNode;
 import org.github.etcd.service.api.EtcdProxy;
 import org.github.etcd.service.api.EtcdSelfStats;
-import org.github.etcd.service.api.v2.EtcdProxyImpl;
+import org.github.etcd.service.api.v2.EtcdV2ProxyImpl;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -39,7 +39,7 @@ public class TestEtcdProxy extends Assert {
         String password = "root";
         String token = DatatypeConverter.printBase64Binary((username + ":" + password).getBytes());
 
-        etcdProxy = new EtcdProxyImpl(clientURL, token);
+        etcdProxy = new EtcdV2ProxyImpl(clientURL, token);
 
         // just check accessibility of etcd server
         // if it is not reachable for any reason then

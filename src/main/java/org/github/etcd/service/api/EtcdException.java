@@ -10,6 +10,9 @@ public class EtcdException extends RuntimeException {
     public EtcdException(WebApplicationException cause) {
         super(cause.getLocalizedMessage(), cause);
     }
+    public EtcdException(Exception cause) {
+        super(cause.getLocalizedMessage(), cause);
+    }
     public EtcdException(WebApplicationException cause, EtcdError error) {
         super(cause.getLocalizedMessage(), cause);
         this.error = error;

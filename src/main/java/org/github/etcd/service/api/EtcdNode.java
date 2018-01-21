@@ -4,6 +4,7 @@
 package org.github.etcd.service.api;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EtcdNode implements Serializable {
@@ -39,6 +40,16 @@ public class EtcdNode implements Serializable {
     }
     public EtcdNode(String key, Long ttl) {
         this(key, true, null, ttl);
+    }
+    public EtcdNode(EtcdNode toCopy) {
+        this.key = toCopy.key;
+        this.value = toCopy.value;
+        this.dir = toCopy.dir;
+        this.createdIndex = toCopy.createdIndex;
+        this.modifiedIndex = toCopy.modifiedIndex;
+        this.ttl = toCopy.ttl;
+        this.expiration = toCopy.expiration;
+        this.nodes = toCopy.nodes == null ? null : new ArrayList<>(toCopy.nodes);
     }
 
     public Long getCreatedIndex() {
