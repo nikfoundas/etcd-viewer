@@ -180,11 +180,7 @@ public class EtcdV3ProxyImpl implements EtcdProxy {
             }
             result.setNodes(new ArrayList<>());
             Set<ByteSequence> directories = new HashSet<>();
-            KeyValue lastKey = null;
             for (KeyValue kv : response.getKvs()) {
-                if (lastKey == null) {
-                    lastKey = kv;
-                }
                 if (isKeyOrChild.test(kv)) {
                     valueGetters.add(kvClient.get(kv.getKey()));
                     if (kv.getKey().toStringUtf8().endsWith("/")) {
@@ -217,6 +213,9 @@ public class EtcdV3ProxyImpl implements EtcdProxy {
                 } else {
                     current = new EtcdNode();
                     result.getNodes().add(current);
+                }
+                if (directories.contains(kv.getKey())) {
+                    current.setDir(true);
                 }
                 current.setKey(kv.getKey().toStringUtf8());
                 current.setValue(kv.getValue().toStringUtf8());
