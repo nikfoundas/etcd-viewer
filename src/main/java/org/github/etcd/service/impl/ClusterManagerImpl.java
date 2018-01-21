@@ -52,10 +52,10 @@ public class ClusterManagerImpl implements ClusterManager {
 
         String etcdAddress = System.getenv(DEFAULT_ETCD_CLIENT);
         if (etcdAddress == null) {
-            etcdAddress = System.getProperty(DEFAULT_ETCD_CLIENT, "http://localhost:2379/");
+            etcdAddress = System.getProperty(DEFAULT_ETCD_CLIENT, "http://localhost:2379");
         }
 
-        addCluster("default", etcdAddress, ApiVersion.V2);
+        addCluster("default", etcdAddress, ApiVersion.V3);
         // addCluster("kvm", "http://192.168.122.201:2379/");
     }
 
