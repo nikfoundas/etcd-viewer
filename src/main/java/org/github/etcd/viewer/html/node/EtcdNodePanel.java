@@ -30,6 +30,9 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.github.etcd.service.ApiVersion;
+import org.github.etcd.service.ClusterManager;
+import org.github.etcd.service.EtcdCluster;
 import org.github.etcd.service.EtcdProxyFactory;
 import org.github.etcd.service.api.EtcdNode;
 import org.github.etcd.service.api.EtcdProxy;
@@ -77,6 +80,8 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
 
     @Inject
     private EtcdProxyFactory proxyFactory;
+    @Inject
+    private ClusterManager clusterManager;
 
     private IModel<String> registry;
 
@@ -296,6 +301,7 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
     }
 
     private void createBreadcrumb() {
+
         IModel<List<String>> breadcrumb = new ChainingModel<List<String>>(new PropertyModel<>(getModel(), "key")) {
             private static final long serialVersionUID = 1L;
             @Override
@@ -311,10 +317,17 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
                     if (index == 0) {
                         crumbs.add("/");
                     } else {
-                        crumbs.add(key.substring(0, index));
+                        if (isApiV3()) {
+                            // include the slash if API is V3
+                            crumbs.add(key.substring(0, index + 1));
+                        } else {
+                            crumbs.add(key.substring(0, index));
+                        }
                     }
                 }
-                crumbs.add(key);
+                if (!isApiV3() || !key.endsWith("/")) {
+                    crumbs.add(key);
+                }
 
                 return crumbs;
             }
@@ -337,6 +350,9 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
                 }
             }
         });
+        if (isApiV3()) {
+            breadcrumbAndActions.add(new AttributeAppender("class", Model.of("apiv3"), " "));
+        }
 
     }
 
@@ -451,5 +467,10 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             }
         }
 
+    }
+
+    private boolean isApiV3() {
+        EtcdCluster cluster = clusterManager.getCluster(registry.getObject());
+        return ApiVersion.V3.equals(cluster != null ? cluster.getApiVersion() : null);
     }
 }
