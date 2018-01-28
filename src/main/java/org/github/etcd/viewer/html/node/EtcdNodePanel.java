@@ -432,12 +432,18 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             if (etcdKey == null || etcdKey.indexOf('/') == -1 || "/".equals(etcdKey)) {
                 return etcdKey;
             }
+            int endIndex;
             if (etcdKey.endsWith("/")) {
                 // Find the 2nd to last /
-                return etcdKey.substring(0, etcdKey.lastIndexOf('/', etcdKey.length()-2));
+                endIndex = etcdKey.lastIndexOf('/', etcdKey.length()-2);
             } else {
-                return etcdKey.substring(0, etcdKey.lastIndexOf('/'));
+                endIndex = etcdKey.lastIndexOf('/');
             }
+            if (isApiV3()) {
+                // include / in parent key
+                endIndex++;
+            }
+            return etcdKey.substring(0, endIndex);
         }
     }
 
