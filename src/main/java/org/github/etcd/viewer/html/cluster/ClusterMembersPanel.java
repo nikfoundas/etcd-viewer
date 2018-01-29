@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.ChainingModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.github.etcd.service.rest.EtcdMember;
+import org.github.etcd.service.api.EtcdMember;
 
 public class ClusterMembersPanel extends GenericPanel<List<EtcdMember>> {
 

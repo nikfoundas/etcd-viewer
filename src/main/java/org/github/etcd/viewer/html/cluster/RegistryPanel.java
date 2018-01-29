@@ -22,7 +22,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.github.etcd.service.ClusterManager;
 import org.github.etcd.service.EtcdCluster;
-import org.github.etcd.service.rest.EtcdMember;
+import org.github.etcd.service.api.EtcdMember;
 
 public class RegistryPanel extends GenericPanel<EtcdCluster> {
 
@@ -96,6 +96,7 @@ public class RegistryPanel extends GenericPanel<EtcdCluster> {
 
         link.add(new Label("name", new PropertyModel<>(getModel(), "name")));
         link.add(new Label("address", new PropertyModel<>(getModel(), "address")));
+        link.add(new Label("apiVersion", new PropertyModel<>(getModel(), "apiVersion")));
 
         collapsingBody.add(new ClusterMembersPanel("clusterPeers", new PropertyModel<List<EtcdMember>>(getModel(), "members")) {
             private static final long serialVersionUID = 1L;

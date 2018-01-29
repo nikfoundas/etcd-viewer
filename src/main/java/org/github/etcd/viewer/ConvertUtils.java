@@ -28,6 +28,10 @@ public class ConvertUtils {
                 parameters.set(parameters.getIndexedCount(), keyPart); // add the current non empty part
             }
         }
+        if (etcdKey != null && etcdKey.endsWith("/")) {
+            // add trailing slash
+            parameters.set(parameters.getIndexedCount(), "");
+        }
         return parameters;
     }
 

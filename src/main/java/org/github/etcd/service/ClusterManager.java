@@ -8,7 +8,7 @@ public interface ClusterManager {
     boolean exists(String name);
     EtcdCluster getCluster(String name);
 
-    EtcdCluster addCluster(String name, String etcdPeerAddress);
+    EtcdCluster addCluster(String name, String etcdPeerAddress, ApiVersion apiVersion);
     void removeCluster(String name);
 
     List<EtcdCluster> getClusters();

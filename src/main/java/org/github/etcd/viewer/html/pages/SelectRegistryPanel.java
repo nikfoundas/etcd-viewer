@@ -79,6 +79,8 @@ public class SelectRegistryPanel extends Panel {
 
                 link.add(new Label("address", new PropertyModel<>(item.getModel(), "address")));
 
+                link.add(new Label("apiVersion", new PropertyModel<>(item.getModel(), "apiVersion")));
+
                 item.add(new AttributeAppender("class", new ChainingModel<String>(nameModel) {
                     private static final long serialVersionUID = 1L;
                     @Override

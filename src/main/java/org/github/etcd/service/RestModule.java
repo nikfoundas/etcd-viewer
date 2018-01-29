@@ -6,9 +6,10 @@ package org.github.etcd.service;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.github.etcd.service.api.v3.EtcdV3ProxyImpl;
 import org.github.etcd.service.impl.ClusterManagerImpl;
-import org.github.etcd.service.rest.EtcdProxy;
-import org.github.etcd.service.rest.impl.EtcdProxyImpl;
+import org.github.etcd.service.api.EtcdProxy;
+import org.github.etcd.service.api.v2.EtcdV2ProxyImpl;
 import org.github.etcd.viewer.EtcdWebSession;
 
 import com.google.inject.AbstractModule;
@@ -42,17 +43,27 @@ public class RestModule extends AbstractModule {
         private ClusterManager clusterManager;
 
         @Override
-        public EtcdProxy getEtcdProxy(String registry, String address) {
+        public EtcdProxy getEtcdProxy(String registry, String address, ApiVersion apiVersion) {
             String authToken = null;
             if (EtcdWebSession.exists()) {
                 authToken = EtcdWebSession.get().getBasicAuthenticationToken(registry);
             }
-            return new EtcdProxyImpl(address, authToken);
+            if (ApiVersion.V2.equals(apiVersion)) {
+                return new EtcdV2ProxyImpl(address, authToken);
+            } else if (ApiVersion.V3.equals(apiVersion)) {
+                return new EtcdV3ProxyImpl(address, authToken);
+            } else {
+                throw new IllegalArgumentException("Unknown api version: " + apiVersion);
+            }
         }
 
         @Override
         public EtcdProxy getEtcdProxy(String registry) {
-            return getEtcdProxy(registry, clusterManager.getCluster(registry).getAddress());
+            EtcdCluster cluster = clusterManager.getCluster(registry);
+            if (cluster == null) {
+                throw new IllegalArgumentException("Unknown cluster " + registry);
+            }
+            return getEtcdProxy(registry, cluster.getAddress(), cluster.getApiVersion());
         }
 
     }

@@ -23,7 +23,7 @@ The docker image is built on top of the jetty:latest image.
 
 ### Build etcd-viewer
 
-In order to build `etcd-viewer` you need java-1.7 and [maven][maven] 3.0.5 or later.
+In order to build `etcd-viewer` you need java-1.8 and [maven][maven] 3.0.5 or later.
 
 * Clone the etcd-viewer repository
 

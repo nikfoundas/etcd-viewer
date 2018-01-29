@@ -1,4 +1,6 @@
 target
+etcd-viewer.iml
+.idea
 .settings
 .project
 .classpath

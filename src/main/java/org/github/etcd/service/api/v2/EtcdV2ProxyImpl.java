@@ -1,4 +1,4 @@
-package org.github.etcd.service.rest.impl;
+package org.github.etcd.service.api.v2;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,32 +22,32 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
-import org.github.etcd.service.rest.EtcdError;
-import org.github.etcd.service.rest.EtcdException;
-import org.github.etcd.service.rest.EtcdMember;
-import org.github.etcd.service.rest.EtcdMembers;
-import org.github.etcd.service.rest.EtcdNode;
-import org.github.etcd.service.rest.EtcdProxy;
-import org.github.etcd.service.rest.EtcdResponse;
-import org.github.etcd.service.rest.EtcdSelfStats;
+import org.github.etcd.service.api.EtcdError;
+import org.github.etcd.service.api.EtcdException;
+import org.github.etcd.service.api.EtcdMember;
+import org.github.etcd.service.api.EtcdMembers;
+import org.github.etcd.service.api.EtcdNode;
+import org.github.etcd.service.api.EtcdProxy;
+import org.github.etcd.service.api.EtcdResponse;
+import org.github.etcd.service.api.EtcdSelfStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
-public class EtcdProxyImpl implements EtcdProxy {
+public class EtcdV2ProxyImpl implements EtcdProxy {
     private static final Logger LOG = LoggerFactory.getLogger(EtcdProxy.class);
 
     private final String targetUrl;
     private final String authenticationToken;
     private Client client;
 
-    public EtcdProxyImpl(String targetUrl, String authenticationToken) {
+    public EtcdV2ProxyImpl(String targetUrl, String authenticationToken) {
         this.targetUrl = targetUrl;
         this.authenticationToken = authenticationToken;
     }
 
-    public EtcdProxyImpl(String targetUrl) {
+    public EtcdV2ProxyImpl(String targetUrl) {
         this(targetUrl, null);
     }
 

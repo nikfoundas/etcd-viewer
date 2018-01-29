@@ -38,7 +38,11 @@
 .breadcrumb li:first-child span.fa.breadcrumb-icon:before {
   content: "\f015"; /* fa-home */
 }
-
+.apiv3 .breadcrumb>li+li:before {
+  padding: 0 2px;
+  color: #ccc;
+  content: "\00a0";
+}
 
 td.table-cell-link > a {
   display: block;
