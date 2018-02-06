@@ -242,6 +242,12 @@ public class EtcdV3ProxyImpl implements EtcdProxy {
                         }
                 );
             }
+            if (result.getKey() == null) {
+                result.setKey(key);
+            }
+            if (result.getValue() == null) {
+                result.setValue("");
+            }
             return result;
         } catch (Exception e) {
             throw new EtcdException(e);
