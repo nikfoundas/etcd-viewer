@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.github.etcd.viewer.html.node;
 
 import java.util.ArrayList;
