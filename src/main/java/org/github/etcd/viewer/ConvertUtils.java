@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.github.etcd.viewer;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;

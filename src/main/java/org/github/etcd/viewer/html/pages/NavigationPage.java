@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.github.etcd.viewer.html.pages;
 
 import org.apache.wicket.AttributeModifier;

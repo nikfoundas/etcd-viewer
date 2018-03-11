@@ -1,5 +1,8 @@
 package org.github.etcd.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,6 +24,11 @@ import org.github.etcd.service.api.EtcdSelfStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
+import com.google.inject.name.Named;
+
 public class ClusterManagerImpl implements ClusterManager {
 
     private static final Logger log = LoggerFactory.getLogger(ClusterManager.class);
@@ -41,24 +49,47 @@ public class ClusterManagerImpl implements ClusterManager {
         STATE_MAPPINGS.put("StateFollower", "follower");
     }
 
-    @Inject
-    private EtcdProxyFactory proxyFactory;
+    private final EtcdProxyFactory proxyFactory;
 
     private Map<String, EtcdCluster> clusters = Collections.synchronizedMap(new LinkedHashMap<String, EtcdCluster>());
 
-    private static final String DEFAULT_ETCD_CLIENT = "ETCD_CLIENT_URL";
-
-    public ClusterManagerImpl() {
-
-        String etcdAddress = System.getenv(DEFAULT_ETCD_CLIENT);
-        if (etcdAddress == null) {
-            etcdAddress = System.getProperty(DEFAULT_ETCD_CLIENT, "http://localhost:2379");
+    public static final String DEFAULT_CLIENT_URL_KEY = "ETCD_CLIENT_URL";
+    private static final String DEFAULT_CLIENT_URL = "http://localhost:2379/";
+    public static final String CLUSTER_STORE_PATH_KEY = "CLUSTER_STORE_PATH";
+    private static final String CLUSTER_STORE_FILENAME = "clusters.json";
+    
+    private final File clusterStoreFile;
+    private final ObjectMapper mapper = new ObjectMapper();
+    
+    @Inject
+    public ClusterManagerImpl(@Named(DEFAULT_CLIENT_URL_KEY) String defaultClientUrl,
+            @Named(CLUSTER_STORE_PATH_KEY) String clusterStorePath,
+            EtcdProxyFactory proxyFactory) {
+        log.debug("{}: {}", DEFAULT_CLIENT_URL_KEY, defaultClientUrl);
+        log.debug("{}: {}", CLUSTER_STORE_PATH_KEY, clusterStorePath);
+        
+        if (Strings.isNullOrEmpty(defaultClientUrl)) {
+            defaultClientUrl = DEFAULT_CLIENT_URL;
+            log.debug("Using default {}: {}", DEFAULT_CLIENT_URL_KEY, defaultClientUrl);
+        }
+        
+        this.proxyFactory = proxyFactory;
+        
+        if (!Strings.isNullOrEmpty(clusterStorePath)) {
+            clusterStoreFile = new File(clusterStorePath, CLUSTER_STORE_FILENAME);
+            if (clusterStoreFile.exists()) {
+                loadClusters();
+            }
+        } else {
+            clusterStoreFile = null;
         }
 
-        addCluster("default", etcdAddress, ApiVersion.V3);
-        // addCluster("kvm", "http://192.168.122.201:2379/");
+        if (clusters.isEmpty()) {
+            addCluster("Local V2", defaultClientUrl, ApiVersion.V2);
+            addCluster("Local V3", defaultClientUrl, ApiVersion.V3);
+        }
     }
-
+    
     @Override
     public boolean exists(String name) {
         return clusters.containsKey(name);
@@ -73,12 +104,17 @@ public class ClusterManagerImpl implements ClusterManager {
     public EtcdCluster addCluster(String name, String etcdPeerAddress, ApiVersion apiVersion) {
         EtcdCluster cluster = new EtcdCluster(name, etcdPeerAddress, apiVersion);
         clusters.put(name, cluster);
+        
+        persistClusters();
+        
         return cluster;
     }
 
     @Override
     public void removeCluster(String name) {
         clusters.remove(name);
+        
+        persistClusters();
     }
 
     @Override
@@ -157,6 +193,40 @@ public class ClusterManagerImpl implements ClusterManager {
         cluster.setLastRefreshTime(new Date());
         cluster.setRefreshed(true);
 
+        persistClusters();
+    }
+
+    private void loadClusters() {
+        log.info("Loading {}", clusterStoreFile.getAbsolutePath());
+        try {
+            Map<String, EtcdCluster> incoming = mapper.readValue(clusterStoreFile,
+                    new TypeReference<Map<String, EtcdCluster>>() {});
+            clusters = Collections.synchronizedMap(incoming);
+            
+            log.debug("Loaded {} clusters", clusters.size());
+        } catch (IOException e) {
+            log.error("Unable to read cluster config from {}", clusterStoreFile.getAbsolutePath());
+        }
+    }
+
+    private synchronized void persistClusters() {
+        if (clusterStoreFile != null) {
+            try {
+                Files.createDirectories(clusterStoreFile.getParentFile().toPath());
+            } catch (IOException e) {
+                log.error("Unable to create configured cluster storage directory {}",
+                        clusterStoreFile.getParentFile().getAbsolutePath(), e);
+                return;
+            }
+
+            log.debug("Writing {} clusters", clusters.size());
+            
+            try {
+                mapper.writeValue(clusterStoreFile, clusters);
+            } catch (IOException e) {
+                log.error("Unable to write cluster config to {}", clusterStoreFile.getAbsolutePath(), e);
+            }
+        }
     }
 
 }

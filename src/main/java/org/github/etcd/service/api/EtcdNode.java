@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.github.etcd.service.api;
 
 import java.io.Serializable;

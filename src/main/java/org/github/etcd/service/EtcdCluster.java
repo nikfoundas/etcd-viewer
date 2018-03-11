@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.github.etcd.service;
 
 import java.util.Date;

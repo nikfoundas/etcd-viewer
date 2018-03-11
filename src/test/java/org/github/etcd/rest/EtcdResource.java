@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.github.etcd.rest;
 
 import javax.ws.rs.DELETE;
