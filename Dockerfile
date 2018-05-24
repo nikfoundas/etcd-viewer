@@ -1,4 +1,4 @@
-FROM jetty:9.2.12-jre7
+FROM jetty:9.2.12-jre8
 
 MAINTAINER Nikos Fountas "nikfoundas@gmail.com"
 
