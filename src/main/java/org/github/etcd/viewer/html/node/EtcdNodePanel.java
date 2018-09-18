@@ -74,7 +74,7 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
 
     private EditNodeModalPanel editNodeModal;
     private DeleteNodeModalPanel deleteNodeModal;
-    private AddPropertyFileModalPanel addPropertyFileModalPanel;
+    private AddFileModalPanel addFileModalPanel;
 
 
     private WebMarkupContainer breadcrumbAndActions;
@@ -239,7 +239,7 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             }
         });
 
-        add(addPropertyFileModalPanel = new AddPropertyFileModalPanel("addPropertyFile",
+        add(addFileModalPanel = new AddFileModalPanel("addFile",
             actionModel,
             registry, updating) {
             private static final long serialVersionUID = 1L;
@@ -327,8 +327,8 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             }
         });
 
-        breadcrumbAndActions.add(new TriggerModalLink<EtcdNode>("addPropertyFile", getModel(),
-                addPropertyFileModalPanel) {
+        breadcrumbAndActions.add(new TriggerModalLink<EtcdNode>("addFile", getModel(),
+                addFileModalPanel) {
             private static final long serialVersionUID = 1L;
 
             @Override

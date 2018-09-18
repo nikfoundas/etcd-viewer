@@ -14,21 +14,17 @@ import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.util.value.ValueMap;
 import org.github.etcd.service.EtcdProxyFactory;
 import org.github.etcd.service.api.EtcdException;
 import org.github.etcd.service.api.EtcdNode;
 import org.github.etcd.service.api.EtcdProxy;
 import org.github.etcd.viewer.html.modal.GenericModalPanel;
 
-public class AddPropertyFileModalPanel extends GenericModalPanel {
+public class AddFileModalPanel extends GenericModalPanel {
 
     private static final long serialVersionUID = -2070660918144252605L;
     private FileUploadField uploadField;
@@ -39,15 +35,15 @@ public class AddPropertyFileModalPanel extends GenericModalPanel {
     private EtcdProxyFactory proxyFactory;
 
 
-    Form<EtcdNode> form;
-    Label title;
+    private Form<EtcdNode> form;
+    private Label title;
 
-//    public AddPropertyFileModalPanel(String id) {
+//    public addFileModalPanel(String id) {
 //        this(id, new CompoundPropertyModel(makeModel()));
 //    }
 
-    public AddPropertyFileModalPanel(String id, IModel<EtcdNode> model,
-                                     IModel<String> registry, IModel<Boolean> updating) {
+    public AddFileModalPanel(String id, IModel<EtcdNode> model,
+                             IModel<String> registry, IModel<Boolean> updating) {
         super(id, null);
 
         this.updating = updating;
