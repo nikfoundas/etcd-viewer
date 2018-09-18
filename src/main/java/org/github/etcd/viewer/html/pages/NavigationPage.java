@@ -3,6 +3,7 @@
  */
 package org.github.etcd.viewer.html.pages;
 
+import java.util.Properties;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.feedback.FeedbackMessage;
@@ -136,8 +137,13 @@ public class NavigationPage extends TemplatePage {
             @Override
             protected void onNodeKeyUpdated(AjaxRequestTarget target) {
                 super.onNodeKeyUpdated(target);
-
                 NavigationPage.this.updatePageTitle(target);
+            }
+
+            @Override
+            protected void onFileSaved(AjaxRequestTarget target) {
+                super.onFileSaved(target);
+                target.add(feedback);
             }
         });
 
