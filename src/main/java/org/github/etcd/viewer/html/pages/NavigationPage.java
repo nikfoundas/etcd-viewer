@@ -137,7 +137,6 @@ public class NavigationPage extends TemplatePage {
             @Override
             protected void onNodeKeyUpdated(AjaxRequestTarget target) {
                 super.onNodeKeyUpdated(target);
-
                 NavigationPage.this.updatePageTitle(target);
             }
 

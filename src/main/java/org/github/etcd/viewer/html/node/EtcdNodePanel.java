@@ -248,17 +248,13 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             protected void onFileSaved(AjaxRequestTarget target) {
 
                 super.onFileSaved(target);
-
-                PageParameters params = ConvertUtils.getPageParameters(key.getObject());
-                params.add("cluster", registry.getObject());
-
-                setResponsePage(NavigationPage.class, params);
-
-                key.setObject(key.getObject());
-
-//                target.add(EtcdNodePanel.this);
-
-                onNodeKeyUpdated(target);
+//
+//                PageParameters params = ConvertUtils.getPageParameters(key.getObject());
+//                params.add("cluster", registry.getObject());
+//
+//                setResponsePage(NavigationPage.class, params);
+//
+//                key.setObject(key.getObject());
 
                 target.add(contents, breadcrumbAndActions);
 
