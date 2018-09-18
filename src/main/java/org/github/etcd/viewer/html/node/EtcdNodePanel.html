@@ -122,6 +122,7 @@ tr.dir-false.active span.fa.node-icon:before {
     </ol>
 
     <div class="btn-group node-actions" role="group" aria-label="...">
+      <a wicket:id="addPropertyFile" href="#" class="btn btn-default tooltip-trigger" title="Upload from property file"><span class="fa fa-file"></span></a>
       <a wicket:id="addNode" href="#" class="btn btn-default tooltip-trigger" title="Add another key-value or directory"><span class="fa fa-plus"></span></a>
       <a wicket:id="editNode" href="#" class="btn btn-default tooltip-trigger" title="Edit current node"><span class="fa fa-pencil"></span></a>
       <a wicket:id="deleteNode" href="#" class="btn btn-default tooltip-trigger" title="Delete current node"><span class="fa fa-trash"></span></a>
@@ -207,6 +208,7 @@ $(document).ready(function() {
 
 <div wicket:id="editNodeModal"></div>
 <div wicket:id="deleteNodeModal"></div>
+<div wicket:id="addPropertyFile"></div>
 
 
 </wicket:panel>

@@ -74,6 +74,8 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
 
     private EditNodeModalPanel editNodeModal;
     private DeleteNodeModalPanel deleteNodeModal;
+    private AddPropertyFileModalPanel addPropertyFileModalPanel;
+
 
     private WebMarkupContainer breadcrumbAndActions;
     private WebMarkupContainer contents;
@@ -195,6 +197,9 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
     protected void onNodedSaved(AjaxRequestTarget target) {
     }
 
+    protected void onFileSaved(AjaxRequestTarget target) {
+    }
+
     protected void onNodedDeleted(AjaxRequestTarget target) {
     }
 
@@ -231,6 +236,33 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
                 target.add(contents, breadcrumbAndActions);
 
                 EtcdNodePanel.this.onNodedDeleted(target);
+            }
+        });
+
+        add(addPropertyFileModalPanel = new AddPropertyFileModalPanel("addPropertyFile",
+            actionModel,
+            registry, updating) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onFileSaved(AjaxRequestTarget target) {
+
+                super.onFileSaved(target);
+
+                PageParameters params = ConvertUtils.getPageParameters(key.getObject());
+                params.add("cluster", registry.getObject());
+
+                setResponsePage(NavigationPage.class, params);
+
+                key.setObject(key.getObject());
+
+//                target.add(EtcdNodePanel.this);
+
+                onNodeKeyUpdated(target);
+
+                target.add(contents, breadcrumbAndActions);
+
+                EtcdNodePanel.this.onFileSaved(target);
             }
         });
     }
@@ -295,6 +327,28 @@ public class EtcdNodePanel extends GenericPanel<EtcdNode> {
             }
             @Override
             protected void onModalTriggerClick(AjaxRequestTarget target) {
+                actionModel.setObject(getModelObject());
+            }
+        });
+
+        breadcrumbAndActions.add(new TriggerModalLink<EtcdNode>("addPropertyFile", getModel(),
+                addPropertyFileModalPanel) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onConfigure() {
+                super.onConfigure();
+                if (EtcdNodePanel.this.getModelObject() != null && EtcdNodePanel.this
+                        .getModelObject().isDir()) {
+                    add(AttributeModifier.remove("disabled"));
+                } else {
+                    add(AttributeAppender.append("disabled", "disabled"));
+                }
+            }
+
+            @Override
+            protected void onModalTriggerClick(AjaxRequestTarget target) {
+                updating.setObject(false);
                 actionModel.setObject(getModelObject());
             }
         });
